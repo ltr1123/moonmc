@@ -172,7 +172,7 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
   z-index: 1000;
   height: var(--nav-height);
   background: #000;
-  border-bottom: 4px solid #d4a017;
+  border-bottom: 4px solid #7c3aed;
   transition: var(--transition);
 }
 
@@ -234,17 +234,17 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
   left: 4px;
   right: 4px;
   height: 3px;
-  background: #f5a623;
+  background: #7c3aed;
   border-radius: 2px;
   transform: scaleX(0);
   transition: transform 0.3s ease;
 }
 
-.navbar-menu a:hover { color: #f5a623; }
-.navbar-menu a.active { color: #f5a623; }
+.navbar-menu a:hover { color: #7c3aed; }
+.navbar-menu a.active { color: #7c3aed; }
 
 .navbar-menu a:hover::after,
-.navbar-menu a.active::after { transform: scaleX(1); background: #f5a623; }
+.navbar-menu a.active::after { transform: scaleX(1); background: #7c3aed; }
 
 .navbar-actions {
   margin-left: auto;
@@ -292,12 +292,12 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
 
 .navbar-ip i {
   font-size: 0.7rem;
-  color: #f5a623;
+  color: #7c3aed;
   margin: 0 2px;
 }
 
 .navbar-ip strong {
-  color: #f5a623;
+  color: #7c3aed;
   font-family: var(--font-heading);
   letter-spacing: 0.06em;
   font-weight: 400;
