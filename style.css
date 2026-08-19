@@ -1329,6 +1329,161 @@ section { position: relative; z-index: 1; }
 
 .modal-discord-btn { width: 100%; }
 
+/* ── Modal new elements ── */
+.modal-actions-main {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.modal-actions-main .btn {
+  flex: 1;
+  font-size: 0.88rem;
+  padding: 14px 18px;
+}
+
+.btn-open-mc {
+  background: linear-gradient(135deg, #4ade80, #22c55e);
+  color: #052e16;
+  box-shadow: 0 0 22px rgba(74, 222, 128, 0.4);
+}
+
+.btn-open-mc:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0 34px rgba(74, 222, 128, 0.5), 0 10px 30px rgba(0, 0, 0, 0.4);
+}
+
+.btn-copy-ip-modal {
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--white);
+  border: 1.5px solid rgba(255, 255, 255, 0.25);
+}
+
+.btn-copy-ip-modal:hover {
+  border-color: var(--neon);
+  color: var(--neon);
+  transform: translateY(-2px);
+}
+
+.btn-copy-ip-modal.copied {
+  background: var(--neon);
+  color: #170b2b;
+  border-color: var(--neon);
+}
+
+.modal-divider {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 16px;
+  color: var(--gray-muted);
+  font-size: 0.8rem;
+}
+
+.modal-divider::before,
+.modal-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+.modal-download-links {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.download-link {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 14px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-heading);
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--gray);
+  transition: var(--transition);
+}
+
+.download-link:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: var(--border-neon);
+  color: var(--white);
+  transform: translateY(-2px);
+}
+
+.download-link i { font-size: 1.1rem; }
+
+.download-windows i { color: #00aDEF; }
+.download-ios i { color: #fff; }
+.download-android i { color: #3DDC84; }
+
+.modal-steps-manual {
+  text-align: left;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 16px;
+  margin-bottom: 20px;
+}
+
+.modal-steps-title {
+  font-family: var(--font-heading);
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--neon);
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.modal-steps-manual ol {
+  list-style: none;
+  counter-reset: step;
+}
+
+.modal-steps-manual ol li {
+  counter-increment: step;
+  position: relative;
+  padding-left: 28px;
+  margin-bottom: 8px;
+  font-size: 0.85rem;
+  color: var(--gray);
+  line-height: 1.5;
+}
+
+.modal-steps-manual ol li::before {
+  content: counter(step);
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(194, 139, 255, 0.12);
+  border: 1px solid var(--border-neon);
+  border-radius: 50%;
+  font-family: var(--font-heading);
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--neon);
+}
+
+.modal-steps-manual ol li strong {
+  color: var(--white);
+}
+
 /* ── Toast ── */
 .toast {
   position: fixed;

@@ -115,6 +115,9 @@
   var toast = document.getElementById('toast');
   var toastText = document.getElementById('toast-text');
   var modal = document.getElementById('ip-modal');
+  var modalDeviceInfo = document.getElementById('modal-device-info');
+  var btnOpenMinecraft = document.getElementById('btn-open-minecraft');
+  var modalDownloadLinks = document.getElementById('modal-download-links');
   var toastTimer;
 
   function showToast(msg) {
@@ -125,8 +128,92 @@
     toastTimer = setTimeout(function () { toast.classList.remove('show'); }, 2600);
   }
 
+  function detectDevice() {
+    var ua = navigator.userAgent;
+    if (/Windows/i.test(ua)) return 'windows';
+    if (/iPhone|iPad|iPod/i.test(ua)) return 'ios';
+    if (/Android/i.test(ua)) return 'android';
+    if (/Mac/i.test(ua)) return 'mac';
+    return 'desktop';
+  }
+
+  function getDeviceName(device) {
+    var names = {
+      windows: 'Windows',
+      ios: 'iPhone/iPad',
+      android: 'Android',
+      mac: 'Mac',
+      desktop: 'Computador'
+    };
+    return names[device] || 'Computador';
+  }
+
+  function getDownloadLinks(device) {
+    var links = {
+      windows: [
+        { url: 'https://www.microsoft.com/store/productId/9NBLGGH42THS', label: 'Windows', icon: 'fa-brands fa-windows', cls: 'download-windows' }
+      ],
+      ios: [
+        { url: 'https://apps.apple.com/app/minecraft/id479516143', label: 'iOS', icon: 'fa-brands fa-apple', cls: 'download-ios' }
+      ],
+      android: [
+        { url: 'https://play.google.com/store/apps/details?id=com.mojang.minecraftpe', label: 'Android', icon: 'fa-brands fa-google-play', cls: 'download-android' }
+      ],
+      mac: [
+        { url: 'https://apps.apple.com/app/minecraft/id479516143', label: 'Mac', icon: 'fa-brands fa-apple', cls: 'download-ios' }
+      ],
+      desktop: [
+        { url: 'https://www.microsoft.com/store/productId/9NBLGGH42THS', label: 'Windows', icon: 'fa-brands fa-windows', cls: 'download-windows' },
+        { url: 'https://apps.apple.com/app/minecraft/id479516143', label: 'iOS', icon: 'fa-brands fa-apple', cls: 'download-ios' },
+        { url: 'https://play.google.com/store/apps/details?id=com.mojang.minecraftpe', label: 'Android', icon: 'fa-brands fa-google-play', cls: 'download-android' }
+      ]
+    };
+    return links[device] || links.desktop;
+  }
+
+  function openMinecraft() {
+    var device = detectDevice();
+    if (device === 'windows' || device === 'mac') {
+      window.location.href = 'minecraft://';
+    } else if (device === 'ios' || device === 'android') {
+      window.location.href = 'minecraft://';
+    } else {
+      window.location.href = 'minecraft://';
+    }
+  }
+
+  function updateModalForDevice() {
+    var device = detectDevice();
+    var deviceName = getDeviceName(device);
+    var links = getDownloadLinks(device);
+
+    if (modalDeviceInfo) {
+      modalDeviceInfo.textContent = 'Detectado: ' + deviceName + '. Clique abaixo para abrir o Minecraft.';
+    }
+
+    if (btnOpenMinecraft) {
+      btnOpenMinecraft.onclick = function () {
+        openMinecraft();
+      };
+    }
+
+    if (modalDownloadLinks) {
+      modalDownloadLinks.innerHTML = '';
+      links.forEach(function (link) {
+        var a = document.createElement('a');
+        a.href = link.url;
+        a.target = '_blank';
+        a.rel = 'noopener';
+        a.className = 'download-link ' + link.cls;
+        a.innerHTML = '<i class="' + link.icon + '"></i> ' + link.label;
+        modalDownloadLinks.appendChild(a);
+      });
+    }
+  }
+
   function openModal() {
     if (!modal) return;
+    updateModalForDevice();
     modal.classList.add('open');
   }
 
@@ -152,6 +239,18 @@
   });
 
   document.querySelectorAll('.ip-copy[data-ip]').forEach(function (btn) {
+    btn.addEventListener('click', function (e) {
+      e.stopPropagation();
+      var ip = btn.getAttribute('data-ip');
+      copyText(ip).then(function () {
+        showToast('IP copiado: ' + ip);
+        btn.classList.add('copied');
+        setTimeout(function () { btn.classList.remove('copied'); }, 1800);
+      });
+    });
+  });
+
+  document.querySelectorAll('.btn-copy-ip-modal').forEach(function (btn) {
     btn.addEventListener('click', function (e) {
       e.stopPropagation();
       var ip = btn.getAttribute('data-ip');
