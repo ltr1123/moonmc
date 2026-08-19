@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Testador de Tops - MoonMC</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: Arial, sans-serif; background: #0a0a0a; color: #fff; min-height: 100vh; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+        .header { text-align: center; margin-bottom: 30px; }
+        .section { margin-bottom: 30px; }
+        .section h2 { color: #4CAF50; margin-bottom: 10px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #333; }
+        th { background: #1a1a1a; color: #4CAF50; }
+        .status { padding: 8px 12px; border-radius: 4px; font-size: 14px; margin-bottom: 10px; display: inline-block; }
+        .status.loading { background: #ff9800; color: #fff; }
+        .status.updated { background: #4CAF50; color: #fff; }
+        .status.error { background: #f44336; color: #fff; }
+        .hidden { display: none; }
+        .loader { border: 3px solid #f3f3f3; border-top: 3px solid #3498db; border-radius: 50%; width: 20px; height: 20px; animation: spin 1s linear infinite; display: inline-block; margin-left: 10px; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .mock-btn { background: #2196F3; color: white; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer; margin-top: 10px; }
+        .mock-btn:hover { background: #1976D2; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Testador de Tops - MoonMC</h1>
+            <p>Acesse via URL: <code>/testador</code> (digite manualmente na barra)</p>
+        </div>
+
+        <div id="status" class="status loading">Carregando dados...</div>
+
+        <div id="kills-section" class="section hidden">
+            <h2>🏆 Top Kills</h2>
+            <table>
+                <thead>
+                    <tr><th>Posição</th><th>Jogador</th><th>Kills</th></tr>
+                </thead>
+                <tbody id="kills-table"></tbody>
+            </table>
+        </div>
+
+        <div id="mortes-section" class="section hidden">
+            <h2>💀 Top Mortes</h2>
+            <table>
+                <thead>
+                    <tr><th>Posição</th><th>Jogador</th><th>Mortes</th></tr>
+                </thead>
+                <tbody id="mortes-table"></tbody>
+            </table>
+        </div>
+
+        <div id="money-section" class="section hidden">
+            <h2>💰 Top Money</h2>
+            <table>
+                <thead>
+                    <tr><th>Posição</th><th>Jogador</th><th>Money</th></tr>
+                </thead>
+                <tbody id="money-table"></tbody>
+            </table>
+        </div>
+
+        <!-- Lista de jogadores disponíveis -->
+        <div id="players-list-section" class="section">
+            <h2>👥 Todos os Jogadores Disponíveis</h2>
+            <p>Lista completa de jogadores para referência</p>
+            <table>
+                <thead>
+                    <tr><th>Jogador</th><th>Kills</th><th>Mortes</th><th>Money</th></tr>
+                </thead>
+                <tbody id="players-table"></tbody>
+            </table>
+        </div>
+        
+        <button id="mock-btn" class="mock-btn">Enviar Dados Mock para Testar</button>
+    </div>
+
+    <script>
+        // Verificação de acesso restrito (URL manual)
+        const isRestrictedAccess = !window.location.pathname.includes('/testador');
+        if (isRestrictedAccess) {
+            document.body.innerHTML = '<div style="text-align:center;margin-top:100px;"><h1>Acesso Restrito</h1><p>Digite /testador manualmente na URL</p></div>';
+            throw new Error('Acesso restrito');
+        }
+
+        const CACHE_KEY = 'moonmc_tops_cache';
+        const CACHE_DURATION = 5 * 60 * 1000; // 5 minutos
+        const API_BASE = 'https://moonmc.vercel.app/api/tops';
+        const POLLING_INTERVAL = 30000; // 30 segundos
+
+        let pollingActive = true;
+        let lastUpdate = null;
+        let currentData = null;
+
+        function showStatus(type, message) {
+            const status = document.getElementById('status');
+            status.className = `status ${type}`;
+            status.textContent = message;
+        }
+
+        function parseTops(data) {
+            if (!data || data === '{}') return null;
+            try {
+                const parsed = JSON.parse(data);
+                const result = {};
+                if (parsed.kills) {
+                    result.kills = parsed.kills.split('|').map(item => {
+                        const [player, kills] = item.split(':');
+                        return { player, kills: parseInt(kills) };
+                    }).sort((a, b) => b.kills - a.kills);
+                }
+                if (parsed.mortes) {
+                    result.mortes = parsed.mortes.split('|').map(item => {
+                        const [player, mortes] = item.split(':');
+                        return { player, mortes: parseInt(mortes) };
+                    }).sort((a, b) => b.mortes - a.mortes);
+                }
+                if (parsed.money) {
+                    result.money = parsed.money.split('|').map(item => {
+                        const [player, money] = item.split(':');
+                        return { player, money: parseInt(money) };
+                    }).sort((a, b) => b.money - a.money);
+                }
+                return result;
+            } catch (e) {
+                console.error('Erro ao parsear dados:', e);
+                return null;
+            }
+        }
+
+        function renderTable(data, tableId, type) {
+            const tbody = document.getElementById(`${type}-table`);
+            if (!data || data.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="3">Sem dados</td></tr>';
+                return;
+            }
+            tbody.innerHTML = '';
+            data.forEach((item, index) => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `<td>${index + 1}</td><td>${item.player}</td><td>${item[type]}</td>`;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function updateDisplay(data) {
+            const now = Date.now();
+            const age = lastUpdate ? Math.floor((now - lastUpdate) / 1000) : null;
+            showStatus('updated', `Atualizado há ${age}s`);
+
+            const parsed = parseTops(data);
+            if (parsed) {
+                document.querySelectorAll('.section').forEach(section => section.classList.remove('hidden'));
+                if (parsed.kills) renderTable(parsed.kills, 'kills', 'kills');
+                if (parsed.mortes) renderTable(parsed.mortes, 'mortes', 'mortes');
+                if (parsed.money) renderTable(parsed.money, 'money', 'money');
+            } else {
+                document.querySelectorAll('.section').forEach(section => section.classList.add('hidden'));
+            }
+        }
+
+        async function fetchData() {
+            try {
+                const response = await fetch(`${API_BASE}/read`);
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                const json = await response.json();
+                return json;
+            } catch (error) {
+                console.error('Erro ao buscar dados:', error);
+                return null;
+            }
+        }
+
+        async function fetchAndUpdate() {
+            if (!pollingActive) return;
+
+            showStatus('loading', 'Atualizando...');
+            const freshData = await fetchData();
+
+            if (freshData) {
+                // Salva no cache
+                localStorage.setItem(CACHE_KEY, JSON.stringify({
+                    data: freshData,
+                    timestamp: Date.now()
+                }));
+                lastUpdate = Date.now();
+                currentData = freshData;
+                updateDisplay(freshData);
+            } else {
+                // Tenta carregar do cache
+                const cached = localStorage.getItem(CACHE_KEY);
+                if (cached) {
+                    try {
+                        const parsedCache = JSON.parse(cached);
+                        const age = Date.now() - parsedCache.timestamp;
+                        if (age < CACHE_DURATION) {
+                            showStatus('updated', `Dados em cache (offline)`);
+                            updateDisplay(parsedCache.data);
+                            return;
+                        }
+                    } catch (e) {
+                        console.error('Cache inválido:', e);
+                    }
+                }
+                showStatus('error', 'Sem conexão com o servidor');
+                document.querySelectorAll('.section').forEach(section => section.classList.add('hidden'));
+            }
+        }
+
+        function startPolling() {
+            fetchAndUpdate();
+            setInterval(fetchAndUpdate, POLLING_INTERVAL);
+        }
+
+        function renderPlayersList(data) {
+    const tbody = document.getElementById('players-table');
+    if (!data || Object.keys(data).length === 0) {
+        tbody.innerHTML = '<tr><td colspan="4">Sem jogadores cadastrados</td></tr>';
+        return;
+    }
+    tbody.innerHTML = '';
+    Object.entries(data).forEach(([player, stats]) => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `<td>${player}</td><td>${stats.kills || '-'}</td><td>${stats.mortes || '-'}</td><td>${stats.money || '-'}</td>`;
+        tbody.appendChild(tr);
+    });
+}
+
+function init() {
+            // Carrega cache inicial
+            const cached = localStorage.getItem(CACHE_KEY);
+            if (cached) {
+                try {
+                    const parsedCache = JSON.parse(cached);
+                    const age = Date.now() - parsedCache.timestamp;
+                    if (age < CACHE_DURATION) {
+                        showStatus('updated', 'Carregando do cache...');
+                        updateDisplay(parsedCache.data);
+                        startPolling();
+                        return;
+                    }
+                } catch (e) {
+                    console.error('Cache inválido:', e);
+                }
+            }
+            startPolling();
+        }
+
+        // Botão de dados mock para teste
+        document.getElementById('mock-btn').addEventListener('click', () => {
+            const mockData = {
+                kills: 'Player1:150|Player2:120|Player3:95',
+                mortes: 'Player1:45|Player2:38|Player3:52',
+                money: 'Player1:5000|Player2:3200|Player3:1500'
+            };
+            localStorage.setItem(CACHE_KEY, JSON.stringify({
+                data: mockData,
+                timestamp: Date.now()
+            }));
+            lastUpdate = Date.now();
+            currentData = mockData;
+            updateDisplay(mockData);
+            showStatus('updated', 'Dados mock enviados e exibidos');
+        });
+
+        init();
+    </script>
+</body>
+</html>
