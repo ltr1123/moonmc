@@ -260,19 +260,11 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
   padding: 10px 20px;
   border-radius: 8px;
   border: 1px solid transparent;
-  transition: all 0.25s ease;
+  transition: transform 0.2s ease;
 }
 
 .navbar-server-info:hover {
-  transform: scale(1.08);
-}
-
-.navbar-server-info:hover .navbar-players {
-  font-size: 1.5rem;
-}
-
-.navbar-server-info:hover .navbar-ip strong {
-  font-size: 0.95rem;
+  transform: scale(1.05);
 }
 
 .navbar-players {
@@ -281,7 +273,6 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
   font-weight: 700;
   color: var(--white);
   letter-spacing: 0.04em;
-  transition: font-size 0.3s ease;
 }
 
 .navbar-players span {
@@ -309,7 +300,6 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
   font-family: var(--font-heading);
   letter-spacing: 0.06em;
   font-weight: 400;
-  transition: font-size 0.3s ease;
 }
 
 .status-dot.offline { background: #ff6b6b; box-shadow: 0 0 10px rgba(255, 107, 107, 0.6); }
