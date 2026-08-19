@@ -725,10 +725,7 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
 }
 
 .floating-cube {
-  position: absolute;
-  color: var(--neon);
-  opacity: 0.5;
-  animation: float-cube 6s ease-in-out infinite;
+  display: none;
 }
 
 .cube-one { top: 8%; left: 10%; font-size: 1.9rem; }
@@ -1150,10 +1147,20 @@ section { position: relative; z-index: 1; }
   color: var(--neon);
   margin-bottom: 12px;
   letter-spacing: 0.02em;
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 4px;
 }
 
-.plan-price span { font-size: 1.3rem; vertical-align: top; margin-right: 2px; }
-.plan-price > span:last-child { font-size: 1.6rem; vertical-align: baseline; }
+.plan-price .currency {
+  font-size: 1.4rem;
+  font-weight: 600;
+}
+
+.plan-price .amount {
+  font-size: 3rem;
+}
 
 .plan-featured .plan-price { color: var(--neon-2); }
 
