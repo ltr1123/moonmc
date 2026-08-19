@@ -194,8 +194,8 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
 .navbar-brand { flex-shrink: 0; }
 
 .navbar-brand img {
-  width: 44px;
-  height: 44px;
+  width: 48px;
+  height: 48px;
   object-fit: contain;
 }
 
@@ -203,11 +203,11 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
 
 .navbar-menu a {
   font-family: var(--font-heading);
-  font-size: 0.8rem;
+  font-size: 0.85rem;
   font-weight: 700;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  padding: 8px 16px;
+  padding: 8px 18px;
   color: var(--gray);
   position: relative;
   transition: color 0.2s;
@@ -246,21 +246,21 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
 
 .navbar-players {
   font-family: var(--font-heading);
-  font-size: 0.95rem;
+  font-size: 1.1rem;
   font-weight: 700;
   color: var(--white);
   letter-spacing: 0.04em;
 }
 
 .navbar-players span {
-  font-size: 0.65rem;
+  font-size: 0.72rem;
   color: var(--gray-muted);
   letter-spacing: 0.1em;
   font-weight: 600;
 }
 
 .navbar-ip {
-  font-size: 0.65rem;
+  font-size: 0.72rem;
   color: var(--gray-muted);
   letter-spacing: 0.08em;
   font-weight: 500;
@@ -271,7 +271,7 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
 }
 
 .navbar-ip i {
-  font-size: 0.5rem;
+  font-size: 0.55rem;
   color: var(--neon);
   margin: 0 2px;
 }
