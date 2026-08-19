@@ -205,13 +205,13 @@
     if (modalDivider) modalDivider.style.display = 'flex';
 
     if (modalDeviceInfo) {
-      modalDeviceInfo.textContent = 'Detectado: ' + deviceName + '.';
+      modalDeviceInfo.textContent = '';
     }
 
     if (device === 'windows') {
       if (versionSelect) versionSelect.style.display = 'block';
       if (modalDeviceInfo) {
-        modalDeviceInfo.textContent = 'Detectado: Windows. Qual versão você joga?';
+        modalDeviceInfo.textContent = 'Qual versão você joga?';
       }
     } else if (device === 'ios' || device === 'android') {
       if (actionsMobile) actionsMobile.style.display = 'flex';
@@ -244,7 +244,7 @@
         if (actionsJava) actionsJava.style.display = 'flex';
         if (stepsJava) stepsJava.style.display = 'block';
         if (modalDeviceInfo) {
-          modalDeviceInfo.textContent = 'Modo: Java Edition (PC)';
+          modalDeviceInfo.textContent = '';
         }
       };
     }
@@ -255,7 +255,7 @@
         if (actionsBedrock) actionsBedrock.style.display = 'flex';
         if (stepsBedrock) stepsBedrock.style.display = 'block';
         if (modalDeviceInfo) {
-          modalDeviceInfo.textContent = 'Modo: Bedrock Edition (Cross-platform)';
+          modalDeviceInfo.textContent = '';
         }
       };
     }
