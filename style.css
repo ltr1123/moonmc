@@ -1055,7 +1055,7 @@ section { position: relative; z-index: 1; }
   transition: var(--transition);
   display: flex;
   flex-direction: column;
-  overflow: visible;
+  overflow: hidden;
 }
 
 .plan-art {
@@ -1066,6 +1066,8 @@ section { position: relative; z-index: 1; }
   height: 230px;
   overflow: hidden;
   border-radius: var(--radius) var(--radius) 0 0;
+  margin: -1px -1px 0 -1px;
+  width: calc(100% + 2px);
 }
 
 .plan-art img {
@@ -1079,11 +1081,11 @@ section { position: relative; z-index: 1; }
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(to bottom, rgba(20, 26, 48, 0.05) 30%, var(--dark-card) 92%);
+  background: linear-gradient(to bottom, transparent 40%, var(--dark-card) 100%);
 }
 
 .plan-featured .plan-art::after {
-  background: linear-gradient(to bottom, rgba(20, 26, 48, 0.05) 30%, rgba(30, 18, 56, 0.97) 92%);
+  background: linear-gradient(to bottom, transparent 40%, #1e1238 100%);
 }
 
 .plan-card:hover {
