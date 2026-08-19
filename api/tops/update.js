@@ -1,29 +1,28 @@
-// RECETOR DOS TOPS - recebe os dados do plugin e guarda na KV da Vercel
-// URL final: https://moonmc.vercel.app/api/tops/update
+// api/tops/update.js - Função serverless para Vercel
 import { kv } from '@vercel/kv';
 
 export const config = { runtime: 'nodejs' };
 
 export default async function handler(req, res) {
-  if (req.method !== 'POST') {
-    return res.status(405).send('metodo errado');
-  }
-
-  // ler o corpo do POST (formato: token=...&dados=...)
-  let corpo = '';
-  for await (const chunk of req) corpo += chunk;
-  const params = new URLSearchParams(corpo);
-  const token = params.get('token');
-  const dados = params.get('dados');
-
-  if (token !== process.env.TOPS_SEGREDO) {
-    return res.status(403).send('token invalido');
-  }
-  if (!dados) {
-    return res.status(400).send('sem dados');
-  }
-
-  // guarda por 7 dias (se o servidor parar de enviar, os tops somem)
-  await kv.set('tops', dados, { ex: 7 * 86400 });
-  return res.status(200).send('ok');
+    if (req.method !== 'POST') {
+        return res.status(405).json({ error: 'Método não permitido' });
+    }
+    
+    const { token, dados } = req.body;
+    const expectedToken = process.env.TOPS_SEGREDO || 'moonmc236';
+    
+    if (token !== expectedToken) {
+        return res.status(403).json({ error: 'Token inválido' });
+    }
+    if (!dados) {
+        return res.status(400).json({ error: 'Dados ausentes' });
+    }
+    
+    try {
+        await kv.set('tops', dados, { ex: 7 * 86400 });
+        res.status(200).json({ success: true, message: 'Atualizado com sucesso' });
+    } catch (error) {
+        console.error('Erro KV:', error);
+        res.status(500).json({ error: 'Falha ao armazenar dados' });
+    }
 }
