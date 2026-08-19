@@ -40,7 +40,7 @@
 
   /* ── Active nav on scroll ── */
   var sections = document.querySelectorAll('section[id]');
-  var navLinks = document.querySelectorAll('.navbar-menu a');
+  var navLinks = document.querySelectorAll('.navbar-menu a, .mobile-menu a[data-section]');
   function onScrollSpy() {
     var pos = window.scrollY + 120;
     var current = sections[0] ? sections[0].id : 'inicio';
@@ -52,12 +52,26 @@
     });
     if (last) current = last.id;
     navLinks.forEach(function (link) {
-      var isActive = link.getAttribute('href') === '#' + current;
+      var isActive = link.getAttribute('data-section') === current;
       link.classList.toggle('active', isActive);
     });
   }
   window.addEventListener('scroll', onScrollSpy, { passive: true });
   onScrollSpy();
+
+  /* ── Nav click scroll without hash ── */
+  document.querySelectorAll('[data-section]').forEach(function (link) {
+    link.addEventListener('click', function (e) {
+      e.preventDefault();
+      var sectionId = link.getAttribute('data-section');
+      var target = document.getElementById(sectionId);
+      if (target) {
+        var navHeight = document.querySelector('.navbar').offsetHeight;
+        var top = target.offsetTop - navHeight;
+        window.scrollTo({ top: top, behavior: 'smooth' });
+      }
+    });
+  });
 
   /* ── Reveal on scroll ── */
   var revealEls = document.querySelectorAll('[data-reveal]');
