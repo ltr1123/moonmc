@@ -300,6 +300,19 @@
     });
   });
 
+  var navbarServerInfo = document.getElementById('navbar-server-info');
+  if (navbarServerInfo) {
+    navbarServerInfo.addEventListener('click', function () {
+      openModal();
+    });
+    navbarServerInfo.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        openModal();
+      }
+    });
+  }
+
   document.querySelectorAll('.ip-copy[data-ip]').forEach(function (btn) {
     btn.addEventListener('click', function (e) {
       e.stopPropagation();

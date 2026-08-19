@@ -242,6 +242,17 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
   flex-direction: column;
   align-items: flex-end;
   gap: 2px;
+  cursor: pointer;
+  padding: 8px 16px;
+  border-radius: 8px;
+  border: 1px solid transparent;
+  transition: all 0.25s ease;
+}
+
+.navbar-server-info:hover {
+  background: rgba(194, 139, 255, 0.08);
+  border-color: var(--border);
+  transform: scale(1.05);
 }
 
 .navbar-players {
