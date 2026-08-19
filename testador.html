@@ -70,22 +70,6 @@
             font-weight: 600;
             color: var(--white);
         }
-        .leaderboard-stats {
-            display: flex;
-            gap: 24px;
-            margin-bottom: 8px;
-        }
-        .leaderboard-stat {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            color: var(--gray-muted);
-            font-size: 0.85rem;
-        }
-        .leaderboard-stat i {
-            font-size: 0.8rem;
-            color: var(--neon);
-        }
         .leaderboard-update-btn {
             display: block;
             margin: 20px auto 0;
@@ -152,7 +136,7 @@
     <div class="leaderboard">
         <div class="leaderboard-header">
             <h1 class="leaderboard-title">🏆 Top Jogadores</h1>
-            <p class="leaderboard-subtitle">Atualizado em tempo real</p>
+            <p class="leaderboard-subtitle" id="status">Atualizado em tempo real</p>
         </div>
         
         <div id="leaderboard-content">
@@ -165,10 +149,16 @@
         <button class="leaderboard-update-btn" onclick="updateLeaderboard()">Atualizar Dados</button>
     </div>
     
-    <script src="script.js"></script>
     <script>
         const API_BASE = 'https://www.moonmc.com.br';
-        const TOKEN = 'moonmc236';
+        
+        const BOARD_MAP = {
+            'statistic_player_kills': 'kills',
+            'statistic_deaths': 'mortes',
+            'vault_eco_balance': 'money'
+        };
+        
+        let lastUpdate = null;
         
         async function fetchLeaderboard() {
             try {
@@ -183,36 +173,20 @@
         }
         
         async function updateLeaderboard() {
-            const btn = event.target;
+            const btn = document.querySelector('.leaderboard-update-btn');
             btn.textContent = 'Atualizando...';
             btn.disabled = true;
-            
             try {
-                const currentData = await fetchLeaderboard();
-                if (!currentData) throw new Error('Sem dados atuais');
-                
-                const dados = JSON.stringify(currentData);
-                const formData = new URLSearchParams();
-                formData.append('token', TOKEN);
-                formData.append('dados', dados);
-                
-                const updateResponse = await fetch(`${API_BASE}/api/tops/update`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                    body: formData.toString()
-                });
-                
-                if (!updateResponse.ok) throw new Error('Falha ao atualizar');
-                
-                const result = await fetchLeaderboard();
-                if (result) {
-                    renderLeaderboard(result);
-                    showToast('Dados atualizados com sucesso!');
+                const data = await fetchLeaderboard();
+                if (data && data.boards) {
+                    renderLeaderboard(data);
+                    lastUpdate = Date.now();
+                    showToast('Dados atualizados!');
+                } else {
+                    showToast('Sem dados disponíveis');
                 }
-                
             } catch (error) {
-                console.error('Erro:', error);
-                showToast('Erro ao atualizar dados');
+                showToast('Erro ao atualizar');
             } finally {
                 btn.textContent = 'Atualizar Dados';
                 btn.disabled = false;
@@ -223,81 +197,79 @@
             const container = document.getElementById('leaderboard-content');
             container.innerHTML = '';
             
+            if (!data || !data.boards) {
+                container.innerHTML = '<div class="leaderboard-error">Sem dados disponíveis</div>';
+                return;
+            }
+            
+            const playerData = {};
+            data.boards.forEach(board => {
+                const col = BOARD_MAP[board.board];
+                if (!col || !board.entries) return;
+                board.entries.forEach(e => {
+                    if (!playerData[e.name]) playerData[e.name] = {};
+                    playerData[e.name][col] = e.value;
+                });
+            });
+            
+            const sorted = Object.entries(playerData)
+                .map(([name, s]) => ({ name, ...s }))
+                .sort((a, b) => (parseInt(b.kills) || 0) - (parseInt(a.kills) || 0));
+            
             const table = document.createElement('table');
             table.className = 'leaderboard-table';
             
             const thead = document.createElement('thead');
-            const trHead = document.createElement('tr');
-            ['Posição', 'Jogador', 'Kills', 'Mortes', 'Dinheiro'].forEach(text => {
+            const trH = document.createElement('tr');
+            ['Posição', 'Jogador', 'Kills', 'Mortes', 'Dinheiro'].forEach(t => {
                 const th = document.createElement('th');
-                th.textContent = text;
-                trHead.appendChild(th);
+                th.textContent = t;
+                trH.appendChild(th);
             });
-            thead.appendChild(trHead);
+            thead.appendChild(trH);
             table.appendChild(thead);
             
             const tbody = document.createElement('tbody');
-            
-            if (data.kills) {
-                const killsList = data.kills.split('|').map(item => {
-                    const [name, value] = item.split(':');
-                    return { name, kills: parseInt(value) };
-                }).sort((a, b) => b.kills - a.kills);
-                
-                const mortesList = data.mortes.split('|').map(item => {
-                    const [name, value] = item.split(':');
-                    return { name, mortes: parseInt(value) };
-                });
-                
-                const moneyList = data.money.split('|').map(item => {
-                    const [name, value] = item.split(':');
-                    return { name, money: parseInt(value) };
-                });
-                
-                killsList.forEach((item, index) => {
-                    const tr = document.createElement('tr');
-                    const rankTd = document.createElement('td');
-                    rankTd.className = 'leaderboard-rank';
-                    rankTd.textContent = (index + 1).toString();
-                    tr.appendChild(rankTd);
-                    
-                    const nameTd = document.createElement('td');
-                    nameTd.className = 'leaderboard-name';
-                    nameTd.textContent = item.name;
-                    tr.appendChild(nameTd);
-                    
-                    const killsTd = document.createElement('td');
-                    killsTd.textContent = item.kills.toLocaleString();
-                    tr.appendChild(killsTd);
-                    
-                    const mortesTd = document.createElement('td');
-                    const mortesItem = mortesList.find(m => m.name === item.name);
-                    mortesTd.textContent = mortesItem ? mortesItem.mortes.toLocaleString() : '0';
-                    tr.appendChild(mortesTd);
-                    
-                    const moneyTd = document.createElement('td');
-                    const moneyItem = moneyList.find(m => m.name === item.name);
-                    moneyTd.textContent = moneyItem ? moneyItem.money.toLocaleString() : '0';
-                    tr.appendChild(moneyTd);
-                    
-                    tbody.appendChild(tr);
-                });
-            }
-            
+            sorted.forEach((item, i) => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `<td class="leaderboard-rank">${i + 1}</td><td class="leaderboard-name">${item.name}</td><td>${(parseInt(item.kills) || 0).toLocaleString()}</td><td>${(parseInt(item.mortes) || 0).toLocaleString()}</td><td>${(parseInt(item.money) || 0).toLocaleString()}</td>`;
+                tbody.appendChild(tr);
+            });
             table.appendChild(tbody);
             container.appendChild(table);
         }
         
-        // Carregar dados ao iniciar
-        fetchLeaderboard().then(data => {
-            if (data) {
-                renderLeaderboard(data);
-            } else {
-                container.innerHTML = '<div class="leaderboard-error">Falha ao carregar leaderboard</div>';
+        function showToast(msg) {
+            const toast = document.createElement('div');
+            toast.textContent = msg;
+            toast.style.cssText = 'position:fixed;bottom:30px;left:50%;transform:translateX(-50%);background:var(--neon);color:#170b2b;padding:12px 24px;border-radius:8px;font-weight:700;z-index:9999;transition:opacity 0.5s;';
+            document.body.appendChild(toast);
+            setTimeout(() => { toast.style.opacity = '0'; setTimeout(() => toast.remove(), 500); }, 2000);
+        }
+        
+        function updateStatus() {
+            const el = document.getElementById('status');
+            if (!el) return;
+            if (lastUpdate) {
+                const s = Math.floor((Date.now() - lastUpdate) / 1000);
+                el.textContent = `Atualizado há ${s}s · Atualiza a cada 30s`;
             }
-            
-            // Atualizar a cada 30 segundos
-            setInterval(fetchLeaderboard, 30000);
+        }
+        
+        fetchLeaderboard().then(data => {
+            if (data && data.boards) {
+                renderLeaderboard(data);
+                lastUpdate = Date.now();
+            } else {
+                document.getElementById('leaderboard-content').innerHTML = '<div class="leaderboard-error">Sem dados disponíveis</div>';
+            }
+            setInterval(fetchLeaderboard, 30000).then(d => {
+                if (d && d.boards) {
+                    renderLeaderboard(d);
+                    lastUpdate = Date.now();
+                }
+            });
+            setInterval(updateStatus, 1000);
         });
     </script>
 </body>
