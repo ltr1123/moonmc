@@ -197,7 +197,7 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
 .navbar-left {
   display: flex;
   align-items: center;
-  gap: 32px;
+  gap: 40px;
 }
 
 .navbar-brand img {
@@ -214,7 +214,7 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
   transform: scale(1.15);
 }
 
-.navbar-menu { display: flex; align-items: center; gap: 16px; }
+.navbar-menu { display: flex; align-items: center; gap: 24px; }
 
 .navbar-menu a {
   font-family: var(--font-heading);
@@ -249,6 +249,7 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
 .navbar-actions {
   margin-left: auto;
   flex-shrink: 0;
+  padding-right: 8px;
 }
 
 .navbar-server-info {
