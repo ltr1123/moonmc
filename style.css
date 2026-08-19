@@ -1047,7 +1047,7 @@ section { position: relative; z-index: 1; }
 
 .plan-card {
   background: var(--dark-card);
-  border: 1px solid var(--border);
+  border: none;
   border-radius: var(--radius);
   padding: 40px 34px;
   text-align: center;
