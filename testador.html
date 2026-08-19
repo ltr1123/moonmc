@@ -6,234 +6,292 @@
     <title>Leaderboard | MoonMC</title>
     <link rel="stylesheet" href="style.css">
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; }
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap');
 
-        body {
-            background: #0d0a1a;
-            min-height: 100vh;
-        }
+    :root {
+        --roxo: #a855f7;
+        --roxo-claro: #d8b4fe;
+        --roxo-escuro: #581c87;
+        --fundo: #0a0414;
+        --fundo2: #12071f;
+        --cartao: #1a0d2e;
+        --cartao-hover: #221240;
+        --linha: #2d1b4d;
+        --texto: #e9e2f5;
+        --cinza: #9a8fb5;
+        --ouro: #ffd700;
+        --prata: #c0c0c0;
+        --bronze: #cd7f32;
+        --glow: rgba(168,85,247,0.3);
+    }
 
-        .lb-page {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 100px 24px 60px;
-        }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
 
-        /* Header */
-        .lb-header {
-            text-align: center;
-            margin-bottom: 32px;
-            animation: fadeDown 0.6s ease-out;
-        }
-        .lb-logo {
-            font-size: 3.5rem;
-            font-weight: 900;
-            letter-spacing: 0.06em;
-            background: linear-gradient(135deg, #b48bfa 0%, #818cf8 50%, #c084fc 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            text-transform: uppercase;
-        }
-        .lb-subtitle {
-            color: #8b8ba3;
-            font-size: 0.75rem;
-            letter-spacing: 0.25em;
-            text-transform: uppercase;
-            margin-top: 6px;
-        }
-        .lb-divider {
-            width: 60px;
-            height: 3px;
-            background: linear-gradient(90deg, #b48bfa, #6ee7b7);
-            border-radius: 2px;
-            margin: 14px auto 0;
-        }
+    body {
+        font-family: 'Inter', system-ui, sans-serif;
+        color: var(--texto);
+        background: var(--fundo);
+        min-height: 100vh;
+        overflow-x: hidden;
+    }
 
-        /* Seletor por top */
-        .lb-tabs {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            margin-bottom: 36px;
-            animation: fadeDown 0.6s ease-out 0.15s both;
-        }
-        .lb-tab {
-            padding: 9px 26px;
-            border: 1px solid rgba(255,255,255,0.08);
-            border-radius: 6px;
-            background: rgba(255,255,255,0.03);
-            color: #6b6b8a;
-            font-weight: 600;
-            font-size: 0.78rem;
-            letter-spacing: 0.05em;
-            text-transform: uppercase;
-            cursor: pointer;
-            transition: all 0.25s;
-            font-family: inherit;
-        }
-        .lb-tab:hover {
-            color: #bbb;
-            border-color: rgba(255,255,255,0.15);
-            background: rgba(255,255,255,0.05);
-        }
-        .lb-tab.active {
-            background: linear-gradient(135deg, #b48bfa, #818cf8);
-            color: #fff;
-            border-color: transparent;
-            box-shadow: 0 2px 16px rgba(180,139,250,0.35);
-        }
+    body::before {
+        content: '';
+        position: fixed;
+        top: -50%; left: -50%;
+        width: 200%; height: 200%;
+        background:
+            radial-gradient(ellipse at 20% 50%, rgba(88,28,135,0.15) 0%, transparent 50%),
+            radial-gradient(ellipse at 80% 20%, rgba(168,85,247,0.1) 0%, transparent 50%),
+            radial-gradient(ellipse at 50% 80%, rgba(139,92,246,0.08) 0%, transparent 50%);
+        animation: fundo 20s ease-in-out infinite alternate;
+        z-index: -1;
+    }
+    @keyframes fundo {
+        0% { transform: translate(0,0) rotate(0deg); }
+        100% { transform: translate(-5%,-5%) rotate(3deg); }
+    }
 
-        /* Grid */
-        .lb-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 18px;
-            margin-bottom: 36px;
-        }
+    .particle {
+        position: fixed;
+        width: 3px; height: 3px;
+        background: var(--roxo);
+        border-radius: 50%;
+        opacity: 0.3;
+        animation: float linear infinite;
+        pointer-events: none;
+    }
+    @keyframes float {
+        0% { transform: translateY(100vh) scale(0); opacity: 0; }
+        10% { opacity: 0.3; }
+        90% { opacity: 0.3; }
+        100% { transform: translateY(-10vh) scale(1); opacity: 0; }
+    }
 
-        /* Card */
-        .lb-card {
-            background: linear-gradient(180deg, rgba(120,60,200,0.10) 0%, rgba(20,12,40,0.70) 100%);
-            border: 1px solid rgba(160,100,255,0.15);
-            border-radius: 14px;
-            overflow: hidden;
-            opacity: 0;
-            transform: translateY(16px);
-            animation: cardIn 0.45s ease-out forwards;
-        }
-        .lb-card:nth-child(1) { animation-delay: 0.1s; }
-        .lb-card:nth-child(2) { animation-delay: 0.2s; }
-        .lb-card:nth-child(3) { animation-delay: 0.3s; }
-        .lb-card:nth-child(4) { animation-delay: 0.4s; }
+    /* Navbar placeholder */
+    .navbar-spacer { height: 60px; }
 
-        @keyframes cardIn {
-            to { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes fadeDown {
-            from { opacity: 0; transform: translateY(-12px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+    /* Header */
+    header {
+        text-align: center;
+        padding: 40px 20px 30px;
+        position: relative;
+        animation: fadeDown 0.6s ease-out;
+    }
+    header::after {
+        content: '';
+        position: absolute;
+        bottom: 0; left: 50%;
+        transform: translateX(-50%);
+        width: 200px; height: 2px;
+        background: linear-gradient(90deg, transparent, var(--roxo), transparent);
+    }
+    .logo {
+        font-size: clamp(32px, 6vw, 56px);
+        font-weight: 900;
+        letter-spacing: 8px;
+        background: linear-gradient(135deg, var(--roxo-claro), var(--roxo), #7c3aed, var(--roxo-claro));
+        background-size: 300% 300%;
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+        animation: shimmer 4s ease infinite;
+        text-shadow: 0 0 40px var(--glow);
+    }
+    @keyframes shimmer {
+        0%, 100% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+    }
+    .sub {
+        color: var(--cinza);
+        font-size: 14px;
+        letter-spacing: 5px;
+        margin-top: 12px;
+        text-transform: uppercase;
+    }
+    @keyframes fadeDown {
+        from { opacity: 0; transform: translateY(-16px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
 
-        .lb-card-head {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 13px 16px;
-            background: rgba(255,255,255,0.02);
-            border-bottom: 1px solid rgba(160,100,255,0.10);
-        }
-        .lb-card-name {
-            font-size: 0.78rem;
-            font-weight: 700;
-            color: #c4a5f5;
-            letter-spacing: 0.04em;
-            text-transform: uppercase;
-        }
-        .lb-card-badge {
-            font-size: 0.6rem;
-            font-weight: 600;
-            color: #6b6b8a;
-            background: rgba(255,255,255,0.05);
-            padding: 3px 10px;
-            border-radius: 4px;
-            text-transform: uppercase;
-            letter-spacing: 0.03em;
-        }
+    /* Seletor */
+    .period-tabs {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        padding: 20px;
+        animation: fadeDown 0.6s ease-out 0.15s both;
+    }
+    .period-tab {
+        padding: 9px 26px;
+        border: 1px solid var(--linha);
+        border-radius: 8px;
+        background: rgba(255,255,255,0.03);
+        color: var(--cinza);
+        font-weight: 600;
+        font-size: 13px;
+        letter-spacing: 0.5px;
+        cursor: pointer;
+        transition: all 0.25s;
+        font-family: inherit;
+    }
+    .period-tab:hover {
+        color: #fff;
+        border-color: rgba(168,85,247,0.4);
+        background: rgba(168,85,247,0.08);
+    }
+    .period-tab.active {
+        background: linear-gradient(135deg, var(--roxo), #7c3aed);
+        color: #fff;
+        border-color: transparent;
+        box-shadow: 0 2px 16px var(--glow);
+    }
 
-        .lb-list {
-            list-style: none;
-            padding: 2px 0;
-        }
-        .lb-row {
-            display: flex;
-            align-items: center;
-            padding: 7px 16px;
-            gap: 10px;
-            transition: background 0.15s;
-        }
-        .lb-row:hover {
-            background: rgba(255,255,255,0.025);
-        }
+    /* Boards */
+    #boards {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+        gap: 24px;
+        padding: 20px 24px 60px;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
 
-        .lb-rank {
-            width: 24px;
-            text-align: center;
-            flex-shrink: 0;
-        }
-        .lb-rank-num {
-            font-weight: 700;
-            font-size: 0.85rem;
-            color: #555570;
-        }
-        .lb-rank-num.gold { color: #ffd700; }
-        .lb-rank-num.silver { color: #b8b8c8; }
-        .lb-rank-num.bronze { color: #cd7f32; }
+    .cartao {
+        background: var(--cartao);
+        border: 1px solid var(--linha);
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.3), 0 0 40px rgba(88,28,135,0.1);
+        transition: transform 0.3s, box-shadow 0.3s;
+        opacity: 0;
+        transform: translateY(30px);
+        animation: fadeUp 0.5s ease-out forwards;
+    }
+    .cartao:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 30px rgba(0,0,0,0.4), 0 0 60px rgba(168,85,247,0.15);
+    }
+    .cartao:nth-child(1) { animation-delay: 0.1s; }
+    .cartao:nth-child(2) { animation-delay: 0.2s; }
+    .cartao:nth-child(3) { animation-delay: 0.3s; }
+    .cartao:nth-child(4) { animation-delay: 0.4s; }
+    .cartao:nth-child(5) { animation-delay: 0.5s; }
+    .cartao:nth-child(6) { animation-delay: 0.6s; }
 
-        .lb-head {
-            width: 28px;
-            height: 28px;
-            border-radius: 4px;
-            image-rendering: pixelated;
-            flex-shrink: 0;
-            border: 1px solid rgba(255,255,255,0.08);
-        }
+    @keyframes fadeUp {
+        from { opacity: 0; transform: translateY(30px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
 
-        .lb-name {
-            flex: 1;
-            font-weight: 600;
-            font-size: 0.85rem;
-            color: #e0e0f0;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
+    .cartao-header {
+        padding: 16px 20px;
+        font-size: 13px;
+        font-weight: 700;
+        letter-spacing: 1.5px;
+        text-transform: uppercase;
+        color: var(--roxo-claro);
+        background: linear-gradient(135deg, rgba(88,28,135,0.4), rgba(88,28,135,0.1));
+        border-bottom: 1px solid var(--linha);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+    .cartao-header .tipo {
+        font-size: 10px;
+        font-weight: 400;
+        color: var(--cinza);
+        background: rgba(255,255,255,0.05);
+        padding: 3px 10px;
+        border-radius: 20px;
+        letter-spacing: 0;
+        text-transform: none;
+    }
 
-        .lb-val {
-            font-weight: 700;
-            font-size: 0.85rem;
-            color: #fff;
-            flex-shrink: 0;
-            font-variant-numeric: tabular-nums;
-        }
+    table { width: 100%; border-collapse: collapse; }
+    tr { transition: background 0.2s; }
+    tr:hover { background: rgba(168,85,247,0.05); }
+    td {
+        padding: 12px 16px;
+        font-size: 14px;
+        border-top: 1px solid rgba(45,27,77,0.4);
+    }
+    tr:first-child td { border-top: none; }
 
-        .lb-empty {
-            text-align: center;
-            padding: 16px;
-            color: #555570;
-            font-size: 0.85rem;
-        }
+    .pos {
+        width: 40px;
+        font-weight: 900;
+        font-size: 16px;
+        text-align: center;
+    }
+    .pos-1 { color: var(--ouro); text-shadow: 0 0 10px rgba(255,215,0,0.4); }
+    .pos-2 { color: var(--prata); text-shadow: 0 0 10px rgba(192,192,192,0.3); }
+    .pos-3 { color: var(--bronze); text-shadow: 0 0 10px rgba(205,127,50,0.3); }
+    .pos-medalha { font-size: 20px; }
 
-        /* Botao */
-        .lb-update-btn {
-            display: block;
-            margin: 0 auto;
-            padding: 10px 28px;
-            background: linear-gradient(135deg, #b48bfa, #6ee7b7);
-            color: #170b2b;
-            border: none;
-            border-radius: 8px;
-            font-weight: 700;
-            font-size: 0.78rem;
-            letter-spacing: 0.06em;
-            text-transform: uppercase;
-            cursor: pointer;
-            transition: all 0.25s;
-            font-family: inherit;
-        }
-        .lb-update-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 20px rgba(180,139,250,0.4);
-        }
+    .jogador {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+    .head {
+        width: 32px; height: 32px;
+        border-radius: 8px;
+        image-rendering: pixelated;
+        background: rgba(255,255,255,0.05);
+        border: 2px solid rgba(168,85,247,0.2);
+        transition: border-color 0.2s, transform 0.2s;
+    }
+    tr:hover .head {
+        border-color: var(--roxo);
+        transform: scale(1.1);
+    }
+    .nome {
+        font-weight: 700;
+        font-size: 14px;
+        color: var(--texto);
+    }
 
-        @media (max-width: 900px) {
-            .lb-grid { grid-template-columns: repeat(2, 1fr); }
-        }
-        @media (max-width: 600px) {
-            .lb-grid { grid-template-columns: 1fr; }
-            .lb-logo { font-size: 2.2rem; }
-            .lb-page { padding-top: 80px; }
-        }
+    .valor {
+        text-align: right;
+        font-weight: 800;
+        font-size: 15px;
+        color: var(--roxo-claro);
+        white-space: nowrap;
+        font-variant-numeric: tabular-nums;
+    }
+
+    #estado {
+        text-align: center;
+        color: var(--cinza);
+        font-size: 13px;
+        padding: 10px 20px 50px;
+        letter-spacing: 0.5px;
+    }
+
+    .vazio {
+        text-align: center;
+        color: var(--cinza);
+        padding: 60px 20px;
+        font-size: 16px;
+    }
+    .spinner {
+        display: inline-block;
+        width: 30px; height: 30px;
+        border: 3px solid var(--linha);
+        border-top-color: var(--roxo);
+        border-radius: 50%;
+        animation: spin 0.8s linear infinite;
+        margin-bottom: 16px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    @media (max-width: 600px) {
+        #boards { grid-template-columns: 1fr; padding: 20px 12px 40px; gap: 16px; }
+        .cartao-header { font-size: 12px; padding: 12px 14px; }
+        td { padding: 10px 12px; font-size: 13px; }
+        .head { width: 28px; height: 28px; }
+    }
     </style>
 </head>
 <body>
@@ -252,144 +310,108 @@
         </div>
     </nav>
 
-    <div class="lb-page">
-        <div class="lb-header">
-            <div class="lb-logo">MoonMC</div>
-            <div class="lb-subtitle">Tops do Servidor</div>
-            <div class="lb-divider"></div>
-        </div>
+    <div class="navbar-spacer"></div>
 
-        <div class="lb-tabs">
-            <button class="lb-tab active" onclick="selectPeriod(this)">All time</button>
-        </div>
+    <header>
+        <div class="logo">MOONMC</div>
+        <div class="sub">Tops do Servidor</div>
+    </header>
 
-        <div id="lb-grid" class="lb-grid"></div>
-
-        <button class="lb-update-btn" onclick="refreshData()">Atualizar Dados</button>
+    <div class="period-tabs">
+        <button class="period-tab active" onclick="selectTab(this)">All time</button>
     </div>
 
+    <div id="boards">
+        <div class="vazio">
+            <div class="spinner"></div>
+            <div>A carregar tops...</div>
+        </div>
+    </div>
+
+    <div id="estado"></div>
+
     <script>
-        var API = 'https://www.moonmc.com.br/api/tops/read';
-        var BOARDS = [
-            { key: 'statistic_player_kills', label: 'Player Kills', icon: '\u2694\uFE0F' },
-            { key: 'statistic_deaths', label: 'Deaths', icon: '\uD83D\uDC80' },
-            { key: 'vault_eco_balance', label: 'Dinheiro', icon: '\uD83D\uDCB0' },
-            { key: 'ypesca_fished', label: 'Peixes', icon: '\uD83C\uDFA3' }
-        ];
+    for (var i = 0; i < 15; i++) {
+        var p = document.createElement('div');
+        p.className = 'particle';
+        p.style.left = Math.random() * 100 + '%';
+        p.style.animationDuration = (8 + Math.random() * 12) + 's';
+        p.style.animationDelay = Math.random() * 10 + 's';
+        p.style.width = p.style.height = (2 + Math.random() * 3) + 'px';
+        document.body.appendChild(p);
+    }
+    </script>
 
-        function selectPeriod(el) {
-            document.querySelectorAll('.lb-tab').forEach(function(b) { b.classList.remove('active'); });
-            el.classList.add('active');
-        }
+    <script>
+    var MEDALHAS = { 1: '\uD83E\uDD47', 2: '\uD83E\uDD48', 3: '\uD83E\uDD49' };
+    var API_URL = 'https://www.moonmc.com.br/api/tops/read';
 
-        function parseVal(v) {
-            if (!v || v === '---') return 0;
-            return parseFloat(String(v).replace(/,/g, '')) || 0;
-        }
-        function fmtMoney(v) {
-            var n = parseVal(v);
-            if (n >= 1e6) return (n/1e6).toFixed(1).replace(/\.0$/,'') + 'M';
-            if (n >= 1e3) return (n/1e3).toFixed(1).replace(/\.0$/,'') + 'K';
-            return Math.round(n).toLocaleString('pt-BR');
-        }
-        function fmtNum(v) { return Math.round(parseVal(v)).toLocaleString('pt-BR'); }
-        function fmtTime(v) { return (!v || v === '---') ? '0' : String(v); }
-        function headUrl(n) { return 'https://mc-heads.net/avatar/' + encodeURIComponent(n) + '/36'; }
+    function selectTab(el) {
+        document.querySelectorAll('.period-tab').forEach(function(b) { b.classList.remove('active'); });
+        el.classList.add('active');
+    }
 
-        function buildCard(boardData, info) {
-            var card = document.createElement('div');
-            card.className = 'lb-card';
+    function esc(s) {
+        return String(s).replace(/[&<>"']/g, function(c) {
+            return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];
+        });
+    }
 
-            var hd = document.createElement('div');
-            hd.className = 'lb-card-head';
-            hd.innerHTML = '<span class="lb-card-name">' + info.icon + ' ' + info.label + '</span><span class="lb-card-badge">alltime</span>';
-            card.appendChild(hd);
+    function formatValue(val) {
+        var s = String(val);
+        var n = parseFloat(s.replace(/,/g, ''));
+        if (isNaN(n)) return esc(val);
+        if (n >= 1000000) return esc((n / 1000000).toFixed(1).replace(/\.0$/, '') + 'M');
+        if (n >= 1000) return esc((n / 1000).toFixed(1).replace(/\.0$/, '') + 'K');
+        if (s.indexOf('.') !== -1 || s.indexOf(',') !== -1) return esc(s);
+        return esc(Math.round(n).toLocaleString('pt-BR'));
+    }
 
-            var ul = document.createElement('ul');
-            ul.className = 'lb-list';
-            var n = 0;
+    function carregar() {
+        var el = document.getElementById('boards');
+        var estado = document.getElementById('estado');
 
-            for (var i = 0; i < boardData.entries.length && n < 10; i++) {
-                var e = boardData.entries[i];
-                if (!e.name || e.name === '---' || e.value === '---') continue;
-
-                var li = document.createElement('li');
-                li.className = 'lb-row';
-
-                var rk = document.createElement('div');
-                rk.className = 'lb-rank';
-                var rs = document.createElement('span');
-                rs.className = 'lb-rank-num';
-                if (n === 0) rs.className += ' gold';
-                else if (n === 1) rs.className += ' silver';
-                else if (n === 2) rs.className += ' bronze';
-                rs.textContent = n + 1;
-                rk.appendChild(rs);
-                li.appendChild(rk);
-
-                var img = document.createElement('img');
-                img.className = 'lb-head';
-                img.src = headUrl(e.name);
-                img.alt = e.name;
-                img.onerror = function() { this.src = 'https://mc-heads.net/avatar/steve/36'; };
-                li.appendChild(img);
-
-                var nm = document.createElement('span');
-                nm.className = 'lb-name';
-                nm.textContent = e.name;
-                li.appendChild(nm);
-
-                var vl = document.createElement('span');
-                vl.className = 'lb-val';
-                if (info.key === 'vault_eco_balance') vl.textContent = fmtMoney(e.value);
-                else if (info.key === 'statistic_time_played') vl.textContent = fmtTime(e.value);
-                else vl.textContent = fmtNum(e.value);
-                li.appendChild(vl);
-
-                ul.appendChild(li);
-                n++;
-            }
-
-            if (n === 0) {
-                var em = document.createElement('li');
-                em.className = 'lb-row';
-                em.innerHTML = '<span class="lb-empty" style="width:100%">Sem dados</span>';
-                ul.appendChild(em);
-            }
-
-            card.appendChild(ul);
-            return card;
-        }
-
-        function render(data) {
-            var grid = document.getElementById('lb-grid');
-            grid.innerHTML = '';
-            if (!data || !data.boards || data.boards.length === 0) {
-                grid.innerHTML = '<div class="lb-empty" style="grid-column:1/-1">Sem dados disponiveis</div>';
-                return;
-            }
-            BOARDS.forEach(function(info) {
-                var bd = data.boards.find(function(b) { return b.board === info.key; });
-                if (bd) grid.appendChild(buildCard(bd, info));
+        fetch(API_URL + '?t=' + Date.now())
+            .then(function(r) {
+                if (!r.ok) throw new Error('HTTP ' + r.status);
+                return r.json();
+            })
+            .then(function(dados) {
+                if (!dados.boards || dados.boards.length === 0) {
+                    el.innerHTML = '<div class="vazio">Nenhum top encontrado ainda.<br><small>O plugin ainda nao enviou dados.</small></div>';
+                    estado.textContent = '';
+                    return;
+                }
+                renderizar(dados);
+                var q = new Date(dados.atualizado).toLocaleString('pt-PT');
+                estado.textContent = 'Ultima atualizacao: ' + q + ' \u00B7 Atualiza a cada 30s';
+            })
+            .catch(function(e) {
+                el.innerHTML = '<div class="vazio">Erro ao carregar tops.<br><small>' + esc(e.message) + '</small></div>';
             });
-        }
+    }
 
-        function refreshData() {
-            var btn = document.querySelector('.lb-update-btn');
-            btn.textContent = 'Atualizando...';
-            btn.disabled = true;
-            fetch(API).then(function(r) { return r.json(); }).then(function(d) {
-                render(d);
-                btn.textContent = 'Atualizar Dados';
-                btn.disabled = false;
-            }).catch(function() {
-                btn.textContent = 'Atualizar Dados';
-                btn.disabled = false;
-            });
+    function renderizar(dados) {
+        var el = document.getElementById('boards');
+        var html = '';
+        for (var i = 0; i < dados.boards.length; i++) {
+            var b = dados.boards[i];
+            var linhas = '';
+            for (var j = 0; j < b.entries.length; j++) {
+                var e = b.entries[j];
+                var medalha = MEDALHAS[e.pos] || e.pos;
+                var classe = e.pos <= 3 ? 'pos pos-' + e.pos : 'pos';
+                var medalhaClasse = e.pos <= 3 ? 'pos-medalha' : '';
+                var head = '<img class="head" src="https://mc-heads.net/avatar/' + encodeURIComponent(e.name) + '/64" alt="" loading="lazy" onerror="this.src=\'https://mc-heads.net/avatar/steve/64\'">';
+                linhas += '<tr><td class="' + classe + ' ' + medalhaClasse + '">' + medalha + '</td><td class="jogador">' + head + '<span class="nome">' + esc(e.name) + '</span></td><td class="valor">' + formatValue(e.value) + '</td></tr>';
+            }
+            html += '<div class="cartao"><div class="cartao-header"><span>' + esc(b.board) + '</span><span class="tipo">alltime</span></div><table>' + linhas + '</table></div>';
         }
+        el.innerHTML = html;
+    }
 
-        refreshData();
-        setInterval(refreshData, 30000);
+    carregar();
+    setInterval(carregar, 30000);
     </script>
 </body>
 </html>
