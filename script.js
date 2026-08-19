@@ -2,6 +2,12 @@
 (function () {
   'use strict';
 
+  /* ── Reset scroll on load ── */
+  if ('scrollRestoration' in history) {
+    history.scrollRestoration = 'manual';
+  }
+  window.scrollTo(0, 0);
+
   var IP_JAVA = 'jogar.moonmc.com.br';
   var IP_BEDROCK = 'jogar.moonmc.com.br:25600';
 
