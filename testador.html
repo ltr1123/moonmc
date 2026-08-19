@@ -328,8 +328,7 @@
             <button class="tab active" onclick="selectPeriod(this)">All time</button>
         </div>
         <div class="tabs-row" id="category-row">
-            <button class="tab active" onclick="selectCategory(this, 'all')">Todos</button>
-            <button class="tab" onclick="selectCategory(this, 'statistic_player_kills')">Kills</button>
+            <button class="tab active" onclick="selectCategory(this, 'statistic_player_kills')">Kills</button>
             <button class="tab" onclick="selectCategory(this, 'statistic_deaths')">Mortes</button>
             <button class="tab" onclick="selectCategory(this, 'vault_eco_balance')">Dinheiro</button>
             <button class="tab" onclick="selectCategory(this, 'ypesca_fished')">Peixes</button>
@@ -360,7 +359,7 @@
     <script>
     var MEDALHAS = { 1: '\uD83E\uDD47', 2: '\uD83E\uDD48', 3: '\uD83E\uDD49' };
     var API_URL = 'https://www.moonmc.com.br/api/tops/read';
-    var activeCategory = 'all';
+    var activeCategory = 'statistic_player_kills';
     var cachedData = null;
 
     var BOARD_INFO = {
@@ -392,6 +391,7 @@
 
     function formatValue(val) {
         var s = String(val);
+        if (/[a-zA-Z]/.test(s)) return esc(s);
         var n = parseFloat(s.replace(/,/g, ''));
         if (isNaN(n)) return esc(val);
         if (n >= 1000000) return esc((n / 1000000).toFixed(1).replace(/\.0$/, '') + 'M');
