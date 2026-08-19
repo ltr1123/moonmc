@@ -172,7 +172,7 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
   z-index: 1000;
   height: var(--nav-height);
   background: #000;
-  border-bottom: none;
+  border-bottom: 3px solid #d4a017;
   transition: var(--transition);
 }
 
@@ -224,17 +224,17 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
   left: 4px;
   right: 4px;
   height: 3px;
-  background: var(--neon);
+  background: #f5a623;
   border-radius: 2px;
   transform: scaleX(0);
   transition: transform 0.3s ease;
 }
 
-.navbar-menu a:hover { color: var(--neon); }
-.navbar-menu a.active { color: var(--neon); }
+.navbar-menu a:hover { color: #f5a623; }
+.navbar-menu a.active { color: #f5a623; }
 
 .navbar-menu a:hover::after,
-.navbar-menu a.active::after { transform: scaleX(1); }
+.navbar-menu a.active::after { transform: scaleX(1); background: #f5a623; }
 
 .navbar-actions {
   margin-left: auto;
@@ -283,12 +283,12 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
 
 .navbar-ip i {
   font-size: 0.6rem;
-  color: var(--neon);
+  color: #f5a623;
   margin: 0 2px;
 }
 
 .navbar-ip strong {
-  color: var(--neon);
+  color: #f5a623;
   font-family: var(--font-heading);
   letter-spacing: 0.06em;
   font-weight: 400;
