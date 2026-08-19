@@ -523,7 +523,6 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
 
 .section-bg[data-bg="sobre"] { background-image: url('assets/bg-sobre.webp'); }
 .section-bg[data-bg="loja"] { background-image: url('assets/bg-loja.webp'); }
-.section-bg[data-bg="comunidade"] { background-image: url('assets/bg-comunidade.webp'); }
 
 .section-bg-overlay {
   position: absolute;
@@ -1130,71 +1129,141 @@ section { position: relative; z-index: 1; }
 
 /* ── Footer ── */
 .footer {
-  background: var(--black);
-  border-top: 1px solid var(--border);
-  padding: 50px 0 40px;
-  position: relative;
-  z-index: 1;
+  background: #111114;
+  border-top: 3px solid var(--accent);
+  padding: 60px 0 0;
 }
 
-.footer-inner {
+.footer-grid {
+  display: grid;
+  grid-template-columns: 1.3fr 0.8fr 1.3fr 1fr;
+  gap: 40px;
+  margin-bottom: 40px;
+}
+
+.footer-col h4 {
+  font-family: var(--font-display);
+  font-size: 1rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--white);
+  margin-bottom: 18px;
+}
+
+.footer-col p {
+  color: var(--gray-muted);
+  font-size: 0.85rem;
+  line-height: 1.7;
+  margin-bottom: 14px;
+}
+
+.footer-logo {
+  width: 50px;
+  height: 50px;
+  border-radius: 10px;
+  display: block;
+}
+
+.footer-links {
+  list-style: none;
+  padding: 0;
+  margin: 0;
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 30px;
-  flex-wrap: wrap;
-  margin-bottom: 26px;
+  flex-direction: column;
+  gap: 12px;
 }
 
-.footer-brand { display: flex; align-items: center; gap: 12px; }
-
-.footer-brand img {
-  width: 40px;
-  height: 40px;
-  border-radius: 9px;
-}
-
-.footer-brand h3 { font-family: var(--font-display); font-size: 1.5rem; letter-spacing: 0.1em; line-height: 1; }
-.footer-brand span { font-size: 0.62rem; color: var(--gray-muted); text-transform: uppercase; letter-spacing: 0.12em; }
-
-.footer-social { display: flex; gap: 12px; }
-
-.footer-social a {
-  width: 42px;
-  height: 42px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 11px;
-  border: 1px solid var(--border);
-  color: var(--gray);
-  background: rgba(255, 255, 255, 0.03);
+.footer-links a {
+  color: var(--gray-muted);
+  text-decoration: none;
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
   transition: var(--transition);
 }
 
-.footer-social a:hover {
+.footer-links a:hover {
+  color: var(--accent);
+}
+
+.footer-social-icons {
+  display: flex;
+  gap: 14px;
+  margin-bottom: 20px;
+}
+
+.footer-social-icons a {
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  border: 1px solid rgba(255,255,255,0.1);
+  color: var(--gray);
+  background: rgba(255,255,255,0.03);
+  font-size: 1.1rem;
+  transition: var(--transition);
+}
+
+.footer-social-icons a:hover {
   color: var(--white);
-  border-color: var(--border-neon);
+  border-color: var(--accent);
   transform: translateY(-3px);
-  box-shadow: 0 0 18px rgba(194, 139, 255, 0.2);
+  box-shadow: 0 0 18px rgba(124, 58, 237, 0.25);
 }
 
-.footer-ip .ip-box {
-  background: rgba(255, 255, 255, 0.04);
-  border-color: rgba(255, 255, 255, 0.06);
+.btn-footer-shop,
+.btn-footer-play {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 10px;
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 0.85rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: var(--transition);
+  text-decoration: none;
 }
 
-.footer-ip .ip-box code {
-  font-size: 0.9rem;
-  color: var(--gray-muted);
+.btn-footer-shop {
+  background: var(--accent);
+  color: var(--white);
 }
 
-.footer-copy {
+.btn-footer-shop:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(124, 58, 237, 0.35);
+}
+
+.btn-footer-play {
+  background: transparent;
+  color: var(--accent);
+  border: 2px solid var(--accent);
+}
+
+.btn-footer-play:hover {
+  background: var(--accent);
+  color: var(--white);
+  transform: translateY(-2px);
+}
+
+.footer-bottom {
+  border-top: 1px solid rgba(255,255,255,0.08);
+  padding: 20px 0;
   text-align: center;
+}
+
+.footer-bottom p {
   color: var(--gray-muted);
   font-size: 0.78rem;
-  border-top: 1px solid var(--border);
-  padding-top: 26px;
+  margin: 0;
 }
 
 /* ── Modal ── */
