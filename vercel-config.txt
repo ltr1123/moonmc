@@ -1,0 +1,31 @@
+Instruções para configurar o KV Store no Vercel:
+
+1. Acesse o Vercel Dashboard: https://vercel.com/dashboard
+2. Selecione o projeto moonmc
+3. Vá para Storage → KV
+4. Clique em "Create KV"
+5. Nome: moonmc-kv
+6. Clique em "Create"
+
+7. Vá para Project Settings → Environment Variables
+8. Adicione nova variável:
+   - Nome: TOPS_SEGREDO
+   - Valor: moonmc236
+   - Ambiente: Production (e/ou Preview)
+
+9. Deploy as alterações:
+   - `vercel --prod` (ou `vercel` para preview)
+
+10. URLs finais das funções serverless:
+    - POST: https://moonmc.vercel.app/api/tops/update
+    - GET: https://moonmc.vercel.app/api/tops/read
+
+11. Para testar o fluxo:
+    - Abra o testador em: https://moonmc.vercel.app/testador
+    - Clique em "Enviar Dados Mock para Testar"
+    - Verifique se os dados aparecem nas tabelas
+    - Depois envie dados reais do plugin para a URL POST
+
+12. Acessar o testador:
+    - Digite manualmente na barra: https://moonmc.vercel.app/testador
+    - Sem links visíveis no site principal
