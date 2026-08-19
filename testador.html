@@ -13,9 +13,7 @@
         --roxo-claro: #d8b4fe;
         --roxo-escuro: #581c87;
         --fundo: #0a0414;
-        --fundo2: #12071f;
         --cartao: #1a0d2e;
-        --cartao-hover: #221240;
         --linha: #2d1b4d;
         --texto: #e9e2f5;
         --cinza: #9a8fb5;
@@ -68,10 +66,8 @@
         100% { transform: translateY(-10vh) scale(1); opacity: 0; }
     }
 
-    /* Navbar placeholder */
     .navbar-spacer { height: 60px; }
 
-    /* Header */
     header {
         text-align: center;
         padding: 40px 20px 30px;
@@ -114,15 +110,19 @@
         to { opacity: 1; transform: translateY(0); }
     }
 
-    /* Seletor */
-    .period-tabs {
-        display: flex;
-        justify-content: center;
-        gap: 10px;
+    .tabs-wrap {
         padding: 20px;
         animation: fadeDown 0.6s ease-out 0.15s both;
     }
-    .period-tab {
+    .tabs-row {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        margin-bottom: 10px;
+    }
+    .tabs-row:last-child { margin-bottom: 0; }
+
+    .tab {
         padding: 9px 26px;
         border: 1px solid var(--linha);
         border-radius: 8px;
@@ -135,19 +135,18 @@
         transition: all 0.25s;
         font-family: inherit;
     }
-    .period-tab:hover {
+    .tab:hover {
         color: #fff;
         border-color: rgba(168,85,247,0.4);
         background: rgba(168,85,247,0.08);
     }
-    .period-tab.active {
+    .tab.active {
         background: linear-gradient(135deg, var(--roxo), #7c3aed);
         color: #fff;
         border-color: transparent;
         box-shadow: 0 2px 16px var(--glow);
     }
 
-    /* Boards */
     #boards {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
@@ -176,8 +175,6 @@
     .cartao:nth-child(2) { animation-delay: 0.2s; }
     .cartao:nth-child(3) { animation-delay: 0.3s; }
     .cartao:nth-child(4) { animation-delay: 0.4s; }
-    .cartao:nth-child(5) { animation-delay: 0.5s; }
-    .cartao:nth-child(6) { animation-delay: 0.6s; }
 
     @keyframes fadeUp {
         from { opacity: 0; transform: translateY(30px); }
@@ -185,10 +182,10 @@
     }
 
     .cartao-header {
-        padding: 16px 20px;
+        padding: 14px 20px;
         font-size: 13px;
         font-weight: 700;
-        letter-spacing: 1.5px;
+        letter-spacing: 1px;
         text-transform: uppercase;
         color: var(--roxo-claro);
         background: linear-gradient(135deg, rgba(88,28,135,0.4), rgba(88,28,135,0.1));
@@ -196,6 +193,14 @@
         display: flex;
         align-items: center;
         justify-content: space-between;
+    }
+    .cartao-header .board-name {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    .cartao-header .board-emoji {
+        font-size: 16px;
     }
     .cartao-header .tipo {
         font-size: 10px;
@@ -291,6 +296,7 @@
         .cartao-header { font-size: 12px; padding: 12px 14px; }
         td { padding: 10px 12px; font-size: 13px; }
         .head { width: 28px; height: 28px; }
+        .tab { padding: 7px 16px; font-size: 12px; }
     }
     </style>
 </head>
@@ -317,8 +323,17 @@
         <div class="sub">Tops do Servidor</div>
     </header>
 
-    <div class="period-tabs">
-        <button class="period-tab active" onclick="selectTab(this)">All time</button>
+    <div class="tabs-wrap">
+        <div class="tabs-row" id="period-row">
+            <button class="tab active" onclick="selectPeriod(this)">All time</button>
+        </div>
+        <div class="tabs-row" id="category-row">
+            <button class="tab active" onclick="selectCategory(this, 'all')">Todos</button>
+            <button class="tab" onclick="selectCategory(this, 'statistic_player_kills')">Kills</button>
+            <button class="tab" onclick="selectCategory(this, 'statistic_deaths')">Mortes</button>
+            <button class="tab" onclick="selectCategory(this, 'vault_eco_balance')">Dinheiro</button>
+            <button class="tab" onclick="selectCategory(this, 'ypesca_fished')">Peixes</button>
+        </div>
     </div>
 
     <div id="boards">
@@ -345,10 +360,28 @@
     <script>
     var MEDALHAS = { 1: '\uD83E\uDD47', 2: '\uD83E\uDD48', 3: '\uD83E\uDD49' };
     var API_URL = 'https://www.moonmc.com.br/api/tops/read';
+    var activeCategory = 'all';
+    var cachedData = null;
 
-    function selectTab(el) {
-        document.querySelectorAll('.period-tab').forEach(function(b) { b.classList.remove('active'); });
+    var BOARD_INFO = {
+        'statistic_player_kills': { label: 'Kills', emoji: '\u2694\uFE0F' },
+        'statistic_deaths': { label: 'Mortes', emoji: '\uD83D\uDC80' },
+        'statistic_mob_kills': { label: 'Mob Kills', emoji: '\uD83D\uDC32' },
+        'statistic_time_played': { label: 'Tempo Online', emoji: '\u23F1\uFE0F' },
+        'vault_eco_balance': { label: 'Dinheiro', emoji: '\uD83D\uDCB0' },
+        'ypesca_fished': { label: 'Peixes', emoji: '\uD83C\uDFA3' }
+    };
+
+    function selectPeriod(el) {
+        document.querySelectorAll('#period-row .tab').forEach(function(b) { b.classList.remove('active'); });
         el.classList.add('active');
+    }
+
+    function selectCategory(el, cat) {
+        document.querySelectorAll('#category-row .tab').forEach(function(b) { b.classList.remove('active'); });
+        el.classList.add('active');
+        activeCategory = cat;
+        if (cachedData) renderizar(cachedData);
     }
 
     function esc(s) {
@@ -377,6 +410,7 @@
                 return r.json();
             })
             .then(function(dados) {
+                cachedData = dados;
                 if (!dados.boards || dados.boards.length === 0) {
                     el.innerHTML = '<div class="vazio">Nenhum top encontrado ainda.<br><small>O plugin ainda nao enviou dados.</small></div>';
                     estado.textContent = '';
@@ -393,9 +427,21 @@
 
     function renderizar(dados) {
         var el = document.getElementById('boards');
+        var boards = dados.boards;
+
+        if (activeCategory !== 'all') {
+            boards = boards.filter(function(b) { return b.board === activeCategory; });
+        }
+
+        if (boards.length === 0) {
+            el.innerHTML = '<div class="vazio">Nenhum top encontrado.</div>';
+            return;
+        }
+
         var html = '';
-        for (var i = 0; i < dados.boards.length; i++) {
-            var b = dados.boards[i];
+        for (var i = 0; i < boards.length; i++) {
+            var b = boards[i];
+            var info = BOARD_INFO[b.board] || { label: b.board, emoji: '\uD83C\uDFC6' };
             var linhas = '';
             for (var j = 0; j < b.entries.length; j++) {
                 var e = b.entries[j];
@@ -405,7 +451,7 @@
                 var head = '<img class="head" src="https://mc-heads.net/avatar/' + encodeURIComponent(e.name) + '/64" alt="" loading="lazy" onerror="this.src=\'https://mc-heads.net/avatar/steve/64\'">';
                 linhas += '<tr><td class="' + classe + ' ' + medalhaClasse + '">' + medalha + '</td><td class="jogador">' + head + '<span class="nome">' + esc(e.name) + '</span></td><td class="valor">' + formatValue(e.value) + '</td></tr>';
             }
-            html += '<div class="cartao"><div class="cartao-header"><span>' + esc(b.board) + '</span><span class="tipo">alltime</span></div><table>' + linhas + '</table></div>';
+            html += '<div class="cartao"><div class="cartao-header"><span class="board-name"><span class="board-emoji">' + info.emoji + '</span> ' + esc(info.label) + '</span><span class="tipo">alltime</span></div><table>' + linhas + '</table></div>';
         }
         el.innerHTML = html;
     }
