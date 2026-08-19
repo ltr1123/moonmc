@@ -477,7 +477,7 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
 /* ── Hero ── */
 .hero {
   position: relative;
-  height: 700px;
+  height: 100vh;
   display: flex;
   align-items: center;
   overflow: hidden;
@@ -493,7 +493,7 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
 .hero-overlay {
   position: absolute;
   inset: 0;
-  background: rgba(0, 0, 0, 0.70);
+  background: rgba(0, 0, 0, 0.55);
   z-index: 1;
 }
 
@@ -533,17 +533,17 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
 
 .hero-title {
   font-family: var(--font-display);
-  font-size: clamp(3rem, 7vw, 5rem);
+  font-size: clamp(3.5rem, 8vw, 6rem);
   font-weight: 900;
   color: var(--white);
   line-height: 1;
-  letter-spacing: 0.02em;
+  letter-spacing: 0.01em;
 }
 
 .hero-desc {
-  color: rgba(255, 255, 255, 0.8);
-  font-size: 1.1rem;
-  max-width: 600px;
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 1.15rem;
+  max-width: 620px;
   line-height: 1.7;
 }
 
@@ -555,12 +555,14 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
 .btn-play {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 10px;
-  padding: 16px 48px;
+  min-width: 320px;
+  padding: 18px 48px;
   font-family: var(--font-heading);
-  font-size: 1.1rem;
+  font-size: 1.15rem;
   font-weight: 700;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--white);
   background: #7c3aed;
