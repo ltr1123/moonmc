@@ -9,6 +9,16 @@ app.use(express.static('.'));
 
 // API endpoints
 app.get('/api/tops/read', (req, res) => {
+    // Lê dados do KV da Vercel
+    let dados = '{}';
+    try {
+        const tops = await kv.get('tops');
+        if (tops) dados = tops;
+    } catch (e) {
+        // ignora se não existe
+    }
+    res.json(JSON.parse(dados));
+});
     // Lê dados do cache local ou do KV
     let dados = '{}';
     try {
@@ -28,7 +38,10 @@ app.get('/api/tops/read', (req, res) => {
 
 app.post('/api/tops/update', express.text(), (req, res) => {
     // Atualização via plugin (plugin envia dados)
-    const token = new URLSearchParams(req.body).get('token');
+const token = new URLSearchParams(req.body).get('token');
+    // Verifica token (em produção usar variável de ambiente)
+    const expectedToken = process.env.TOPS_SEGREDO || 'moonmc236';
+    if (token !== expectedToken) {
     const dados = new URLSearchParams(req.body).get('dados');
     
     if (token !== 'moonmc236') {
@@ -39,7 +52,8 @@ app.post('/api/tops/update', express.text(), (req, res) => {
     }
     
     // Atualiza cache local
-    fs.writeFileSync('tops_cache.json', dados);
+// Salva no KV da Vercel (em vez de arquivo local)
+await kv.set('tops', dados, { ex: 7 * 86400 });
     
     // Notifica clientes via WebSocket (se implementado)
     // Em produção, enviar para Vercel Blob
