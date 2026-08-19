@@ -172,7 +172,7 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
   z-index: 1000;
   height: var(--nav-height);
   background: #000;
-  border-bottom: 3px solid #d4a017;
+  border-bottom: 4px solid #d4a017;
   transition: var(--transition);
 }
 
@@ -477,7 +477,7 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
   min-height: 100vh;
   display: flex;
   align-items: center;
-  padding-top: var(--nav-height);
+  padding-top: calc(var(--nav-height) + 4px);
   overflow: hidden;
 }
 
