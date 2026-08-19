@@ -1080,11 +1080,27 @@ section { position: relative; z-index: 1; }
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(to bottom, transparent 40%, var(--dark-card) 100%);
+  background: linear-gradient(
+    to bottom,
+    transparent 0%,
+    transparent 15%,
+    rgba(21, 12, 40, 0.3) 35%,
+    rgba(21, 12, 40, 0.7) 55%,
+    rgba(21, 12, 40, 0.92) 75%,
+    var(--dark-card) 100%
+  );
 }
 
 .plan-featured .plan-art::after {
-  background: linear-gradient(to bottom, transparent 40%, #1e1238 100%);
+  background: linear-gradient(
+    to bottom,
+    transparent 0%,
+    transparent 15%,
+    rgba(30, 18, 56, 0.3) 35%,
+    rgba(30, 18, 56, 0.7) 55%,
+    rgba(30, 18, 56, 0.92) 75%,
+    #1e1238 100%
+  );
 }
 
 .plan-card:hover {
