@@ -27,6 +27,20 @@
             color: var(--gray);
             font-size: 1.1rem;
         }
+        .board-section {
+            margin-bottom: 48px;
+        }
+        .board-title {
+            font-size: 1.4rem;
+            color: var(--neon);
+            font-family: var(--font-heading);
+            margin-bottom: 16px;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
         .leaderboard-table {
             width: 100%;
             border-collapse: collapse;
@@ -37,7 +51,7 @@
         }
         .leaderboard-table th,
         .leaderboard-table td {
-            padding: 16px 24px;
+            padding: 14px 24px;
             text-align: left;
             border-bottom: 1px solid var(--border);
         }
@@ -48,7 +62,7 @@
             font-weight: 700;
             letter-spacing: 0.04em;
             text-transform: uppercase;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
         }
         .leaderboard-table td {
             color: var(--white);
@@ -66,9 +80,22 @@
             color: var(--neon-2);
             font-weight: 700;
         }
+        .leaderboard-rank.gold {
+            color: #ffd700;
+        }
+        .leaderboard-rank.silver {
+            color: #c0c0c0;
+        }
+        .leaderboard-rank.bronze {
+            color: #cd7f32;
+        }
         .leaderboard-name {
             font-weight: 600;
             color: var(--white);
+        }
+        .leaderboard-value {
+            font-weight: 700;
+            color: var(--cyan);
         }
         .leaderboard-update-btn {
             display: block;
@@ -125,150 +152,216 @@
                     <img src="assets/logo-moon.webp" alt="MoonMC" class="brand-logo">
                 </a>
                 <div class="navbar-menu">
-                    <a href="index.html">Início</a>
+                    <a href="index.html">Inicio</a>
                     <a href="sobre.html">Sobre</a>
                     <a href="testador.html" class="active">Leaderboard</a>
                 </div>
             </div>
         </div>
     </nav>
-    
+
     <div class="leaderboard">
         <div class="leaderboard-header">
-            <h1 class="leaderboard-title">🏆 Top Jogadores</h1>
+            <h1 class="leaderboard-title">Top Jogadores</h1>
             <p class="leaderboard-subtitle" id="status">Atualizado em tempo real</p>
         </div>
-        
+
         <div id="leaderboard-content">
             <div class="leaderboard-loading">
                 <span class="refresh-indicator"></span>
                 Carregando dados...
             </div>
         </div>
-        
+
         <button class="leaderboard-update-btn" onclick="updateLeaderboard()">Atualizar Dados</button>
     </div>
-    
+
     <script>
-        const API_BASE = 'https://www.moonmc.com.br';
-        
-        const BOARD_MAP = {
-            'statistic_player_kills': 'kills',
-            'statistic_deaths': 'mortes',
-            'vault_eco_balance': 'money'
+        var API_BASE = 'https://www.moonmc.com.br';
+
+        var BOARDS = {
+            'statistic_player_kills': { label: 'Kills', icon: '\u2694\uFE0F' },
+            'statistic_deaths': { label: 'Mortes', icon: '\uD83D\uDC80' },
+            'vault_eco_balance': { label: 'Dinheiro', icon: '\uD83D\uDCB0' },
+            'ypesca_fished': { label: 'Peixes Pescados', icon: '\uD83C\uDFA3' }
         };
-        
-        let lastUpdate = null;
-        
-        async function fetchLeaderboard() {
-            try {
-                const response = await fetch(`${API_BASE}/api/tops/read`);
-                if (!response.ok) throw new Error('Falha ao carregar dados');
-                const data = await response.json();
-                return data;
-            } catch (error) {
-                console.error('Erro:', error);
-                return null;
-            }
+
+        var lastUpdate = null;
+
+        function formatMoney(val) {
+            var n = parseInt(val) || 0;
+            if (n >= 1000000) return (n / 1000000).toFixed(1).replace(/\.0$/, '') + 'M';
+            if (n >= 1000) return (n / 1000).toFixed(1).replace(/\.0$/, '') + 'K';
+            return n.toLocaleString();
         }
-        
-        async function updateLeaderboard() {
-            const btn = document.querySelector('.leaderboard-update-btn');
+
+        function formatNumber(val) {
+            return (parseInt(val) || 0).toLocaleString();
+        }
+
+        function fetchLeaderboard() {
+            return fetch(API_BASE + '/api/tops/read')
+                .then(function(r) {
+                    if (!r.ok) throw new Error('Falha');
+                    return r.json();
+                })
+                .catch(function(e) {
+                    console.error('Erro:', e);
+                    return null;
+                });
+        }
+
+        function updateLeaderboard() {
+            var btn = document.querySelector('.leaderboard-update-btn');
             btn.textContent = 'Atualizando...';
             btn.disabled = true;
-            try {
-                const data = await fetchLeaderboard();
-                if (data && data.boards) {
-                    renderLeaderboard(data);
-                    lastUpdate = Date.now();
-                    showToast('Dados atualizados!');
-                } else {
-                    showToast('Sem dados disponíveis');
-                }
-            } catch (error) {
-                showToast('Erro ao atualizar');
-            } finally {
-                btn.textContent = 'Atualizar Dados';
-                btn.disabled = false;
-            }
-        }
-        
-        function renderLeaderboard(data) {
-            const container = document.getElementById('leaderboard-content');
-            container.innerHTML = '';
-            
-            if (!data || !data.boards) {
-                container.innerHTML = '<div class="leaderboard-error">Sem dados disponíveis</div>';
-                return;
-            }
-            
-            const playerData = {};
-            data.boards.forEach(board => {
-                const col = BOARD_MAP[board.board];
-                if (!col || !board.entries) return;
-                board.entries.forEach(e => {
-                    if (!playerData[e.name]) playerData[e.name] = {};
-                    playerData[e.name][col] = e.value;
+            fetchLeaderboard()
+                .then(function(data) {
+                    if (data && data.boards) {
+                        renderLeaderboard(data);
+                        lastUpdate = Date.now();
+                        showToast('Dados atualizados!');
+                    } else {
+                        showToast('Sem dados disponiveis');
+                    }
+                })
+                .catch(function() {
+                    showToast('Erro ao atualizar');
+                })
+                .then(function() {
+                    btn.textContent = 'Atualizar Dados';
+                    btn.disabled = false;
                 });
-            });
-            
-            const sorted = Object.entries(playerData)
-                .map(([name, s]) => ({ name, ...s }))
-                .sort((a, b) => (parseInt(b.kills) || 0) - (parseInt(a.kills) || 0));
-            
-            const table = document.createElement('table');
+        }
+
+        function renderBoard(boardData, boardKey) {
+            var info = BOARDS[boardKey];
+            if (!info || !boardData.entries || boardData.entries.length === 0) return null;
+
+            var isMoney = boardKey === 'vault_eco_balance';
+
+            var section = document.createElement('div');
+            section.className = 'board-section';
+
+            var title = document.createElement('h2');
+            title.className = 'board-title';
+            title.textContent = info.icon + ' ' + info.label;
+            section.appendChild(title);
+
+            var table = document.createElement('table');
             table.className = 'leaderboard-table';
-            
-            const thead = document.createElement('thead');
-            const trH = document.createElement('tr');
-            ['Posição', 'Jogador', 'Kills', 'Mortes', 'Dinheiro'].forEach(t => {
-                const th = document.createElement('th');
+
+            var thead = document.createElement('thead');
+            var trH = document.createElement('tr');
+            ['#', 'Jogador', info.label].forEach(function(t) {
+                var th = document.createElement('th');
                 th.textContent = t;
                 trH.appendChild(th);
             });
             thead.appendChild(trH);
             table.appendChild(thead);
-            
-            const tbody = document.createElement('tbody');
-            sorted.forEach((item, i) => {
-                const tr = document.createElement('tr');
-                tr.innerHTML = `<td class="leaderboard-rank">${i + 1}</td><td class="leaderboard-name">${item.name}</td><td>${(parseInt(item.kills) || 0).toLocaleString()}</td><td>${(parseInt(item.mortes) || 0).toLocaleString()}</td><td>${(parseInt(item.money) || 0).toLocaleString()}</td>`;
+
+            var tbody = document.createElement('tbody');
+
+            boardData.entries.forEach(function(entry, i) {
+                if (!entry.name || entry.name === '---') return;
+
+                var tr = document.createElement('tr');
+
+                var rankTd = document.createElement('td');
+                rankTd.className = 'leaderboard-rank';
+                if (i === 0) rankTd.classList.add('gold');
+                else if (i === 1) rankTd.classList.add('silver');
+                else if (i === 2) rankTd.classList.add('bronze');
+                rankTd.textContent = (i + 1).toString();
+                tr.appendChild(rankTd);
+
+                var nameTd = document.createElement('td');
+                nameTd.className = 'leaderboard-name';
+                nameTd.textContent = entry.name;
+                tr.appendChild(nameTd);
+
+                var valTd = document.createElement('td');
+                valTd.className = 'leaderboard-value';
+                valTd.textContent = isMoney ? formatMoney(entry.value) : formatNumber(entry.value);
+                tr.appendChild(valTd);
+
                 tbody.appendChild(tr);
             });
+
             table.appendChild(tbody);
-            container.appendChild(table);
+            section.appendChild(table);
+            return section;
         }
-        
-        function showToast(msg) {
-            const toast = document.createElement('div');
-            toast.textContent = msg;
-            toast.style.cssText = 'position:fixed;bottom:30px;left:50%;transform:translateX(-50%);background:var(--neon);color:#170b2b;padding:12px 24px;border-radius:8px;font-weight:700;z-index:9999;transition:opacity 0.5s;';
-            document.body.appendChild(toast);
-            setTimeout(() => { toast.style.opacity = '0'; setTimeout(() => toast.remove(), 500); }, 2000);
-        }
-        
-        function updateStatus() {
-            const el = document.getElementById('status');
-            if (!el) return;
-            if (lastUpdate) {
-                const s = Math.floor((Date.now() - lastUpdate) / 1000);
-                el.textContent = `Atualizado há ${s}s · Atualiza a cada 30s`;
+
+        function renderLeaderboard(data) {
+            var container = document.getElementById('leaderboard-content');
+            container.innerHTML = '';
+
+            if (!data || !data.boards) {
+                container.innerHTML = '<div class="leaderboard-error">Sem dados disponiveis</div>';
+                return;
+            }
+
+            var hasContent = false;
+            var keys = Object.keys(BOARDS);
+
+            for (var k = 0; k < keys.length; k++) {
+                var boardKey = keys[k];
+                var boardData = null;
+                for (var j = 0; j < data.boards.length; j++) {
+                    if (data.boards[j].board === boardKey) {
+                        boardData = data.boards[j];
+                        break;
+                    }
+                }
+                if (boardData) {
+                    var section = renderBoard(boardData, boardKey);
+                    if (section) {
+                        container.appendChild(section);
+                        hasContent = true;
+                    }
+                }
+            }
+
+            if (!hasContent) {
+                container.innerHTML = '<div class="leaderboard-error">Sem dados disponiveis</div>';
             }
         }
-        
-        fetchLeaderboard().then(data => {
+
+        function showToast(msg) {
+            var toast = document.createElement('div');
+            toast.textContent = msg;
+            toast.style.cssText = 'position:fixed;bottom:30px;left:50%;transform:translateX(-50%);background:var(--neon);color:#170b2b;padding:12px 24px;border-radius:8px;font-weight:700;z-index:9999;transition:opacity 0.5s';
+            document.body.appendChild(toast);
+            setTimeout(function() {
+                toast.style.opacity = '0';
+                setTimeout(function() { toast.remove(); }, 500);
+            }, 2000);
+        }
+
+        function updateStatus() {
+            var el = document.getElementById('status');
+            if (!el || !lastUpdate) return;
+            var s = Math.floor((Date.now() - lastUpdate) / 1000);
+            el.textContent = 'Atualizado ha ' + s + 's \u00B7 Atualiza a cada 30s';
+        }
+
+        fetchLeaderboard().then(function(data) {
             if (data && data.boards) {
                 renderLeaderboard(data);
                 lastUpdate = Date.now();
             } else {
-                document.getElementById('leaderboard-content').innerHTML = '<div class="leaderboard-error">Sem dados disponíveis</div>';
+                document.getElementById('leaderboard-content').innerHTML = '<div class="leaderboard-error">Sem dados disponiveis</div>';
             }
-            setInterval(fetchLeaderboard, 30000).then(d => {
-                if (d && d.boards) {
-                    renderLeaderboard(d);
-                    lastUpdate = Date.now();
-                }
-            });
+            setInterval(function() {
+                fetchLeaderboard().then(function(d) {
+                    if (d && d.boards) {
+                        renderLeaderboard(d);
+                        lastUpdate = Date.now();
+                    }
+                });
+            }, 30000);
             setInterval(updateStatus, 1000);
         });
     </script>
