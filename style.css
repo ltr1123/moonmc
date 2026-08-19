@@ -165,7 +165,7 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
 
 /* â”€â”€ Navbar â”€â”€ */
 .navbar {
-  position: fixed;
+  position: absolute;
   top: 0;
   left: 0;
   right: 0;
