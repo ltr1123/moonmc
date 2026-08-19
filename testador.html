@@ -28,6 +28,7 @@
             background-clip: text;
             font-family: var(--font-display), sans-serif;
             text-transform: uppercase;
+            animation: fadeSlideDown 0.6s ease-out;
         }
         .leaderboard-sub {
             color: var(--gray, #888);
@@ -36,6 +37,7 @@
             text-transform: uppercase;
             font-family: var(--font-heading), sans-serif;
             margin-top: 4px;
+            animation: fadeSlideDown 0.6s ease-out 0.1s both;
         }
         .leaderboard-line {
             width: 60px;
@@ -43,6 +45,16 @@
             background: linear-gradient(90deg, #b48bfa, #6ee7b7);
             border-radius: 2px;
             margin: 16px auto 0;
+            animation: expandLine 0.8s ease-out 0.2s both;
+        }
+
+        @keyframes fadeSlideDown {
+            from { opacity: 0; transform: translateY(-16px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes expandLine {
+            from { width: 0; opacity: 0; }
+            to { width: 60px; opacity: 1; }
         }
 
         /* Selector */
@@ -51,6 +63,7 @@
             justify-content: center;
             gap: 8px;
             margin: 24px 0 32px;
+            animation: fadeSlideDown 0.6s ease-out 0.3s both;
         }
         .period-btn {
             padding: 8px 24px;
@@ -64,16 +77,17 @@
             letter-spacing: 0.04em;
             text-transform: uppercase;
             cursor: pointer;
-            transition: all 0.2s;
+            transition: all 0.25s;
         }
-        .period-btn:hover { color: #fff; border-color: rgba(255,255,255,0.2); }
+        .period-btn:hover { color: #fff; border-color: rgba(255,255,255,0.25); background: rgba(255,255,255,0.04); }
         .period-btn.active {
             background: linear-gradient(135deg, #b48bfa, #818cf8);
             color: #fff;
             border-color: transparent;
+            box-shadow: 0 2px 12px rgba(180,139,250,0.3);
         }
 
-        /* Grid de boards */
+        /* Grid */
         .boards-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -87,7 +101,18 @@
             border: 1px solid rgba(140,100,220,0.2);
             border-radius: 12px;
             overflow: hidden;
+            animation: cardAppear 0.5s ease-out both;
         }
+        .board-card:nth-child(1) { animation-delay: 0.1s; }
+        .board-card:nth-child(2) { animation-delay: 0.2s; }
+        .board-card:nth-child(3) { animation-delay: 0.3s; }
+        .board-card:nth-child(4) { animation-delay: 0.4s; }
+
+        @keyframes cardAppear {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
         .board-card-header {
             display: flex;
             align-items: center;
@@ -114,7 +139,6 @@
             text-transform: uppercase;
         }
 
-        /* Lista */
         .board-list {
             list-style: none;
             padding: 4px 0;
@@ -130,7 +154,6 @@
             background: rgba(255,255,255,0.03);
         }
 
-        /* Rank */
         .rank {
             width: 28px;
             text-align: center;
@@ -141,8 +164,10 @@
             font-size: 0.9rem;
             color: var(--gray, #888);
         }
+        .rank-num.g { color: #ffd700; }
+        .rank-num.s { color: #c0c0c0; }
+        .rank-num.b { color: #cd7f32; }
 
-        /* Head */
         .head {
             width: 30px;
             height: 30px;
@@ -152,7 +177,6 @@
             border: 1px solid rgba(255,255,255,0.1);
         }
 
-        /* Nome */
         .pname {
             flex: 1;
             font-weight: 600;
@@ -163,7 +187,6 @@
             text-overflow: ellipsis;
         }
 
-        /* Valor */
         .pval {
             font-weight: 700;
             font-size: 0.88rem;
@@ -172,7 +195,6 @@
             font-variant-numeric: tabular-nums;
         }
 
-        /* Botao */
         .leaderboard-update-btn {
             display: block;
             margin: 0 auto;
@@ -187,11 +209,15 @@
             letter-spacing: 0.06em;
             text-transform: uppercase;
             cursor: pointer;
-            transition: all 0.2s;
+            transition: all 0.25s;
+            animation: fadeSlideDown 0.6s ease-out 0.5s both;
         }
         .leaderboard-update-btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 0 20px rgba(180,139,250,0.3);
+            box-shadow: 0 4px 20px rgba(180,139,250,0.4);
+        }
+        .leaderboard-update-btn:active {
+            transform: translateY(0);
         }
 
         .empty-msg {
@@ -258,8 +284,6 @@
         var lastUpdate = null;
         var cachedData = null;
 
-        var MEDAL_COLORS = { 0: '#ffd700', 1: '#c0c0c0', 2: '#cd7f32' };
-
         function parseValue(val) {
             if (val === '---' || val === null || val === undefined) return 0;
             var cleaned = String(val).replace(/,/g, '').replace(/\s/g, '');
@@ -286,11 +310,6 @@
 
         function getHeadUrl(name) {
             return 'https://mc-heads.net/avatar/' + encodeURIComponent(name) + '/36';
-        }
-
-        function medalSVG(rank) {
-            var color = MEDAL_COLORS[rank] || '#555';
-            return '<svg viewBox="0 0 26 30" fill="none"><path d="M13 0L16.5 4L21 2L20 7L25 9L22 13L26 17H20L18 22L13 18L8 22L6 17H0L4 13L1 7L0 2L5 4L13 0Z" fill="' + color + '" opacity="0.9"/><text x="13" y="16" text-anchor="middle" fill="#170b2b" font-size="9" font-weight="800" font-family="sans-serif">' + (rank + 1) + '</text></svg>';
         }
 
         function fetchLeaderboard() {
@@ -344,14 +363,13 @@
 
                 var rankDiv = document.createElement('div');
                 rankDiv.className = 'rank';
-                if (shown < 3) {
-                    rankDiv.innerHTML = medalSVG(shown);
-                } else {
-                    var numSpan = document.createElement('span');
-                    numSpan.className = 'rank-num';
-                    numSpan.textContent = (shown + 1);
-                    rankDiv.appendChild(numSpan);
-                }
+                var numSpan = document.createElement('span');
+                numSpan.className = 'rank-num';
+                if (shown === 0) numSpan.classList.add('g');
+                else if (shown === 1) numSpan.classList.add('s');
+                else if (shown === 2) numSpan.classList.add('b');
+                numSpan.textContent = (shown + 1);
+                rankDiv.appendChild(numSpan);
                 li.appendChild(rankDiv);
 
                 var headImg = document.createElement('img');
@@ -419,7 +437,7 @@
         function showToast(msg) {
             var toast = document.createElement('div');
             toast.textContent = msg;
-            toast.style.cssText = 'position:fixed;bottom:30px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#b48bfa,#6ee7b7);color:#170b2b;padding:12px 24px;border-radius:8px;font-weight:700;z-index:9999;transition:opacity 0.5s;font-family:sans-serif';
+            toast.style.cssText = 'position:fixed;bottom:30px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#b48bfa,#6ee7b7);color:#170b2b;padding:12px 24px;border-radius:8px;font-weight:700;z-index:9999;transition:opacity 0.5s;font-family:sans-serif;animation:fadeSlideDown 0.3s ease-out';
             document.body.appendChild(toast);
             setTimeout(function() { toast.style.opacity = '0'; setTimeout(function() { toast.remove(); }, 500); }, 2000);
         }
