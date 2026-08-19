@@ -256,6 +256,20 @@
         font-size: 14px;
         color: var(--texto);
     }
+    .group-tag {
+        font-size: 10px;
+        font-weight: 600;
+        padding: 2px 8px;
+        border-radius: 4px;
+        margin-left: 6px;
+        text-transform: uppercase;
+        letter-spacing: 0.3px;
+        vertical-align: middle;
+    }
+    .group-tag.vip { background: rgba(255,215,0,0.15); color: #ffd700; border: 1px solid rgba(255,215,0,0.2); }
+    .group-tag.membro { background: rgba(110,231,183,0.1); color: #6ee7b7; border: 1px solid rgba(110,231,183,0.15); }
+    .group-tag.admin { background: rgba(239,68,68,0.1); color: #ef4444; border: 1px solid rgba(239,68,68,0.15); }
+    .group-tag.default { background: rgba(168,85,247,0.1); color: #c084fc; border: 1px solid rgba(168,85,247,0.15); }
 
     .valor {
         text-align: right;
@@ -325,7 +339,9 @@
 
     <div class="tabs-wrap">
         <div class="tabs-row" id="period-row">
-            <button class="tab active" onclick="selectPeriod(this)">All time</button>
+            <button class="tab active" onclick="selectPeriod(this, 'alltime')">All time</button>
+            <button class="tab" onclick="selectPeriod(this, 'monthly')">Mensal</button>
+            <button class="tab" onclick="selectPeriod(this, 'weekly')">Semanal</button>
         </div>
         <div class="tabs-row" id="category-row">
             <button class="tab active" onclick="selectCategory(this, 'statistic_player_kills')">Kills</button>
@@ -360,6 +376,7 @@
     <script>
     var MEDALHAS = { 1: '\uD83E\uDD47', 2: '\uD83E\uDD48', 3: '\uD83E\uDD49' };
     var API_URL = 'https://www.moonmc.com.br/api/tops/read';
+    var activePeriod = 'alltime';
     var activeCategory = 'statistic_player_kills';
     var cachedData = null;
 
@@ -372,9 +389,30 @@
         'ypesca_fished': { label: 'Peixes', emoji: '\uD83C\uDFA3' }
     };
 
-    function selectPeriod(el) {
+    var GROUP_CLASSES = {
+        'vip': 'vip',
+        'membro': 'membro',
+        'admin': 'admin',
+        'mod': 'admin',
+        'helper': 'admin',
+        'default': 'default',
+        'memorial': 'default'
+    };
+
+    function getGroupClass(group) {
+        if (!group || group === '---') return '';
+        var g = group.toLowerCase();
+        for (var key in GROUP_CLASSES) {
+            if (g.indexOf(key) !== -1) return GROUP_CLASSES[key];
+        }
+        return 'default';
+    }
+
+    function selectPeriod(el, period) {
         document.querySelectorAll('#period-row .tab').forEach(function(b) { b.classList.remove('active'); });
         el.classList.add('active');
+        activePeriod = period;
+        if (cachedData) renderizar(cachedData);
     }
 
     function selectCategory(el, cat) {
@@ -428,31 +466,37 @@
 
     function renderizar(dados) {
         var el = document.getElementById('boards');
-        var boards = dados.boards;
-
-        if (activeCategory !== 'all') {
-            boards = boards.filter(function(b) { return b.board === activeCategory; });
-        }
+        var boards = dados.boards.filter(function(b) {
+            return b.board === activeCategory && b.type === activePeriod;
+        });
 
         if (boards.length === 0) {
-            el.innerHTML = '<div class="vazio">Nenhum top encontrado.</div>';
+            el.innerHTML = '<div class="vazio">Nenhum top encontrado para este periodo.</div>';
             return;
         }
+
+        var maxEntries = activePeriod === 'alltime' ? 100 : 10;
 
         var html = '';
         for (var i = 0; i < boards.length; i++) {
             var b = boards[i];
             var info = BOARD_INFO[b.board] || { label: b.board, emoji: '\uD83C\uDFC6' };
             var linhas = '';
-            for (var j = 0; j < b.entries.length; j++) {
-                var e = b.entries[j];
+            var entries = b.entries.slice(0, maxEntries);
+            for (var j = 0; j < entries.length; j++) {
+                var e = entries[j];
                 var medalha = MEDALHAS[e.pos] || e.pos;
                 var classe = e.pos <= 3 ? 'pos pos-' + e.pos : 'pos';
                 var medalhaClasse = e.pos <= 3 ? 'pos-medalha' : '';
                 var head = '<img class="head" src="https://mc-heads.net/avatar/' + encodeURIComponent(e.name) + '/64" alt="" loading="lazy" onerror="this.src=\'https://mc-heads.net/avatar/steve/64\'">';
-                linhas += '<tr><td class="' + classe + ' ' + medalhaClasse + '">' + medalha + '</td><td class="jogador">' + head + '<span class="nome">' + esc(e.name) + '</span></td><td class="valor">' + formatValue(e.value) + '</td></tr>';
+                var groupHtml = '';
+                if (e.group && e.group !== '---' && e.group !== 'default') {
+                    var gc = getGroupClass(e.group);
+                    groupHtml = '<span class="group-tag ' + gc + '">' + esc(e.group) + '</span>';
+                }
+                linhas += '<tr><td class="' + classe + ' ' + medalhaClasse + '">' + medalha + '</td><td class="jogador">' + head + '<span class="nome">' + esc(e.name) + groupHtml + '</span></td><td class="valor">' + formatValue(e.value) + '</td></tr>';
             }
-            html += '<div class="cartao"><div class="cartao-header"><span class="board-name"><span class="board-emoji">' + info.emoji + '</span> ' + esc(info.label) + '</span><span class="tipo">alltime</span></div><table>' + linhas + '</table></div>';
+            html += '<div class="cartao"><div class="cartao-header"><span class="board-name"><span class="board-emoji">' + info.emoji + '</span> ' + esc(info.label) + '</span><span class="tipo">' + esc(activePeriod) + '</span></div><table>' + linhas + '</table></div>';
         }
         el.innerHTML = html;
     }
