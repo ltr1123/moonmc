@@ -1,7 +1,8 @@
 // Lógica principal do testador com cache e polling
 const CACHE_KEY = 'moonmc_tops_cache';
 const CACHE_DURATION = 5 * 60 * 1000; // 5 minutos
-const API_BASE = 'https://moonmc.vercel.app/api/tops';
+// Usar API local para desenvolvimento, produção usa a URL real
+const API_BASE = window.location.hostname === 'localhost' ? 'http://localhost:8080/api/tops' : 'https://moonmc.vercel.app/api/tops';
 const POLLING_INTERVAL = 30000; // 30 segundos
 
 let pollingActive = true;
@@ -59,7 +60,35 @@ function updateDisplay(data) {
     statusEl.className = 'status updated';
     statusEl.textContent = `Atualizado há ${age}s`;
 
-    const parsed = parseTops(data);
+    // Parse data and also prepare full player list for the "Todos os Jogadores" table
+const parsed = parseTops(data);
+const fullPlayersList = {};
+if (parsed && parsed.kills) {
+    parsed.kills.forEach(p => {
+        fullPlayersList[p.player] = {
+            kills: p.kills,
+            mortes: parsed.mortes?.find(m => m.player === p.player)?.mortes || '-'
+        };
+    });
+}
+if (parsed && parsed.money) {
+    Object.entries(parsed.money).forEach(([player, money]) => {
+        if (!fullPlayersList[player]) fullPlayersList[player] = {};
+        fullPlayersList[player].money = money;
+    });
+}
+
+// Render all tables
+if (parsed) {
+    document.querySelectorAll('.section').forEach(section => section.classList.remove('hidden'));
+    if (parsed.kills) renderTable(parsed.kills, 'kills', 'kills');
+    if (parsed.mortes) renderTable(parsed.mortes, 'mortes', 'mortes');
+    if (parsed.money) renderTable(parsed.money, 'money', 'money');
+    // Render complete player list
+    renderPlayersList(fullPlayersList);
+} else {
+    document.querySelectorAll('.section').forEach(section => section.classList.add('hidden'));
+}
     if (parsed) {
         document.querySelectorAll('.section').forEach(section => section.classList.remove('hidden'));
         if (parsed.kills) renderTable(parsed.kills, 'kills', 'kills');
@@ -146,4 +175,20 @@ function init() {
 }
 
 // Exportar funções para uso externo se necessário
-window.MoonMC = { init, fetchAndUpdate };
+// Função para renderizar lista de todos os jogadores
+function renderPlayersList(data) {
+    const tbody = document.getElementById('players-table');
+    if (!data || Object.keys(data).length === 0) {
+        tbody.innerHTML = '<tr><td colspan="4">Sem jogadores cadastrados</td></tr>';
+        return;
+    }
+    tbody.innerHTML = '';
+    Object.entries(data).forEach(([player, stats]) => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `<td>${player}</td><td>${stats.kills || '-'}</td><td>${stats.mortes || '-'}</td><td>${stats.money || '-'}</td>`;
+        tbody.appendChild(tr);
+    });
+}
+
+// Exportar funções para uso externo se necessário
+window.MoonMC = { init, fetchAndUpdate, renderPlayersList };
