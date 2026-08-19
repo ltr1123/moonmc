@@ -1501,6 +1501,12 @@ section { position: relative; z-index: 1; }
 @media (max-width: 768px) {
   .navbar-menu, .navbar-actions .status-online { display: none; }
   .hamburger { display: flex; }
+  .navbar-inner { padding: 0 12px; gap: 10px; }
+  .navbar-brand img { width: 42px; height: 42px; }
+  .brand-text h1 { font-size: 1.4rem; }
+  .brand-text span { font-size: 0.5rem; }
+  .navbar-actions { gap: 8px; }
+  .btn-nav { padding: 8px 14px; font-size: 0.75rem; }
   .mobile-menu { display: flex; }
   .hero { min-height: 100svh; }
   .hero-content { padding: 60px 24px 100px; }
