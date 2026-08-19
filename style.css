@@ -184,14 +184,20 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
 .navbar-inner {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   height: 100%;
   max-width: var(--container);
   margin: 0 auto;
   padding: 0 24px;
-  gap: 32px;
 }
 
 .navbar-brand { flex-shrink: 0; }
+
+.navbar-left {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+}
 
 .navbar-brand img {
   width: 70px;
