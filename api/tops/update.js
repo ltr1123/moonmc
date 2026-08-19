@@ -1,28 +1,25 @@
-// api/tops/update.js - Função serverless para Vercel
-import { kv } from '@vercel/kv';
+// RECETOR DOS TOPS (Vercel Blob)
+// URL final: https://www.moonmc.com.br/api/tops/update
+import { put } from '@vercel/blob';
 
-export const config = { runtime: 'nodejs' };
+export async function POST(request) {
+  const texto = await request.text();
+  const params = new URLSearchParams(texto);
+  const token = params.get('token');
+  const dados = params.get('dados');
 
-export default async function handler(req, res) {
-    if (req.method !== 'POST') {
-        return res.status(405).json({ error: 'Método não permitido' });
-    }
-    
-    const { token, dados } = req.body;
-    const expectedToken = process.env.TOPS_SEGREDO || 'moonmc236';
-    
-    if (token !== expectedToken) {
-        return res.status(403).json({ error: 'Token inválido' });
-    }
-    if (!dados) {
-        return res.status(400).json({ error: 'Dados ausentes' });
-    }
-    
-    try {
-        await kv.set('tops', dados, { ex: 7 * 86400 });
-        res.status(200).json({ success: true, message: 'Atualizado com sucesso' });
-    } catch (error) {
-        console.error('Erro KV:', error);
-        res.status(500).json({ error: 'Falha ao armazenar dados' });
-    }
+  if (token !== process.env.TOPS_SEGREDO) {
+    return new Response('token invalido', { status: 403 });
+  }
+  if (!dados) {
+    return new Response('sem dados', { status: 400 });
+  }
+
+  await put('tops.json', dados, {
+    access: 'public',
+    contentType: 'application/json',
+    addRandomSuffix: false,
+    allowOverwrite: true
+  });
+  return new Response('ok', { status: 200 });
 }
