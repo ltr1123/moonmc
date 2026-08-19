@@ -6,236 +6,207 @@
     <title>Leaderboard | MoonMC</title>
     <link rel="stylesheet" href="style.css">
     <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
         .leaderboard {
-            max-width: 900px;
-            margin: 80px auto;
+            max-width: 1200px;
+            margin: 120px auto 60px;
             padding: 0 24px;
         }
+
         .leaderboard-header {
             text-align: center;
-            margin-bottom: 36px;
+            margin-bottom: 16px;
         }
-        .leaderboard-title {
-            font-size: 2.2rem;
-            margin-bottom: 8px;
-            color: #fff;
-            font-family: var(--font-display);
-            letter-spacing: 0.04em;
+        .leaderboard-logo {
+            font-size: 3rem;
+            font-weight: 900;
+            letter-spacing: 0.08em;
+            background: linear-gradient(135deg, #b48bfa, #818cf8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-family: var(--font-display), sans-serif;
+            text-transform: uppercase;
         }
-        .leaderboard-subtitle {
-            color: var(--gray);
-            font-size: 0.95rem;
+        .leaderboard-sub {
+            color: var(--gray, #888);
+            font-size: 0.8rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            font-family: var(--font-heading), sans-serif;
+            margin-top: 4px;
+        }
+        .leaderboard-line {
+            width: 60px;
+            height: 3px;
+            background: linear-gradient(90deg, #b48bfa, #6ee7b7);
+            border-radius: 2px;
+            margin: 16px auto 0;
         }
 
-        /* Seletor de categorias */
-        .category-selector {
+        /* Selector */
+        .period-selector {
             display: flex;
             justify-content: center;
             gap: 8px;
-            margin-bottom: 12px;
-            flex-wrap: wrap;
+            margin: 24px 0 32px;
         }
-        .cat-btn {
-            padding: 10px 28px;
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            background: rgba(255,255,255,0.04);
-            color: var(--gray);
-            font-family: var(--font-heading);
-            font-weight: 600;
-            font-size: 0.85rem;
-            letter-spacing: 0.03em;
-            text-transform: uppercase;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        .cat-btn:hover {
-            background: rgba(255,255,255,0.08);
-            color: #fff;
-        }
-        .cat-btn.active {
-            background: linear-gradient(135deg, #b48bfa, #6ee7b7);
-            color: #170b2b;
-            border-color: transparent;
-            font-weight: 700;
-        }
-        .sub-selector {
-            display: flex;
-            justify-content: center;
-            gap: 8px;
-            margin-bottom: 32px;
-            flex-wrap: wrap;
-        }
-        .sub-btn {
-            padding: 8px 20px;
-            border: 1px solid var(--border);
+        .period-btn {
+            padding: 8px 24px;
+            border: 1px solid rgba(255,255,255,0.1);
             border-radius: 6px;
-            background: rgba(255,255,255,0.03);
-            color: var(--gray-muted, #888);
-            font-family: var(--font-heading);
+            background: transparent;
+            color: var(--gray, #888);
+            font-family: var(--font-heading), sans-serif;
             font-weight: 600;
             font-size: 0.8rem;
-            letter-spacing: 0.03em;
+            letter-spacing: 0.04em;
             text-transform: uppercase;
             cursor: pointer;
             transition: all 0.2s;
         }
-        .sub-btn:hover {
-            background: rgba(255,255,255,0.06);
+        .period-btn:hover { color: #fff; border-color: rgba(255,255,255,0.2); }
+        .period-btn.active {
+            background: linear-gradient(135deg, #b48bfa, #818cf8);
             color: #fff;
-        }
-        .sub-btn.active {
-            background: var(--neon, #b48bfa);
-            color: #170b2b;
             border-color: transparent;
-            font-weight: 700;
         }
 
-        /* Boards */
-        .board-section {
-            margin-bottom: 36px;
-            background: rgba(255,255,255,0.02);
-            border: 1px solid var(--border);
+        /* Grid de boards */
+        .boards-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-bottom: 32px;
+        }
+
+        /* Card */
+        .board-card {
+            background: linear-gradient(180deg, rgba(100,60,180,0.12) 0%, rgba(30,20,60,0.6) 100%);
+            border: 1px solid rgba(140,100,220,0.2);
             border-radius: 12px;
             overflow: hidden;
         }
-        .board-header {
+        .board-card-header {
             display: flex;
             align-items: center;
-            gap: 10px;
-            padding: 16px 24px;
-            background: rgba(255,255,255,0.03);
-            border-bottom: 1px solid var(--border);
+            justify-content: space-between;
+            padding: 14px 18px;
+            border-bottom: 1px solid rgba(140,100,220,0.15);
         }
-        .board-icon {
-            font-size: 1.3rem;
-        }
-        .board-title {
-            font-size: 1.1rem;
-            color: var(--neon);
-            font-family: var(--font-heading);
+        .board-card-title {
+            font-size: 0.82rem;
             font-weight: 700;
+            color: var(--neon, #b48bfa);
+            font-family: var(--font-heading), sans-serif;
             letter-spacing: 0.04em;
             text-transform: uppercase;
-            margin: 0;
         }
-
-        .lb-table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        .lb-table th,
-        .lb-table td {
-            padding: 12px 20px;
-            text-align: left;
-        }
-        .lb-table th {
-            color: var(--gray-muted, #888);
-            font-family: var(--font-heading);
+        .board-card-badge {
+            font-size: 0.65rem;
             font-weight: 600;
-            font-size: 0.75rem;
-            letter-spacing: 0.06em;
+            color: var(--gray, #888);
+            background: rgba(255,255,255,0.06);
+            padding: 3px 10px;
+            border-radius: 4px;
+            letter-spacing: 0.03em;
             text-transform: uppercase;
-            border-bottom: 1px solid var(--border);
-            background: transparent;
-        }
-        .lb-table td {
-            color: var(--white);
-            font-size: 0.92rem;
-            border-bottom: 1px solid rgba(255,255,255,0.04);
-        }
-        .lb-table tr:last-child td {
-            border-bottom: none;
-        }
-        .lb-table tr:hover {
-            background: rgba(255,255,255,0.03);
-        }
-        .lb-table th:last-child,
-        .lb-table td:last-child {
-            text-align: right;
-        }
-        .lb-table th:first-child {
-            width: 50px;
-            text-align: center;
-        }
-        .lb-table td:first-child {
-            text-align: center;
         }
 
-        .rank-num {
-            font-family: var(--font-display);
-            font-size: 1rem;
-            font-weight: 700;
-            color: var(--gray);
+        /* Lista */
+        .board-list {
+            list-style: none;
+            padding: 4px 0;
         }
-        .rank-num.gold { color: #ffd700; }
-        .rank-num.silver { color: #c0c0c0; }
-        .rank-num.bronze { color: #cd7f32; }
-
-        .player-cell {
+        .board-item {
             display: flex;
             align-items: center;
+            padding: 8px 18px;
             gap: 12px;
+            transition: background 0.15s;
         }
-        .player-head {
-            width: 32px;
-            height: 32px;
+        .board-item:hover {
+            background: rgba(255,255,255,0.03);
+        }
+
+        /* Rank */
+        .rank {
+            width: 28px;
+            text-align: center;
+            flex-shrink: 0;
+        }
+        .rank-num {
+            font-weight: 700;
+            font-size: 0.9rem;
+            color: var(--gray, #888);
+        }
+
+        /* Head */
+        .head {
+            width: 30px;
+            height: 30px;
             border-radius: 4px;
             image-rendering: pixelated;
             flex-shrink: 0;
             border: 1px solid rgba(255,255,255,0.1);
         }
-        .player-name {
+
+        /* Nome */
+        .pname {
+            flex: 1;
             font-weight: 600;
+            font-size: 0.88rem;
             color: #fff;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
-        .val-text {
+
+        /* Valor */
+        .pval {
             font-weight: 700;
-            color: var(--cyan, #6ee7b7);
+            font-size: 0.88rem;
+            color: #fff;
+            flex-shrink: 0;
             font-variant-numeric: tabular-nums;
+        }
+
+        /* Botao */
+        .leaderboard-update-btn {
+            display: block;
+            margin: 0 auto;
+            padding: 10px 28px;
+            background: linear-gradient(135deg, #b48bfa, #6ee7b7);
+            color: #170b2b;
+            border: none;
+            border-radius: 8px;
+            font-family: var(--font-heading), sans-serif;
+            font-weight: 700;
+            font-size: 0.8rem;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .leaderboard-update-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 20px rgba(180,139,250,0.3);
         }
 
         .empty-msg {
             text-align: center;
             padding: 24px;
-            color: var(--gray);
-            font-size: 0.9rem;
+            color: var(--gray, #888);
         }
 
-        /* Botao atualizar */
-        .leaderboard-update-btn {
-            display: block;
-            margin: 20px auto 0;
-            padding: 12px 32px;
-            background: linear-gradient(135deg, var(--neon), var(--mint));
-            color: #170b2b;
-            border: none;
-            border-radius: 8px;
-            font-family: var(--font-heading);
-            font-weight: 700;
-            letter-spacing: 0.06em;
-            text-transform: uppercase;
-            cursor: pointer;
-            transition: var(--transition);
+        @media (max-width: 900px) {
+            .boards-grid { grid-template-columns: repeat(2, 1fr); }
         }
-        .leaderboard-update-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 0 20px rgba(194, 139, 255, 0.3);
-        }
-        .leaderboard-error {
-            text-align: center;
-            padding: 40px;
-            color: #ff6b6b;
-            background: rgba(255, 107, 107, 0.1);
-            border-radius: 12px;
-            margin: 20px 0;
-        }
-
         @media (max-width: 600px) {
-            .leaderboard { padding: 0 12px; }
-            .board-header { padding: 12px 16px; }
-            .lb-table th, .lb-table td { padding: 10px 12px; }
-            .leaderboard-title { font-size: 1.6rem; }
+            .boards-grid { grid-template-columns: 1fr; }
+            .leaderboard-logo { font-size: 2rem; }
+            .leaderboard { margin-top: 100px; }
         }
     </style>
 </head>
@@ -257,17 +228,16 @@
 
     <div class="leaderboard">
         <div class="leaderboard-header">
-            <h1 class="leaderboard-title">Ranqueamento</h1>
-            <p class="leaderboard-subtitle" id="status">Atualizado em tempo real</p>
+            <div class="leaderboard-logo">MoonMC</div>
+            <div class="leaderboard-sub">Tops do Servidor</div>
+            <div class="leaderboard-line"></div>
         </div>
 
-        <div class="category-selector">
-            <button class="cat-btn active" data-period="alltime">All time</button>
+        <div class="period-selector">
+            <button class="period-btn active" data-period="alltime">All time</button>
         </div>
 
-        <div class="sub-selector" id="sub-selector"></div>
-
-        <div id="leaderboard-content">
+        <div id="boards-grid" class="boards-grid">
             <div class="empty-msg">Carregando dados...</div>
         </div>
 
@@ -278,16 +248,17 @@
         var API_BASE = 'https://www.moonmc.com.br';
 
         var BOARDS = {
-            'statistic_player_kills': { label: 'Kills', icon: '\u2694\uFE0F' },
-            'statistic_deaths': { label: 'Mortes', icon: '\uD83D\uDC80' },
+            'statistic_player_kills': { label: 'Player Kills', icon: '\u2694\uFE0F' },
+            'statistic_deaths': { label: 'Deaths', icon: '\uD83D\uDC80' },
             'vault_eco_balance': { label: 'Dinheiro', icon: '\uD83D\uDCB0' },
-            'ypesca_fished': { label: 'Peixes Pescados', icon: '\uD83C\uDFA3' }
+            'ypesca_fished': { label: 'Peixes', icon: '\uD83C\uDFA3' }
         };
 
-        var ALL_BOARD_KEYS = Object.keys(BOARDS);
+        var BOARD_KEYS = Object.keys(BOARDS);
         var lastUpdate = null;
         var cachedData = null;
-        var activeBoard = 'all';
+
+        var MEDAL_COLORS = { 0: '#ffd700', 1: '#c0c0c0', 2: '#cd7f32' };
 
         function parseValue(val) {
             if (val === '---' || val === null || val === undefined) return 0;
@@ -317,60 +288,25 @@
             return 'https://mc-heads.net/avatar/' + encodeURIComponent(name) + '/36';
         }
 
-        function renderSubSelector() {
-            var container = document.getElementById('sub-selector');
-            container.innerHTML = '';
-
-            var allBtn = document.createElement('button');
-            allBtn.className = 'sub-btn' + (activeBoard === 'all' ? ' active' : '');
-            allBtn.textContent = 'Geral';
-            allBtn.onclick = function() { activeBoard = 'all'; renderSubSelector(); renderFromCache(); };
-            container.appendChild(allBtn);
-
-            ALL_BOARD_KEYS.forEach(function(key) {
-                var info = BOARDS[key];
-                var btn = document.createElement('button');
-                btn.className = 'sub-btn' + (activeBoard === key ? ' active' : '');
-                btn.textContent = info.label;
-                btn.onclick = function() { activeBoard = key; renderSubSelector(); renderFromCache(); };
-                container.appendChild(btn);
-            });
-        }
-
-        function renderFromCache() {
-            if (cachedData) renderLeaderboard(cachedData);
+        function medalSVG(rank) {
+            var color = MEDAL_COLORS[rank] || '#555';
+            return '<svg viewBox="0 0 26 30" fill="none"><path d="M13 0L16.5 4L21 2L20 7L25 9L22 13L26 17H20L18 22L13 18L8 22L6 17H0L4 13L1 7L0 2L5 4L13 0Z" fill="' + color + '" opacity="0.9"/><text x="13" y="16" text-anchor="middle" fill="#170b2b" font-size="9" font-weight="800" font-family="sans-serif">' + (rank + 1) + '</text></svg>';
         }
 
         function fetchLeaderboard() {
             return fetch(API_BASE + '/api/tops/read')
-                .then(function(r) {
-                    if (!r.ok) throw new Error('Falha');
-                    return r.json();
-                })
-                .catch(function(e) {
-                    console.error('Erro:', e);
-                    return null;
-                });
+                .then(function(r) { if (!r.ok) throw new Error('Falha'); return r.json(); })
+                .catch(function(e) { console.error('Erro:', e); return null; });
         }
 
         function updateLeaderboard() {
             var btn = document.querySelector('.leaderboard-update-btn');
             btn.textContent = 'Atualizando...';
             btn.disabled = true;
-            fetchLeaderboard()
-                .then(function(data) {
-                    if (data && data.boards) {
-                        cachedData = data;
-                        renderLeaderboard(data);
-                        lastUpdate = Date.now();
-                        showToast('Dados atualizados!');
-                    }
-                })
-                .catch(function() { showToast('Erro ao atualizar'); })
-                .then(function() {
-                    btn.textContent = 'Atualizar Dados';
-                    btn.disabled = false;
-                });
+            fetchLeaderboard().then(function(data) {
+                if (data && data.boards) { cachedData = data; renderLeaderboard(data); lastUpdate = Date.now(); showToast('Dados atualizados!'); }
+            }).catch(function() { showToast('Erro ao atualizar'); })
+            .then(function() { btn.textContent = 'Atualizar Dados'; btn.disabled = false; });
         }
 
         function renderBoard(boardData, boardKey) {
@@ -380,159 +316,122 @@
             var isMoney = boardKey === 'vault_eco_balance';
             var isTime = boardKey === 'statistic_time_played';
 
-            var section = document.createElement('div');
-            section.className = 'board-section';
+            var card = document.createElement('div');
+            card.className = 'board-card';
 
             var header = document.createElement('div');
-            header.className = 'board-header';
-            var icon = document.createElement('span');
-            icon.className = 'board-icon';
-            icon.textContent = info.icon;
-            header.appendChild(icon);
-            var title = document.createElement('h2');
-            title.className = 'board-title';
-            title.textContent = info.label;
-            header.appendChild(title);
-            section.appendChild(header);
+            header.className = 'board-card-header';
+            var titleEl = document.createElement('span');
+            titleEl.className = 'board-card-title';
+            titleEl.textContent = info.icon + ' ' + info.label;
+            header.appendChild(titleEl);
+            var badge = document.createElement('span');
+            badge.className = 'board-card-badge';
+            badge.textContent = 'alltime';
+            header.appendChild(badge);
+            card.appendChild(header);
 
-            var table = document.createElement('table');
-            table.className = 'lb-table';
-
-            var thead = document.createElement('thead');
-            var trH = document.createElement('tr');
-            ['#', 'Jogador', info.label].forEach(function(t) {
-                var th = document.createElement('th');
-                th.textContent = t;
-                trH.appendChild(th);
-            });
-            thead.appendChild(trH);
-            table.appendChild(thead);
-
-            var tbody = document.createElement('tbody');
+            var list = document.createElement('ul');
+            list.className = 'board-list';
             var shown = 0;
 
             for (var i = 0; i < boardData.entries.length && shown < 10; i++) {
                 var entry = boardData.entries[i];
                 if (!entry.name || entry.name === '---' || entry.value === '---') continue;
 
-                var tr = document.createElement('tr');
+                var li = document.createElement('li');
+                li.className = 'board-item';
 
-                var rankTd = document.createElement('td');
-                var rankSpan = document.createElement('span');
-                rankSpan.className = 'rank-num';
-                if (shown === 0) rankSpan.classList.add('gold');
-                else if (shown === 1) rankSpan.classList.add('silver');
-                else if (shown === 2) rankSpan.classList.add('bronze');
-                rankSpan.textContent = (shown + 1);
-                rankTd.appendChild(rankSpan);
-                tr.appendChild(rankTd);
+                var rankDiv = document.createElement('div');
+                rankDiv.className = 'rank';
+                if (shown < 3) {
+                    rankDiv.innerHTML = medalSVG(shown);
+                } else {
+                    var numSpan = document.createElement('span');
+                    numSpan.className = 'rank-num';
+                    numSpan.textContent = (shown + 1);
+                    rankDiv.appendChild(numSpan);
+                }
+                li.appendChild(rankDiv);
 
-                var nameTd = document.createElement('td');
-                var playerDiv = document.createElement('div');
-                playerDiv.className = 'player-cell';
                 var headImg = document.createElement('img');
-                headImg.className = 'player-head';
+                headImg.className = 'head';
                 headImg.src = getHeadUrl(entry.name);
                 headImg.alt = entry.name;
-                headImg.onerror = function() { this.style.display = 'none'; };
-                playerDiv.appendChild(headImg);
-                var nameSpan = document.createElement('span');
-                nameSpan.className = 'player-name';
-                nameSpan.textContent = entry.name;
-                playerDiv.appendChild(nameSpan);
-                nameTd.appendChild(playerDiv);
-                tr.appendChild(nameTd);
+                headImg.onerror = function() { this.src = 'https://mc-heads.net/avatar/steve/36'; };
+                li.appendChild(headImg);
 
-                var valTd = document.createElement('td');
-                var valSpan = document.createElement('span');
-                valSpan.className = 'val-text';
-                if (isMoney) valSpan.textContent = formatMoney(entry.value);
-                else if (isTime) valSpan.textContent = formatTime(entry.value);
-                else valSpan.textContent = formatNumber(entry.value);
-                valTd.appendChild(valSpan);
-                tr.appendChild(valTd);
+                var nameEl = document.createElement('span');
+                nameEl.className = 'pname';
+                nameEl.textContent = entry.name;
+                li.appendChild(nameEl);
 
-                tbody.appendChild(tr);
+                var valEl = document.createElement('span');
+                valEl.className = 'pval';
+                if (isMoney) valEl.textContent = formatMoney(entry.value);
+                else if (isTime) valEl.textContent = formatTime(entry.value);
+                else valEl.textContent = formatNumber(entry.value);
+                li.appendChild(valEl);
+
+                list.appendChild(li);
                 shown++;
             }
 
-            table.appendChild(tbody);
-            section.appendChild(table);
-            return section;
+            if (shown === 0) {
+                var empty = document.createElement('li');
+                empty.className = 'board-item';
+                empty.innerHTML = '<span style="color:var(--gray,#888);width:100%;text-align:center;padding:16px 0">Sem dados</span>';
+                list.appendChild(empty);
+            }
+
+            card.appendChild(list);
+            return card;
         }
 
         function renderLeaderboard(data) {
-            var container = document.getElementById('leaderboard-content');
-            container.innerHTML = '';
+            var grid = document.getElementById('boards-grid');
+            grid.innerHTML = '';
 
             if (!data || !data.boards) {
-                container.innerHTML = '<div class="leaderboard-error">Sem dados disponiveis</div>';
+                grid.innerHTML = '<div class="empty-msg" style="grid-column:1/-1">Sem dados disponiveis</div>';
                 return;
             }
 
             var hasContent = false;
-            var keysToShow = activeBoard === 'all' ? ALL_BOARD_KEYS : [activeBoard];
 
-            for (var k = 0; k < keysToShow.length; k++) {
-                var boardKey = keysToShow[k];
+            for (var k = 0; k < BOARD_KEYS.length; k++) {
+                var boardKey = BOARD_KEYS[k];
                 var boardData = null;
                 for (var j = 0; j < data.boards.length; j++) {
-                    if (data.boards[j].board === boardKey) {
-                        boardData = data.boards[j];
-                        break;
-                    }
+                    if (data.boards[j].board === boardKey) { boardData = data.boards[j]; break; }
                 }
                 if (boardData) {
-                    var section = renderBoard(boardData, boardKey);
-                    if (section) {
-                        container.appendChild(section);
-                        hasContent = true;
-                    }
+                    var card = renderBoard(boardData, boardKey);
+                    if (card) { grid.appendChild(card); hasContent = true; }
                 }
             }
 
             if (!hasContent) {
-                container.innerHTML = '<div class="leaderboard-error">Sem dados disponiveis</div>';
+                grid.innerHTML = '<div class="empty-msg" style="grid-column:1/-1">Sem dados disponiveis</div>';
             }
         }
 
         function showToast(msg) {
             var toast = document.createElement('div');
             toast.textContent = msg;
-            toast.style.cssText = 'position:fixed;bottom:30px;left:50%;transform:translateX(-50%);background:var(--neon);color:#170b2b;padding:12px 24px;border-radius:8px;font-weight:700;z-index:9999;transition:opacity 0.5s';
+            toast.style.cssText = 'position:fixed;bottom:30px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#b48bfa,#6ee7b7);color:#170b2b;padding:12px 24px;border-radius:8px;font-weight:700;z-index:9999;transition:opacity 0.5s;font-family:sans-serif';
             document.body.appendChild(toast);
-            setTimeout(function() {
-                toast.style.opacity = '0';
-                setTimeout(function() { toast.remove(); }, 500);
-            }, 2000);
+            setTimeout(function() { toast.style.opacity = '0'; setTimeout(function() { toast.remove(); }, 500); }, 2000);
         }
 
-        function updateStatus() {
-            var el = document.getElementById('status');
-            if (!el || !lastUpdate) return;
-            var s = Math.floor((Date.now() - lastUpdate) / 1000);
-            el.textContent = 'Atualizado ha ' + s + 's \u00B7 Atualiza a cada 30s';
-        }
-
-        renderSubSelector();
         fetchLeaderboard().then(function(data) {
-            if (data && data.boards) {
-                cachedData = data;
-                renderLeaderboard(data);
-                lastUpdate = Date.now();
-            } else {
-                document.getElementById('leaderboard-content').innerHTML = '<div class="leaderboard-error">Sem dados disponiveis</div>';
-            }
+            if (data && data.boards) { cachedData = data; renderLeaderboard(data); lastUpdate = Date.now(); }
+            else { document.getElementById('boards-grid').innerHTML = '<div class="empty-msg" style="grid-column:1/-1">Sem dados disponiveis</div>'; }
             setInterval(function() {
                 fetchLeaderboard().then(function(d) {
-                    if (d && d.boards) {
-                        cachedData = d;
-                        renderLeaderboard(d);
-                        lastUpdate = Date.now();
-                    }
+                    if (d && d.boards) { cachedData = d; renderLeaderboard(d); lastUpdate = Date.now(); }
                 });
             }, 30000);
-            setInterval(updateStatus, 1000);
         });
     </script>
 </body>
