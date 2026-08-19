@@ -2,8 +2,8 @@
 (function () {
   'use strict';
 
-  var IP_JAVA = 'moonmc.com.br';
-  var IP_BEDROCK = 'moonmc.com.br:25600';
+  var IP_JAVA = 'jogar.moonmc.com.br';
+  var IP_BEDROCK = 'jogar.moonmc.com.br:25600';
 
   /* ── Loader ── */
   window.addEventListener('load', function () {
@@ -208,8 +208,8 @@
   var statusDot = document.querySelector('.status-dot');
   var playerCount = document.getElementById('player-count');
   var STATUS_SOURCES = [
-    'https://api.mcstatus.io/v2/status/java/moonmc.com.br',
-    'https://api.mcsrvstat.us/3/moonmc.com.br'
+    'https://api.mcstatus.io/v2/status/java/jogar.moonmc.com.br',
+    'https://api.mcsrvstat.us/3/jogar.moonmc.com.br'
   ];
 
   function applyStatus(data) {
