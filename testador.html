@@ -79,15 +79,23 @@
             font-size: 1.2rem;
             color: var(--neon-2);
             font-weight: 700;
+            width: 50px;
+            text-align: center;
         }
-        .leaderboard-rank.gold {
-            color: #ffd700;
+        .leaderboard-rank.gold { color: #ffd700; }
+        .leaderboard-rank.silver { color: #c0c0c0; }
+        .leaderboard-rank.bronze { color: #cd7f32; }
+        .player-cell {
+            display: flex;
+            align-items: center;
+            gap: 12px;
         }
-        .leaderboard-rank.silver {
-            color: #c0c0c0;
-        }
-        .leaderboard-rank.bronze {
-            color: #cd7f32;
+        .player-head {
+            width: 36px;
+            height: 36px;
+            border-radius: 4px;
+            image-rendering: pixelated;
+            flex-shrink: 0;
         }
         .leaderboard-name {
             font-weight: 600;
@@ -96,6 +104,11 @@
         .leaderboard-value {
             font-weight: 700;
             color: var(--cyan);
+            text-align: right;
+        }
+        .leaderboard-table td:last-child,
+        .leaderboard-table th:last-child {
+            text-align: right;
         }
         .leaderboard-update-btn {
             display: block;
@@ -188,15 +201,32 @@
 
         var lastUpdate = null;
 
+        function parseValue(val) {
+            if (val === '---' || val === null || val === undefined) return 0;
+            var cleaned = String(val).replace(/,/g, '').replace(/\s/g, '');
+            var num = parseFloat(cleaned);
+            return isNaN(num) ? 0 : num;
+        }
+
         function formatMoney(val) {
-            var n = parseInt(val) || 0;
+            var n = parseValue(val);
             if (n >= 1000000) return (n / 1000000).toFixed(1).replace(/\.0$/, '') + 'M';
             if (n >= 1000) return (n / 1000).toFixed(1).replace(/\.0$/, '') + 'K';
-            return n.toLocaleString();
+            return Math.round(n).toLocaleString('pt-BR');
         }
 
         function formatNumber(val) {
-            return (parseInt(val) || 0).toLocaleString();
+            var n = parseValue(val);
+            return Math.round(n).toLocaleString('pt-BR');
+        }
+
+        function formatTime(val) {
+            if (!val || val === '---') return '0';
+            return String(val);
+        }
+
+        function getHeadUrl(name) {
+            return 'https://mc-heads.net/avatar/' + encodeURIComponent(name) + '/36';
         }
 
         function fetchLeaderboard() {
@@ -221,8 +251,6 @@
                         renderLeaderboard(data);
                         lastUpdate = Date.now();
                         showToast('Dados atualizados!');
-                    } else {
-                        showToast('Sem dados disponiveis');
                     }
                 })
                 .catch(function() {
@@ -239,6 +267,7 @@
             if (!info || !boardData.entries || boardData.entries.length === 0) return null;
 
             var isMoney = boardKey === 'vault_eco_balance';
+            var isTime = boardKey === 'statistic_time_played';
 
             var section = document.createElement('div');
             section.className = 'board-section';
@@ -262,32 +291,48 @@
             table.appendChild(thead);
 
             var tbody = document.createElement('tbody');
+            var shown = 0;
 
-            boardData.entries.forEach(function(entry, i) {
-                if (!entry.name || entry.name === '---') return;
+            for (var i = 0; i < boardData.entries.length && shown < 10; i++) {
+                var entry = boardData.entries[i];
+                if (!entry.name || entry.name === '---' || entry.value === '---') continue;
 
                 var tr = document.createElement('tr');
 
                 var rankTd = document.createElement('td');
                 rankTd.className = 'leaderboard-rank';
-                if (i === 0) rankTd.classList.add('gold');
-                else if (i === 1) rankTd.classList.add('silver');
-                else if (i === 2) rankTd.classList.add('bronze');
-                rankTd.textContent = (i + 1).toString();
+                if (shown === 0) rankTd.classList.add('gold');
+                else if (shown === 1) rankTd.classList.add('silver');
+                else if (shown === 2) rankTd.classList.add('bronze');
+                rankTd.textContent = (shown + 1).toString();
                 tr.appendChild(rankTd);
 
                 var nameTd = document.createElement('td');
-                nameTd.className = 'leaderboard-name';
-                nameTd.textContent = entry.name;
+                var playerDiv = document.createElement('div');
+                playerDiv.className = 'player-cell';
+                var headImg = document.createElement('img');
+                headImg.className = 'player-head';
+                headImg.src = getHeadUrl(entry.name);
+                headImg.alt = entry.name;
+                headImg.onerror = function() { this.style.display = 'none'; };
+                playerDiv.appendChild(headImg);
+                var nameSpan = document.createElement('span');
+                nameSpan.className = 'leaderboard-name';
+                nameSpan.textContent = entry.name;
+                playerDiv.appendChild(nameSpan);
+                nameTd.appendChild(playerDiv);
                 tr.appendChild(nameTd);
 
                 var valTd = document.createElement('td');
                 valTd.className = 'leaderboard-value';
-                valTd.textContent = isMoney ? formatMoney(entry.value) : formatNumber(entry.value);
+                if (isMoney) valTd.textContent = formatMoney(entry.value);
+                else if (isTime) valTd.textContent = formatTime(entry.value);
+                else valTd.textContent = formatNumber(entry.value);
                 tr.appendChild(valTd);
 
                 tbody.appendChild(tr);
-            });
+                shown++;
+            }
 
             table.appendChild(tbody);
             section.appendChild(table);
