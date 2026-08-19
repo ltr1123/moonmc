@@ -378,8 +378,6 @@
   });
 
   /* ── Server status ── */
-  var statusText = document.getElementById('status-text');
-  var statusDot = document.querySelector('.status-dot');
   var playerCount = document.getElementById('player-count');
   var playerCountNav = document.getElementById('player-count-nav');
   var STATUS_SOURCES = [
@@ -389,26 +387,20 @@
 
   function applyStatus(data) {
     if (data && data.online) {
-      statusText.textContent = 'Servidor online';
-      if (statusDot) statusDot.className = 'status-dot online';
       var count = data.players && data.players.online != null ? data.players.online : '?';
       if (playerCount) playerCount.textContent = count;
       if (playerCountNav) playerCountNav.textContent = count;
     } else {
-      statusText.textContent = 'Servidor offline';
-      if (statusDot) statusDot.className = 'status-dot offline';
       if (playerCount) playerCount.textContent = '0';
       if (playerCountNav) playerCountNav.textContent = '0';
     }
   }
 
   function checkStatus() {
-    if (!statusText) return;
     var settled = false;
     function tryNext(i) {
       if (i >= STATUS_SOURCES.length) {
-        statusText.textContent = 'Status indisponível';
-        if (statusDot) statusDot.className = 'status-dot offline';
+        if (playerCountNav) playerCountNav.textContent = '—';
         return;
       }
       var controller = typeof AbortController !== 'undefined' ? new AbortController() : null;
