@@ -257,8 +257,62 @@
       <h3>Entrar no Servidor</h3>
       <p id="modal-device-info">Detectando seu dispositivo...</p>
 
-      <div class="modal-actions-main">
+      <div class="modal-version-select" id="modal-version-select" style="display:none;">
+        <p class="modal-version-label">Qual versão você joga?</p>
+        <div class="modal-version-buttons">
+          <button class="version-btn version-java" id="btn-select-java">
+            <i class="fa-solid fa-code"></i>
+            <span>Java Edition</span>
+            <small>PC (Multiplayer)</small>
+          </button>
+          <button class="version-btn version-bedrock" id="btn-select-bedrock">
+            <i class="fa-solid fa-mobile-screen-button"></i>
+            <span>Bedrock Edition</span>
+            <small>Cross-platform</small>
+          </button>
+        </div>
+      </div>
+
+      <div class="modal-actions-main" id="modal-actions-java" style="display:none;">
+        <button class="btn btn-primary btn-copy-ip-modal" data-ip="jogar.moonmc.com.br">
+          <i class="fa-regular fa-copy"></i> Copiar IP
+        </button>
+      </div>
+
+      <div class="modal-steps-manual modal-steps-java" id="modal-steps-java" style="display:none;">
+        <p class="modal-steps-title"><i class="fa-solid fa-list-ol"></i> Como conectar (Java):</p>
+        <ol>
+          <li>Abra o <strong>Minecraft Java Edition</strong></li>
+          <li>Clique em <strong>Multiplayer</strong></li>
+          <li>Clique em <strong>Add Server</strong></li>
+          <li>Nome: <strong>MoonMC</strong></li>
+          <li>IP: <strong>jogar.moonmc.com.br</strong></li>
+          <li>Clique em <strong>Done</strong> e conecte</li>
+        </ol>
+      </div>
+
+      <div class="modal-actions-main" id="modal-actions-bedrock" style="display:none;">
         <button class="btn btn-primary btn-open-mc" id="btn-open-minecraft">
+          <i class="fa-solid fa-play"></i> <span>Abrir Minecraft</span>
+        </button>
+        <button class="btn btn-outline btn-copy-ip-modal" data-ip="jogar.moonmc.com.br:25600">
+          <i class="fa-regular fa-copy"></i> Copiar IP
+        </button>
+      </div>
+
+      <div class="modal-steps-manual" id="modal-steps-bedrock" style="display:none;">
+        <p class="modal-steps-title"><i class="fa-solid fa-list-ol"></i> Como conectar (Bedrock):</p>
+        <ol>
+          <li>Abra o <strong>Minecraft Bedrock</strong></li>
+          <li>Vá em <strong>Jogar → Servidores → Adicionar Servidor</strong></li>
+          <li>Nome: <strong>MoonMC</strong></li>
+          <li>IP: <strong>jogar.moonmc.com.br</strong></li>
+          <li>Porta: <strong>25600</strong></li>
+        </ol>
+      </div>
+
+      <div class="modal-actions-main" id="modal-actions-mobile" style="display:none;">
+        <button class="btn btn-primary btn-open-mc" id="btn-open-minecraft-mobile">
           <i class="fa-solid fa-play"></i> <span>Abrir Minecraft</span>
         </button>
         <button class="btn btn-outline btn-copy-ip-modal" data-ip="jogar.moonmc.com.br:25600">
@@ -268,28 +322,7 @@
 
       <div class="modal-divider"><span>ou baixe</span></div>
 
-      <div class="modal-download-links" id="modal-download-links">
-        <a href="https://www.microsoft.com/store/productId/9NBLGGH42THS" target="_blank" rel="noopener" class="download-link download-windows">
-          <i class="fa-brands fa-windows"></i> Windows
-        </a>
-        <a href="https://apps.apple.com/app/minecraft/id479516143" target="_blank" rel="noopener" class="download-link download-ios">
-          <i class="fa-brands fa-apple"></i> iOS
-        </a>
-        <a href="https://play.google.com/store/apps/details?id=com.mojang.minecraftpe" target="_blank" rel="noopener" class="download-link download-android">
-          <i class="fa-brands fa-google-play"></i> Android
-        </a>
-      </div>
-
-      <div class="modal-steps-manual">
-        <p class="modal-steps-title"><i class="fa-solid fa-list-ol"></i> Como adicionar manualmente:</p>
-        <ol>
-          <li>Abra o <strong>Minecraft Bedrock</strong></li>
-          <li>Vá em <strong>Jogar → Servidores → Adicionar Servidor</strong></li>
-          <li>Nome: <strong>MoonMC</strong></li>
-          <li>IP: <strong>jogar.moonmc.com.br</strong></li>
-          <li>Porta: <strong>25600</strong></li>
-        </ol>
-      </div>
+      <div class="modal-download-links" id="modal-download-links"></div>
 
       <button class="btn btn-primary modal-discord-btn" data-close><i class="fa-solid fa-check"></i> Entendi</button>
     </div>

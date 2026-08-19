@@ -151,7 +151,8 @@
   function getDownloadLinks(device) {
     var links = {
       windows: [
-        { url: 'https://www.microsoft.com/store/productId/9NBLGGH42THS', label: 'Windows', icon: 'fa-brands fa-windows', cls: 'download-windows' }
+        { url: 'https://www.xbox.com/en-US/games/store/minecraft-java-bedrock-edition-for-pc/9nxp44l49shj', label: 'Java & Bedrock', icon: 'fa-solid fa-gamepad', cls: 'download-windows' },
+        { url: 'https://www.xbox.com/en-US/games/store/minecraft-for-windows/9nblggh2jhxj', label: 'Bedrock only', icon: 'fa-solid fa-cube', cls: 'download-windows' }
       ],
       ios: [
         { url: 'https://apps.apple.com/app/minecraft/id479516143', label: 'iOS', icon: 'fa-brands fa-apple', cls: 'download-ios' }
@@ -163,7 +164,7 @@
         { url: 'https://apps.apple.com/app/minecraft/id479516143', label: 'Mac', icon: 'fa-brands fa-apple', cls: 'download-ios' }
       ],
       desktop: [
-        { url: 'https://www.microsoft.com/store/productId/9NBLGGH42THS', label: 'Windows', icon: 'fa-brands fa-windows', cls: 'download-windows' },
+        { url: 'https://www.xbox.com/en-US/games/store/minecraft-java-bedrock-edition-for-pc/9nxp44l49shj', label: 'Java & Bedrock', icon: 'fa-solid fa-gamepad', cls: 'download-windows' },
         { url: 'https://apps.apple.com/app/minecraft/id479516143', label: 'iOS', icon: 'fa-brands fa-apple', cls: 'download-ios' },
         { url: 'https://play.google.com/store/apps/details?id=com.mojang.minecraftpe', label: 'Android', icon: 'fa-brands fa-google-play', cls: 'download-android' }
       ]
@@ -187,14 +188,36 @@
     var deviceName = getDeviceName(device);
     var links = getDownloadLinks(device);
 
+    var versionSelect = document.getElementById('modal-version-select');
+    var actionsJava = document.getElementById('modal-actions-java');
+    var stepsJava = document.getElementById('modal-steps-java');
+    var actionsBedrock = document.getElementById('modal-actions-bedrock');
+    var stepsBedrock = document.getElementById('modal-steps-bedrock');
+    var actionsMobile = document.getElementById('modal-actions-mobile');
+    var modalDivider = document.querySelector('.modal-divider');
+
+    if (versionSelect) versionSelect.style.display = 'none';
+    if (actionsJava) actionsJava.style.display = 'none';
+    if (stepsJava) stepsJava.style.display = 'none';
+    if (actionsBedrock) actionsBedrock.style.display = 'none';
+    if (stepsBedrock) stepsBedrock.style.display = 'none';
+    if (actionsMobile) actionsMobile.style.display = 'none';
+    if (modalDivider) modalDivider.style.display = 'flex';
+
     if (modalDeviceInfo) {
-      modalDeviceInfo.textContent = 'Detectado: ' + deviceName + '. Clique abaixo para abrir o Minecraft.';
+      modalDeviceInfo.textContent = 'Detectado: ' + deviceName + '.';
     }
 
-    if (btnOpenMinecraft) {
-      btnOpenMinecraft.onclick = function () {
-        openMinecraft();
-      };
+    if (device === 'windows') {
+      if (versionSelect) versionSelect.style.display = 'block';
+      if (modalDeviceInfo) {
+        modalDeviceInfo.textContent = 'Detectado: Windows. Qual versão você joga?';
+      }
+    } else if (device === 'ios' || device === 'android') {
+      if (actionsMobile) actionsMobile.style.display = 'flex';
+    } else {
+      if (actionsBedrock) actionsBedrock.style.display = 'flex';
+      if (stepsBedrock) stepsBedrock.style.display = 'block';
     }
 
     if (modalDownloadLinks) {
@@ -208,6 +231,45 @@
         a.innerHTML = '<i class="' + link.icon + '"></i> ' + link.label;
         modalDownloadLinks.appendChild(a);
       });
+    }
+
+    var btnSelectJava = document.getElementById('btn-select-java');
+    var btnSelectBedrock = document.getElementById('btn-select-bedrock');
+    var btnOpenMinecraft = document.getElementById('btn-open-minecraft');
+    var btnOpenMinecraftMobile = document.getElementById('btn-open-minecraft-mobile');
+
+    if (btnSelectJava) {
+      btnSelectJava.onclick = function () {
+        if (versionSelect) versionSelect.style.display = 'none';
+        if (actionsJava) actionsJava.style.display = 'flex';
+        if (stepsJava) stepsJava.style.display = 'block';
+        if (modalDeviceInfo) {
+          modalDeviceInfo.textContent = 'Modo: Java Edition (PC)';
+        }
+      };
+    }
+
+    if (btnSelectBedrock) {
+      btnSelectBedrock.onclick = function () {
+        if (versionSelect) versionSelect.style.display = 'none';
+        if (actionsBedrock) actionsBedrock.style.display = 'flex';
+        if (stepsBedrock) stepsBedrock.style.display = 'block';
+        if (modalDeviceInfo) {
+          modalDeviceInfo.textContent = 'Modo: Bedrock Edition (Cross-platform)';
+        }
+      };
+    }
+
+    if (btnOpenMinecraft) {
+      btnOpenMinecraft.onclick = function () {
+        openMinecraft();
+      };
+    }
+
+    if (btnOpenMinecraftMobile) {
+      btnOpenMinecraftMobile.onclick = function () {
+        openMinecraft();
+      };
     }
   }
 

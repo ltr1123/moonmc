@@ -1330,6 +1330,87 @@ section { position: relative; z-index: 1; }
 .modal-discord-btn { width: 100%; }
 
 /* ── Modal new elements ── */
+.modal-version-select {
+  margin-bottom: 20px;
+}
+
+.modal-version-label {
+  font-family: var(--font-heading);
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--gray);
+  margin-bottom: 12px;
+  text-align: center;
+}
+
+.modal-version-buttons {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.version-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 18px 14px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.version-btn:hover {
+  border-color: var(--border-neon);
+  background: rgba(194, 139, 255, 0.08);
+  transform: translateY(-2px);
+}
+
+.version-btn i {
+  font-size: 1.5rem;
+}
+
+.version-btn span {
+  font-family: var(--font-heading);
+  font-size: 0.9rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--white);
+}
+
+.version-btn small {
+  font-size: 0.7rem;
+  color: var(--gray-muted);
+}
+
+.version-java {
+  border-color: rgba(255, 107, 107, 0.3);
+}
+
+.version-java i {
+  color: #ff6b6b;
+}
+
+.version-java:hover {
+  border-color: rgba(255, 107, 107, 0.6);
+  box-shadow: 0 0 20px rgba(255, 107, 107, 0.15);
+}
+
+.version-bedrock {
+  border-color: rgba(74, 222, 128, 0.3);
+}
+
+.version-bedrock i {
+  color: #4ade80;
+}
+
+.version-bedrock:hover {
+  border-color: rgba(74, 222, 128, 0.6);
+  box-shadow: 0 0 20px rgba(74, 222, 128, 0.15);
+}
+
 .modal-actions-main {
   display: flex;
   gap: 12px;
@@ -1727,6 +1808,12 @@ section { position: relative; z-index: 1; }
   .buy-drawer-panel { width: 100%; padding: 24px 20px; }
   .buy-drawer-content h3 { font-size: 1.3rem; }
   .toast { font-size: 0.85rem; padding: 12px 20px; }
+  .modal-actions-main { flex-direction: column; }
+  .modal-actions-main .btn { width: 100%; }
+  .modal-version-buttons { grid-template-columns: 1fr; }
+  .version-btn { padding: 14px 12px; flex-direction: row; gap: 12px; }
+  .version-btn i { font-size: 1.3rem; }
+  .version-btn span { font-size: 0.85rem; }
 }
 
 @media (max-width: 380px) {
