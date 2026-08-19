@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Segredo | MoonMC</title>
+    <style>
+        body { margin: 0; padding: 0; background: #170e2e; color: white; font-family: sans-serif; display: none; }
+        .hidden-page { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 9999; }
+        .content { max-width: 800px; margin: 100px auto; padding: 20px; background: #2d1b4e; border-radius: 10px; text-align: center; }
+        .title { font-size: 2em; margin-bottom: 20px; color: #ff6b6b; }
+        .desc { font-size: 1.2em; line-height: 1.6; margin-bottom: 30px; }
+        .hint { font-size: 0.9em; color: #aaa; }
+        .close-btn { position: absolute; top: 20px; right: 20px; background: #ff6b6b; color: white; border: none; padding: 10px 15px; border-radius: 5px; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <button class="close-btn" onclick="document.querySelector('body').style.display='none'">Fechar</button>
+    <div class="content">
+        <h1 class="title">🎉 Página Secreta!</h1>
+        <p class="desc">Você descobriu o easter egg! Pressione "L" três vezes rapidamente na página Sobre para encontrar este segredo.</p>
+        <p class="hint">Dica: Tente pressionar L, L, L rapidamente...</p>
+    </div>
+</body>
+</html>

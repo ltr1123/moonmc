@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leaderboard | MoonMC</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .leaderboard {
+            max-width: 1200px;
+            margin: 80px auto;
+            padding: 0 24px;
+        }
+        .leaderboard-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        .leaderboard-title {
+            font-size: 2.5rem;
+            margin-bottom: 12px;
+            color: var(--neon);
+            font-family: var(--font-display);
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+        }
+        .leaderboard-subtitle {
+            color: var(--gray);
+            font-size: 1.1rem;
+        }
+        .leaderboard-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: var(--dark-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            overflow: hidden;
+        }
+        .leaderboard-table th,
+        .leaderboard-table td {
+            padding: 16px 24px;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+        .leaderboard-table th {
+            background: var(--dark-card-hover);
+            color: var(--neon);
+            font-family: var(--font-heading);
+            font-weight: 700;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+        }
+        .leaderboard-table td {
+            color: var(--white);
+            font-size: 0.95rem;
+        }
+        .leaderboard-table tr:last-child td {
+            border-bottom: none;
+        }
+        .leaderboard-table tr:nth-child(even) {
+            background: rgba(255, 255, 255, 0.02);
+        }
+        .leaderboard-rank {
+            font-family: var(--font-display);
+            font-size: 1.2rem;
+            color: var(--neon-2);
+            font-weight: 700;
+        }
+        .leaderboard-name {
+            font-weight: 600;
+            color: var(--white);
+        }
+        .leaderboard-stats {
+            display: flex;
+            gap: 24px;
+            margin-bottom: 8px;
+        }
+        .leaderboard-stat {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--gray-muted);
+            font-size: 0.85rem;
+        }
+        .leaderboard-stat i {
+            font-size: 0.8rem;
+            color: var(--neon);
+        }
+        .leaderboard-update-btn {
+            display: block;
+            margin: 20px auto 0;
+            padding: 12px 32px;
+            background: linear-gradient(135deg, var(--neon), var(--mint));
+            color: #170b2b;
+            border: none;
+            border-radius: var(--radius-sm);
+            font-family: var(--font-heading);
+            font-weight: 700;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .leaderboard-update-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 20px rgba(194, 139, 255, 0.3);
+        }
+        .leaderboard-loading {
+            text-align: center;
+            padding: 40px;
+            color: var(--gray);
+        }
+        .leaderboard-error {
+            text-align: center;
+            padding: 40px;
+            color: #ff6b6b;
+            background: rgba(255, 107, 107, 0.1);
+            border-radius: var(--radius);
+            margin: 20px 0;
+        }
+        .refresh-indicator {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            background: var(--cyan);
+            border-radius: 50%;
+            margin-right: 8px;
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar" id="navbar">
+        <div class="navbar-inner">
+            <div class="navbar-left">
+                <a href="index.html" class="navbar-brand">
+                    <img src="assets/logo-moon.webp" alt="MoonMC" class="brand-logo">
+                </a>
+                <div class="navbar-menu">
+                    <a href="index.html">Início</a>
+                    <a href="sobre.html">Sobre</a>
+                    <a href="testador.html" class="active">Leaderboard</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+    
+    <div class="leaderboard">
+        <div class="leaderboard-header">
+            <h1 class="leaderboard-title">🏆 Top Jogadores</h1>
+            <p class="leaderboard-subtitle">Atualizado em tempo real</p>
+        </div>
+        
+        <div id="leaderboard-content">
+            <div class="leaderboard-loading">
+                <span class="refresh-indicator"></span>
+                Carregando dados...
+            </div>
+        </div>
+        
+        <button class="leaderboard-update-btn" onclick="updateLeaderboard()">Atualizar Dados</button>
+    </div>
+    
+    <script src="script.js"></script>
+    <script>
+        const API_BASE = 'http://localhost:8080';
+        const TOKEN = 'moonmc236';
+        
+        async function fetchLeaderboard() {
+            try {
+                const response = await fetch(`${API_BASE}/api/tops/read`);
+                if (!response.ok) throw new Error('Falha ao carregar dados');
+                const data = await response.json();
+                return data;
+            } catch (error) {
+                console.error('Erro:', error);
+                return null;
+            }
+        }
+        
+        async function updateLeaderboard() {
+            const btn = event.target;
+            btn.textContent = 'Atualizando...';
+            btn.disabled = true;
+            
+            try {
+                const currentData = await fetchLeaderboard();
+                if (!currentData) throw new Error('Sem dados atuais');
+                
+                const dados = JSON.stringify(currentData);
+                const formData = new URLSearchParams();
+                formData.append('token', TOKEN);
+                formData.append('dados', dados);
+                
+                const updateResponse = await fetch(`${API_BASE}/api/tops/update`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: formData.toString()
+                });
+                
+                if (!updateResponse.ok) throw new Error('Falha ao atualizar');
+                
+                const result = await fetchLeaderboard();
+                if (result) {
+                    renderLeaderboard(result);
+                    showToast('Dados atualizados com sucesso!');
+                }
+                
+            } catch (error) {
+                console.error('Erro:', error);
+                showToast('Erro ao atualizar dados');
+            } finally {
+                btn.textContent = 'Atualizar Dados';
+                btn.disabled = false;
+            }
+        }
+        
+        function renderLeaderboard(data) {
+            const container = document.getElementById('leaderboard-content');
+            container.innerHTML = '';
+            
+            const table = document.createElement('table');
+            table.className = 'leaderboard-table';
+            
+            const thead = document.createElement('thead');
+            const trHead = document.createElement('tr');
+            ['Posição', 'Jogador', 'Kills', 'Mortes', 'Dinheiro'].forEach(text => {
+                const th = document.createElement('th');
+                th.textContent = text;
+                trHead.appendChild(th);
+            });
+            thead.appendChild(trHead);
+            table.appendChild(thead);
+            
+            const tbody = document.createElement('tbody');
+            
+            if (data.kills) {
+                const killsList = data.kills.split('|').map(item => {
+                    const [name, value] = item.split(':');
+                    return { name, kills: parseInt(value) };
+                }).sort((a, b) => b.kills - a.kills);
+                
+                const mortesList = data.mortes.split('|').map(item => {
+                    const [name, value] = item.split(':');
+                    return { name, mortes: parseInt(value) };
+                });
+                
+                const moneyList = data.money.split('|').map(item => {
+                    const [name, value] = item.split(':');
+                    return { name, money: parseInt(value) };
+                });
+                
+                killsList.forEach((item, index) => {
+                    const tr = document.createElement('tr');
+                    const rankTd = document.createElement('td');
+                    rankTd.className = 'leaderboard-rank';
+                    rankTd.textContent = (index + 1).toString();
+                    tr.appendChild(rankTd);
+                    
+                    const nameTd = document.createElement('td');
+                    nameTd.className = 'leaderboard-name';
+                    nameTd.textContent = item.name;
+                    tr.appendChild(nameTd);
+                    
+                    const killsTd = document.createElement('td');
+                    killsTd.textContent = item.kills.toLocaleString();
+                    tr.appendChild(killsTd);
+                    
+                    const mortesTd = document.createElement('td');
+                    const mortesItem = mortesList.find(m => m.name === item.name);
+                    mortesTd.textContent = mortesItem ? mortesItem.mortes.toLocaleString() : '0';
+                    tr.appendChild(mortesTd);
+                    
+                    const moneyTd = document.createElement('td');
+                    const moneyItem = moneyList.find(m => m.name === item.name);
+                    moneyTd.textContent = moneyItem ? moneyItem.money.toLocaleString() : '0';
+                    tr.appendChild(moneyTd);
+                    
+                    tbody.appendChild(tr);
+                });
+            }
+            
+            table.appendChild(tbody);
+            container.appendChild(table);
+        }
+        
+        // Carregar dados ao iniciar
+        fetchLeaderboard().then(data => {
+            if (data) {
+                renderLeaderboard(data);
+            } else {
+                container.innerHTML = '<div class="leaderboard-error">Falha ao carregar leaderboard</div>';
+            }
+            
+            // Atualizar a cada 30 segundos
+            setInterval(fetchLeaderboard, 30000);
+        });
+    </script>
+</body>
+</html>

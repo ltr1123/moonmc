@@ -377,6 +377,253 @@
   });
 
   /* ── Buy drawer ── */
+
+/* ── Easter egg: três vezes L na página Sobre ── */
+var sobrePage = window.location.pathname.includes('sobre.html');
+var lPressCount = 0;
+var lPressTimer = null;
+
+function handleLPress() {
+    if (!sobrePage) return;
+    lPressCount++;
+    if (lPressCount >= 3) {
+        var hiddenPage = document.createElement('div');
+        hiddenPage.className = 'hidden-page';
+        hiddenPage.innerHTML = '<div class="content"><h1 class="title">🎉 P&aacute;gina Secreta!</h1><p class="desc">Voc� descobriu o easter egg! Pressione "L" tr�s vezes rapidamente na p&aacute;gina Sobre para encontrar este segredo.</p><p class="hint">Dica: Tente pressionar L, L, L rapidamente...</p><button class="close-btn" onclick="this.parentElement.parentElement.remove()">Fechar</button></div>';
+        document.body.appendChild(hiddenPage);
+        lPressCount = 0;
+    }
+    if (lPressTimer) clearTimeout(lPressTimer);
+    lPressTimer = setTimeout(function() { lPressCount = 0; }, 500);
+}
+
+/* ── Copy IP + modal ── */
+var toast = document.getElementById('toast');
+var toastText = document.getElementById('toast-text');
+var modal = document.getElementById('ip-modal');
+var modalDeviceInfo = document.getElementById('modal-device-info');
+var btnOpenMinecraft = document.getElementById('btn-open-minecraft');
+var modalDownloadLinks = document.getElementById('modal-download-links');
+var toastTimer;
+
+function showToast(msg) {
+    if (!toast) return;
+    toastText.textContent = msg;
+    toast.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { toast.classList.remove('show'); }, 2600);
+}
+
+function detectDevice() {
+    var ua = navigator.userAgent;
+    if (/Windows/i.test(ua)) return 'windows';
+    if (/iPhone|iPad|iPod/i.test(ua)) return 'ios';
+    if (/Android/i.test(ua)) return 'android';
+    if (/Mac/i.test(ua)) return 'mac';
+    return 'desktop';
+}
+
+function getDeviceName(device) {
+    var names = {
+        windows: 'Windows',
+        ios: 'iPhone/iPad',
+        android: 'Android',
+        mac: 'Mac',
+        desktop: 'Computador'
+    };
+    return names[device] || 'Computador';
+}
+
+function getDownloadLinks(device) {
+    var links = {
+        windows: [
+            { url: 'https://www.xbox.com/en-US/games/store/minecraft-java-bedrock-edition-for-pc/9nxp44l49shj', label: 'Java & Bedrock', icon: 'fa-solid fa-gamepad', cls: 'download-windows' },
+            { url: 'https://www.xbox.com/en-US/games/store/minecraft-for-windows/9nblggh2jhxj', label: 'Bedrock only', icon: 'fa-solid fa-cube', cls: 'download-windows' }
+        ],
+        ios: [
+            { url: 'https://apps.apple.com/app/minecraft/id479516143', label: 'iOS', icon: 'fa-brands fa-apple', cls: 'download-ios' }
+        ],
+        android: [
+            { url: 'https://play.google.com/store/apps/details?id=com.mojang.minecraftpe', label: 'Android', icon: 'fa-brands fa-google-play', cls: 'download-android' }
+        ],
+        mac: [
+            { url: 'https://apps.apple.com/app/minecraft/id479516143', label: 'Mac', icon: 'fa-brands fa-apple', cls: 'download-ios' }
+        ],
+        desktop: [
+            { url: 'https://www.xbox.com/en-US/games/store/minecraft-java-bedrock-edition-for-pc/9nxp44l49shj', label: 'Java & Bedrock', icon: 'fa-solid fa-gamepad', cls: 'download-windows' },
+            { url: 'https://apps.apple.com/app/minecraft/id479516143', label: 'iOS', icon: 'fa-brands fa-apple', cls: 'download-ios' },
+            { url: 'https://play.google.com/store/apps/details?id=com.mojang.minecraftpe', label: 'Android', icon: 'fa-brands fa-google-play', cls: 'download-android' }
+        ]
+    };
+    return links[device] || links.desktop;
+}
+
+function openMinecraft() {
+    var device = detectDevice();
+    if (device === 'windows' || device === 'mac') {
+        window.location.href = 'minecraft://';
+    } else if (device === 'android') {
+        window.location.href = 'minecraft://';
+    } else {
+        window.location.href = 'minecraft://';
+    }
+}
+
+function updateModalForDevice() {
+    var device = detectDevice();
+    var deviceName = getDeviceName(device);
+    var links = getDownloadLinks(device);
+
+    var versionSelect = document.getElementById('modal-version-select');
+    var actionsJava = document.getElementById('modal-actions-java');
+    var stepsJava = document.getElementById('modal-steps-java');
+    var actionsBedrock = document.getElementById('modal-actions-bedrock');
+    var stepsBedrock = document.getElementById('modal-steps-bedrock');
+    var actionsMobile = document.getElementById('modal-actions-mobile');
+    var modalDivider = document.querySelector('.modal-divider');
+
+    if (versionSelect) versionSelect.style.display = 'none';
+    if (actionsJava) actionsJava.style.display = 'none';
+    if (stepsJava) stepsJava.style.display = 'none';
+    if (actionsBedrock) actionsBedrock.style.display = 'none';
+    if (stepsBedrock) stepsBedrock.style.display = 'none';
+    if (actionsMobile) actionsMobile.style.display = 'none';
+    if (modalDivider) modalDivider.style.display = 'flex';
+
+    if (modalDeviceInfo) {
+        modalDeviceInfo.textContent = '';
+    }
+
+    if (device === 'windows') {
+        if (versionSelect) versionSelect.style.display = 'block';
+        if (modalDeviceInfo) {
+            modalDeviceInfo.textContent = 'Qual vers�o voc� joga?';
+        }
+    } else if (device === 'ios') {
+        if (actionsMobile) actionsMobile.style.display = 'flex';
+    } else if (device === 'android') {
+        if (actionsMobile) actionsMobile.style.display = 'flex';
+    } else {
+        if (actionsBedrock) actionsBedrock.style.display = 'flex';
+        if (stepsBedrock) stepsBedrock.style.display = 'block';
+    }
+
+    if (modalDownloadLinks) {
+        modalDownloadLinks.innerHTML = '';
+        links.forEach(function (link) {
+            var a = document.createElement('a');
+            a.href = link.url;
+            a.target = '_blank';
+            a.rel = 'noopener';
+            a.className = 'download-link ' + link.cls;
+            a.innerHTML = '<i class="' + link.icon + '"></i> ' + link.label;
+            modalDownloadLinks.appendChild(a);
+        });
+    }
+
+    var btnSelectJava = document.getElementById('btn-select-java');
+    var btnSelectBedrock = document.getElementById('btn-select-bedrock');
+    var btnOpenMinecraft = document.getElementById('btn-open-minecraft');
+    var btnOpenMinecraftMobile = document.getElementById('btn-open-minecraft-mobile');
+
+    if (btnSelectJava) {
+        btnSelectJava.onclick = function () {
+            if (versionSelect) versionSelect.style.display = 'none';
+            if (actionsJava) actionsJava.style.display = 'flex';
+            if (stepsJava) stepsJava.style.display = 'block';
+            if (modalDeviceInfo) {
+                modalDeviceInfo.textContent = '';
+            }
+        };
+    }
+
+    if (btnSelectBedrock) {
+        btnSelectBedrock.onclick = function () {
+            if (versionSelect) versionSelect.style.display = 'none';
+            if (actionsBedrock) actionsBedrock.style.display = 'flex';
+            if (stepsBedrock) stepsBedrock.style.display = 'block';
+            if (modalDeviceInfo) {
+                modalDeviceInfo.textContent = '';
+            }
+        };
+    }
+
+    if (btnOpenMinecraft) {
+        btnOpenMinecraft.onclick = function () {
+            openMinecraft();
+        };
+    }
+
+    if (btnOpenMinecraftMobile) {
+        btnOpenMinecraftMobile.onclick = function () {
+            openMinecraft();
+        };
+    }
+}
+
+function openModal() {
+    if (!modal) return;
+    updateModalForDevice();
+    modal.classList.add('open');
+}
+
+function copyText(text) {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+        return navigator.clipboard.writeText(text);
+    }
+    var ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.position = 'fixed';
+    ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    return Promise.resolve();
+}
+
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'L' || e.key === 'l') {
+        handleLPress();
+    }
+                                
+    if (e.key === 'Escape' && modal) modal.classList.remove('open');
+    if (e.key === 'Escape' && buyDrawer) {
+        buyDrawer.classList.remove('open');
+        bodyEl.style.overflow = '';
+    }
+});
+
+/* ── Easter egg: três vezes L na página Sobre ── */
+var sobrePage = window.location.pathname.includes('sobre.html');
+var lPressCount = 0;
+var lPressTimer = null;
+
+function handleLPress() {
+    if (!sobrePage) return;
+    lPressCount++;
+    if (lPressCount >= 3) {
+        var hiddenPage = document.createElement('div');
+        hiddenPage.className = 'hidden-page';
+        hiddenPage.innerHTML = '<div class="content"><h1 class="title">🎉 Página Secreta!</h1><p class="desc">Você descobriu o easter egg! Pressione "L" três vezes rapidamente na página Sobre para encontrar este segredo.</p><p class="hint">Dica: Tente pressionar L, L, L rapidamente...</p><button class="close-btn" onclick="this.parentElement.parentElement.remove()">Fechar</button></div>';
+        document.body.appendChild(hiddenPage);
+        lPressCount = 0;
+    }
+    if (lPressTimer) clearTimeout(lPressTimer);
+    lPressTimer = setTimeout(function() { lPressCount = 0; }, 500);
+}
+
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'L' || e.key === 'l') {
+        handleLPress();
+    }
+                                
+    if (e.key === 'Escape' && modal) modal.classList.remove('open');
+    if (e.key === 'Escape' && buyDrawer) {
+        buyDrawer.classList.remove('open');
+        bodyEl.style.overflow = '';
+    }
+});
   var buyDrawer = document.getElementById('buy-drawer');
   var buyPlanName = document.getElementById('buy-plan-name');
   var bodyEl = document.body;
