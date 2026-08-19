@@ -1,0 +1,23 @@
+# Ttopsapi - tops do AJLeaderboards
+# Configuração para integração com Vercel (moonmc.com.br)
+
+# URL do endpoint no Vercel (não usa localhost)
+url: 'https://www.moonmc.com.br/api/tops/update'
+
+# Token deve ser idêntico ao usado no server.js (moonmc236)
+token: 'moonmc236'
+
+# Intervalo de envio em minutos
+intervalo-minutos: 5
+
+# Quantidade de posições por board
+posicoes: 10
+
+# Boards do AJLeaderboards
+boards:
+  - 'statistic_deaths:alltime'
+  - 'statistic_mob_kills:alltime'
+  - 'statistic_player_kills:alltime'
+  - 'statistic_time_played:alltime'
+  - 'vault_eco_balance:alltime'
+  - 'ypesca_fished:alltime'
