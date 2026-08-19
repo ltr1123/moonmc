@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MoonMC | Minecraft</title>
-  <meta name="description" content="MoonMC — Servidor Minecraft Semi-Anarquia. Entre agora em MoonMC.com.br, versão 26.2. Java e Bedrock. Economia, eventos e diversão.">
+  <title>Comunidade | MoonMC</title>
+  <meta name="description" content="MoonMC — Comunidade do servidor Minecraft Semi-Anarquia. Junte-se a nós em MoonMC.com.br.">
   <meta name="theme-color" content="#170e2e">
   <link rel="icon" href="assets/logo-moon.webp" type="image/webp">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -13,9 +13,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
   <link rel="stylesheet" href="style.css">
 </head>
-<body class="page-index">
-
-  <canvas id="stars" class="stars"></canvas>
+<body class="page-inner">
 
   <nav class="navbar" id="navbar">
     <div class="navbar-inner">
@@ -24,10 +22,10 @@
           <img src="assets/logo-moon.webp" alt="MoonMC" class="brand-logo">
         </a>
         <div class="navbar-menu">
-          <a href="index.html" class="active">Início</a>
+          <a href="index.html">Início</a>
           <a href="sobre.html">Sobre</a>
           <a href="loja.html">Loja</a>
-          <a href="comunidade.html">Comunidade</a>
+          <a href="comunidade.html" class="active">Comunidade</a>
         </div>
       </div>
       <div class="navbar-actions">
@@ -41,22 +39,29 @@
   </nav>
 
   <div class="mobile-menu" id="mobile-menu">
-    <a href="index.html" class="active">Início</a>
+    <a href="index.html">Início</a>
     <a href="sobre.html">Sobre</a>
     <a href="loja.html">Loja</a>
-    <a href="comunidade.html">Comunidade</a>
+    <a href="comunidade.html" class="active">Comunidade</a>
     <button class="btn btn-primary" data-play><i class="fa-solid fa-play"></i> Entrar no Servidor</button>
   </div>
 
   <main>
-    <section class="hero" id="inicio">
-      <div class="hero-bg"></div>
-      <div class="hero-overlay"></div>
-      <div class="hero-content">
-        <h1 class="hero-title" data-reveal>Survival Semi-Anarquia</h1>
-        <p class="hero-desc" data-reveal>Um modo de sobrevivência competitivo, onde você deve lutar contra outros jogadores para ser o último sobrevivente. Economia justa, eventos toda semana e uma comunidade que cresce com você.</p>
-        <div class="hero-buttons" data-reveal>
-          <button class="btn btn-play" data-play><i class="fa-solid fa-play"></i> JOGAR AGORA</button>
+    <section class="section-padding bg-deep page-hero-section" id="comunidade">
+      <div class="section-bg" data-bg="comunidade"></div>
+      <div class="section-bg-overlay"></div>
+      <div class="container">
+        <div class="section-header" data-reveal>
+          <p class="section-label"><i class="fa-solid fa-heart"></i> Comunidade</p>
+          <h2 class="section-title">Fique por <span class="text-gradient">dentro</span></h2>
+          <div class="section-divider"></div>
+          <p>Acompanhe novidades, eventos e bastidores do servidor.</p>
+        </div>
+
+        <div class="social-grid">
+          <a href="https://discord.gg/moonmc" target="_blank" rel="noopener" class="social-card discord" data-reveal><div class="social-icon"><i class="fa-brands fa-discord"></i></div><h4>Discord</h4><p>Nossa base. Fale com a comunidade, veja eventos e peça suporte.</p><span class="social-link">discord.gg/moonmc <i class="fa-solid fa-arrow-right"></i></span></a>
+          <a href="https://www.instagram.com/moonmcoficial" target="_blank" rel="noopener" class="social-card instagram" data-reveal><div class="social-icon"><i class="fa-brands fa-instagram"></i></div><h4>Instagram</h4><p>Novidades, builds dos players e bastidores do servidor.</p><span class="social-link">@moonmcoficial <i class="fa-solid fa-arrow-right"></i></span></a>
+          <a href="https://www.tiktok.com/@moonmcoficial" target="_blank" rel="noopener" class="social-card tiktok" data-reveal><div class="social-icon"><i class="fa-brands fa-tiktok"></i></div><h4>TikTok</h4><p>Clips épicos, tutoriais e os melhores momentos da comunidade.</p><span class="social-link">@moonmcoficial <i class="fa-solid fa-arrow-right"></i></span></a>
         </div>
       </div>
     </section>

@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MoonMC | Minecraft</title>
-  <meta name="description" content="MoonMC — Servidor Minecraft Semi-Anarquia. Entre agora em MoonMC.com.br, versão 26.2. Java e Bedrock. Economia, eventos e diversão.">
+  <title>Loja | MoonMC</title>
+  <meta name="description" content="MoonMC — Loja do servidor Minecraft Semi-Anarquia. Adquira VIP ou PRIME em MoonMC.com.br.">
   <meta name="theme-color" content="#170e2e">
   <link rel="icon" href="assets/logo-moon.webp" type="image/webp">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -13,9 +13,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
   <link rel="stylesheet" href="style.css">
 </head>
-<body class="page-index">
-
-  <canvas id="stars" class="stars"></canvas>
+<body class="page-inner">
 
   <nav class="navbar" id="navbar">
     <div class="navbar-inner">
@@ -24,9 +22,9 @@
           <img src="assets/logo-moon.webp" alt="MoonMC" class="brand-logo">
         </a>
         <div class="navbar-menu">
-          <a href="index.html" class="active">Início</a>
+          <a href="index.html">Início</a>
           <a href="sobre.html">Sobre</a>
-          <a href="loja.html">Loja</a>
+          <a href="loja.html" class="active">Loja</a>
           <a href="comunidade.html">Comunidade</a>
         </div>
       </div>
@@ -41,23 +39,62 @@
   </nav>
 
   <div class="mobile-menu" id="mobile-menu">
-    <a href="index.html" class="active">Início</a>
+    <a href="index.html">Início</a>
     <a href="sobre.html">Sobre</a>
-    <a href="loja.html">Loja</a>
+    <a href="loja.html" class="active">Loja</a>
     <a href="comunidade.html">Comunidade</a>
     <button class="btn btn-primary" data-play><i class="fa-solid fa-play"></i> Entrar no Servidor</button>
   </div>
 
   <main>
-    <section class="hero" id="inicio">
-      <div class="hero-bg"></div>
-      <div class="hero-overlay"></div>
-      <div class="hero-content">
-        <h1 class="hero-title" data-reveal>Survival Semi-Anarquia</h1>
-        <p class="hero-desc" data-reveal>Um modo de sobrevivência competitivo, onde você deve lutar contra outros jogadores para ser o último sobrevivente. Economia justa, eventos toda semana e uma comunidade que cresce com você.</p>
-        <div class="hero-buttons" data-reveal>
-          <button class="btn btn-play" data-play><i class="fa-solid fa-play"></i> JOGAR AGORA</button>
+    <section class="section-padding bg-deep page-hero-section" id="loja">
+      <div class="section-bg" data-bg="loja"></div>
+      <div class="section-bg-overlay"></div>
+      <div class="container">
+        <div class="section-header" data-reveal>
+          <p class="section-label"><i class="fa-solid fa-store"></i> Loja</p>
+          <h2 class="section-title">Impulsione sua <span class="text-gradient">aventura</span></h2>
+          <div class="section-divider"></div>
+          <p>Escolha o item perfeito pra você e aproveite o melhor do MoonMC.</p>
         </div>
+
+        <div class="plans-grid">
+          <div class="plan-card" data-reveal>
+            <div class="plan-art"><img src="banner-vip.webp" alt="VIP MoonMC"></div>
+            <div class="plan-badge">VIP</div>
+            <div class="plan-icon"><i class="fa-solid fa-star"></i></div>
+            <h3 class="plan-name">VIP</h3>
+            <div class="plan-price"><span class="currency">R$</span> <span class="amount">14,90</span></div>
+            <p class="plan-desc">O essencial pra começar com vantagem e estilo.</p>
+            <ul class="plan-features">
+              <li><i class="fa-solid fa-check"></i> $5.000 Money Inicial</li>
+              <li><i class="fa-solid fa-check"></i> Kit Exclusivo in-game</li>
+              <li><i class="fa-solid fa-check"></i> Cargo Exclusivo no Discord</li>
+              <li><i class="fa-solid fa-check"></i> Chat e Sorteios Exclusivos</li>
+              <li><i class="fa-solid fa-check"></i> TAG Exclusiva in-game</li>
+            </ul>
+            <button class="btn btn-primary plan-btn" data-buy="VIP"><i class="fa-solid fa-bag-shopping"></i> Adquirir</button>
+          </div>
+
+          <div class="plan-card" data-reveal>
+            <div class="plan-art"><img src="banner-prime.webp" alt="PRIME MoonMC"></div>
+            <div class="plan-badge featured">MAIS VENDIDO</div>
+            <div class="plan-icon"><i class="fa-solid fa-crown"></i></div>
+            <h3 class="plan-name">PRIME</h3>
+            <div class="plan-price"><span class="currency">R$</span> <span class="amount">24,90</span></div>
+            <p class="plan-desc">A experiência completa do MoonMC pra quem quer o melhor.</p>
+            <ul class="plan-features">
+              <li><i class="fa-solid fa-check"></i> $15.000 Money Inicial</li>
+              <li><i class="fa-solid fa-check"></i> Kit Exclusivo in-game</li>
+              <li><i class="fa-solid fa-check"></i> Cargo Exclusivo no Discord</li>
+              <li><i class="fa-solid fa-check"></i> TAG Exclusiva in-game</li>
+              <li><i class="fa-solid fa-check"></i> Preferência em Atendimentos</li>
+            </ul>
+            <button class="btn btn-primary plan-btn" data-buy="PRIME"><i class="fa-solid fa-bag-shopping"></i> Adquirir</button>
+          </div>
+        </div>
+
+        <p class="plan-note" data-reveal><i class="fa-solid fa-heart"></i> Todos os valores arrecadados são 100% voltados para o servidor — mantendo o MoonMC no ar e sempre melhorando pra você.</p>
       </div>
     </section>
   </main>

@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MoonMC | Minecraft</title>
-  <meta name="description" content="MoonMC — Servidor Minecraft Semi-Anarquia. Entre agora em MoonMC.com.br, versão 26.2. Java e Bedrock. Economia, eventos e diversão.">
+  <title>Sobre | MoonMC</title>
+  <meta name="description" content="MoonMC — Servidor Minecraft Semi-Anarquia. Conheça o MoonMC.com.br, versão 26.2. Java e Bedrock.">
   <meta name="theme-color" content="#170e2e">
   <link rel="icon" href="assets/logo-moon.webp" type="image/webp">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -13,9 +13,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
   <link rel="stylesheet" href="style.css">
 </head>
-<body class="page-index">
-
-  <canvas id="stars" class="stars"></canvas>
+<body class="page-inner">
 
   <nav class="navbar" id="navbar">
     <div class="navbar-inner">
@@ -24,8 +22,8 @@
           <img src="assets/logo-moon.webp" alt="MoonMC" class="brand-logo">
         </a>
         <div class="navbar-menu">
-          <a href="index.html" class="active">Início</a>
-          <a href="sobre.html">Sobre</a>
+          <a href="index.html">Início</a>
+          <a href="sobre.html" class="active">Sobre</a>
           <a href="loja.html">Loja</a>
           <a href="comunidade.html">Comunidade</a>
         </div>
@@ -41,22 +39,32 @@
   </nav>
 
   <div class="mobile-menu" id="mobile-menu">
-    <a href="index.html" class="active">Início</a>
-    <a href="sobre.html">Sobre</a>
+    <a href="index.html">Início</a>
+    <a href="sobre.html" class="active">Sobre</a>
     <a href="loja.html">Loja</a>
     <a href="comunidade.html">Comunidade</a>
     <button class="btn btn-primary" data-play><i class="fa-solid fa-play"></i> Entrar no Servidor</button>
   </div>
 
   <main>
-    <section class="hero" id="inicio">
-      <div class="hero-bg"></div>
-      <div class="hero-overlay"></div>
-      <div class="hero-content">
-        <h1 class="hero-title" data-reveal>Survival Semi-Anarquia</h1>
-        <p class="hero-desc" data-reveal>Um modo de sobrevivência competitivo, onde você deve lutar contra outros jogadores para ser o último sobrevivente. Economia justa, eventos toda semana e uma comunidade que cresce com você.</p>
-        <div class="hero-buttons" data-reveal>
-          <button class="btn btn-play" data-play><i class="fa-solid fa-play"></i> JOGAR AGORA</button>
+    <section class="section-padding bg-deep page-hero-section" id="sobre">
+      <div class="section-bg" data-bg="sobre"></div>
+      <div class="section-bg-overlay"></div>
+      <div class="container">
+        <div class="section-header" data-reveal>
+          <p class="section-label"><i class="fa-solid fa-map"></i> Sobre o servidor</p>
+          <h2 class="section-title">Por que jogar <span class="text-gradient">MoonMC?</span></h2>
+          <div class="section-divider"></div>
+          <p>Uma experiência survival completa, com equilíbrio, comunidade ativa e melhorias constantes.</p>
+        </div>
+
+        <div class="features-grid">
+          <div class="feature-card" data-reveal><div class="feature-icon"><i class="fa-solid fa-coins"></i></div><h4>Economia que faz sentido</h4><p>Você evolui jogando e negociando. Mercado justo, lojas e oportunidades reais.</p></div>
+          <div class="feature-card" data-reveal><div class="feature-icon"><i class="fa-solid fa-users"></i></div><h4>Comunidade ativa</h4><p>Discord cheio de gente pra jogar junto. Eventos, sorteios e amizades de verdade.</p></div>
+          <div class="feature-card" data-reveal><div class="feature-icon"><i class="fa-solid fa-shield-halved"></i></div><h4>Seu progresso protegido</h4><p>Anti-cheat, proteção de terreno e moderação ativa 24/7.</p></div>
+          <div class="feature-card" data-reveal><div class="feature-icon"><i class="fa-solid fa-gauge-high"></i></div><h4>Performance estável</h4><p>Infraestrutura otimizada pra minimizar lag e garantir fluidez no gameplay.</p></div>
+          <div class="feature-card" data-reveal><div class="feature-icon"><i class="fa-solid fa-trophy"></i></div><h4>Eventos semanais</h4><p>Competições, desafios e prêmios toda semana pra comunidade toda.</p></div>
+          <div class="feature-card" data-reveal><div class="feature-icon"><i class="fa-solid fa-headset"></i></div><h4>Voice chat opcional</h4><p>Fale com seus amigos direto no servidor — ou jogue em silêncio, você escolhe.</p></div>
         </div>
       </div>
     </section>
