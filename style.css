@@ -186,7 +186,8 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
   align-items: center;
   justify-content: space-between;
   height: 100%;
-  max-width: var(--container);
+  width: 100%;
+  max-width: 1400px;
   margin: 0 auto;
   padding: 0 24px;
 }
@@ -200,10 +201,13 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
 }
 
 .navbar-brand img {
-  width: 70px;
-  height: 70px;
+  width: 64px;
+  height: 64px;
+  max-width: 64px;
+  max-height: 64px;
   object-fit: contain;
   transition: transform 0.3s ease;
+  display: block;
 }
 
 .navbar-brand img:hover {
