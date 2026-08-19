@@ -486,7 +486,7 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
 .hero-bg {
   position: absolute;
   inset: 0;
-  background: url('assets/bg-hero.webp') center/cover no-repeat;
+  background: url('assets/bg-hero.png') center/cover no-repeat;
   z-index: 0;
 }
 
