@@ -483,11 +483,24 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
   overflow: hidden;
 }
 
+.hero-slides {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
 .hero-bg {
   position: absolute;
   inset: 0;
-  background: url('assets/bg-hero.png') center/cover no-repeat;
-  z-index: 0;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  opacity: 0;
+  transition: opacity 1.5s ease-in-out;
+}
+
+.hero-bg.active {
+  opacity: 1;
 }
 
 .hero-overlay {

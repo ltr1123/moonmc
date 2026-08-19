@@ -11,6 +11,17 @@
   var IP_JAVA = 'jogar.moonmc.com.br';
   var IP_BEDROCK = 'jogar.moonmc.com.br:25600';
 
+  /* ── Hero carousel ── */
+  var slides = document.querySelectorAll('.hero-slide');
+  if (slides.length > 1) {
+    var currentSlide = 0;
+    setInterval(function () {
+      slides[currentSlide].classList.remove('active');
+      currentSlide = (currentSlide + 1) % slides.length;
+      slides[currentSlide].classList.add('active');
+    }, 10000);
+  }
+
   /* ── Loader ── */
   window.addEventListener('load', function () {
     setTimeout(function () {
