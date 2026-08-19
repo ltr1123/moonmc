@@ -8,194 +8,204 @@
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
 
-        .leaderboard {
-            max-width: 1200px;
-            margin: 120px auto 60px;
-            padding: 0 24px;
+        body {
+            background: #0d0a1a;
+            min-height: 100vh;
         }
 
-        .leaderboard-header {
-            text-align: center;
-            margin-bottom: 16px;
+        .lb-page {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 100px 24px 60px;
         }
-        .leaderboard-logo {
-            font-size: 3rem;
+
+        /* Header */
+        .lb-header {
+            text-align: center;
+            margin-bottom: 32px;
+            animation: fadeDown 0.6s ease-out;
+        }
+        .lb-logo {
+            font-size: 3.5rem;
             font-weight: 900;
-            letter-spacing: 0.08em;
-            background: linear-gradient(135deg, #b48bfa, #818cf8);
+            letter-spacing: 0.06em;
+            background: linear-gradient(135deg, #b48bfa 0%, #818cf8 50%, #c084fc 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            font-family: var(--font-display), sans-serif;
             text-transform: uppercase;
-            animation: fadeSlideDown 0.6s ease-out;
         }
-        .leaderboard-sub {
-            color: var(--gray, #888);
-            font-size: 0.8rem;
-            letter-spacing: 0.2em;
+        .lb-subtitle {
+            color: #8b8ba3;
+            font-size: 0.75rem;
+            letter-spacing: 0.25em;
             text-transform: uppercase;
-            font-family: var(--font-heading), sans-serif;
-            margin-top: 4px;
-            animation: fadeSlideDown 0.6s ease-out 0.1s both;
+            margin-top: 6px;
         }
-        .leaderboard-line {
+        .lb-divider {
             width: 60px;
             height: 3px;
             background: linear-gradient(90deg, #b48bfa, #6ee7b7);
             border-radius: 2px;
-            margin: 16px auto 0;
-            animation: expandLine 0.8s ease-out 0.2s both;
+            margin: 14px auto 0;
         }
 
-        @keyframes fadeSlideDown {
-            from { opacity: 0; transform: translateY(-16px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes expandLine {
-            from { width: 0; opacity: 0; }
-            to { width: 60px; opacity: 1; }
-        }
-
-        /* Selector */
-        .period-selector {
+        /* Seletor por top */
+        .lb-tabs {
             display: flex;
             justify-content: center;
-            gap: 8px;
-            margin: 24px 0 32px;
-            animation: fadeSlideDown 0.6s ease-out 0.3s both;
+            gap: 10px;
+            margin-bottom: 36px;
+            animation: fadeDown 0.6s ease-out 0.15s both;
         }
-        .period-btn {
-            padding: 8px 24px;
-            border: 1px solid rgba(255,255,255,0.1);
+        .lb-tab {
+            padding: 9px 26px;
+            border: 1px solid rgba(255,255,255,0.08);
             border-radius: 6px;
-            background: transparent;
-            color: var(--gray, #888);
-            font-family: var(--font-heading), sans-serif;
+            background: rgba(255,255,255,0.03);
+            color: #6b6b8a;
             font-weight: 600;
-            font-size: 0.8rem;
-            letter-spacing: 0.04em;
+            font-size: 0.78rem;
+            letter-spacing: 0.05em;
             text-transform: uppercase;
             cursor: pointer;
             transition: all 0.25s;
+            font-family: inherit;
         }
-        .period-btn:hover { color: #fff; border-color: rgba(255,255,255,0.25); background: rgba(255,255,255,0.04); }
-        .period-btn.active {
+        .lb-tab:hover {
+            color: #bbb;
+            border-color: rgba(255,255,255,0.15);
+            background: rgba(255,255,255,0.05);
+        }
+        .lb-tab.active {
             background: linear-gradient(135deg, #b48bfa, #818cf8);
             color: #fff;
             border-color: transparent;
-            box-shadow: 0 2px 12px rgba(180,139,250,0.3);
+            box-shadow: 0 2px 16px rgba(180,139,250,0.35);
         }
 
         /* Grid */
-        .boards-grid {
+        .lb-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 20px;
-            margin-bottom: 32px;
+            gap: 18px;
+            margin-bottom: 36px;
         }
 
         /* Card */
-        .board-card {
-            background: linear-gradient(180deg, rgba(100,60,180,0.12) 0%, rgba(30,20,60,0.6) 100%);
-            border: 1px solid rgba(140,100,220,0.2);
-            border-radius: 12px;
+        .lb-card {
+            background: linear-gradient(180deg, rgba(120,60,200,0.10) 0%, rgba(20,12,40,0.70) 100%);
+            border: 1px solid rgba(160,100,255,0.15);
+            border-radius: 14px;
             overflow: hidden;
-            animation: cardAppear 0.5s ease-out both;
+            opacity: 0;
+            transform: translateY(16px);
+            animation: cardIn 0.45s ease-out forwards;
         }
-        .board-card:nth-child(1) { animation-delay: 0.1s; }
-        .board-card:nth-child(2) { animation-delay: 0.2s; }
-        .board-card:nth-child(3) { animation-delay: 0.3s; }
-        .board-card:nth-child(4) { animation-delay: 0.4s; }
+        .lb-card:nth-child(1) { animation-delay: 0.1s; }
+        .lb-card:nth-child(2) { animation-delay: 0.2s; }
+        .lb-card:nth-child(3) { animation-delay: 0.3s; }
+        .lb-card:nth-child(4) { animation-delay: 0.4s; }
 
-        @keyframes cardAppear {
-            from { opacity: 0; transform: translateY(20px); }
+        @keyframes cardIn {
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeDown {
+            from { opacity: 0; transform: translateY(-12px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
-        .board-card-header {
+        .lb-card-head {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 14px 18px;
-            border-bottom: 1px solid rgba(140,100,220,0.15);
+            padding: 13px 16px;
+            background: rgba(255,255,255,0.02);
+            border-bottom: 1px solid rgba(160,100,255,0.10);
         }
-        .board-card-title {
-            font-size: 0.82rem;
+        .lb-card-name {
+            font-size: 0.78rem;
             font-weight: 700;
-            color: var(--neon, #b48bfa);
-            font-family: var(--font-heading), sans-serif;
+            color: #c4a5f5;
             letter-spacing: 0.04em;
             text-transform: uppercase;
         }
-        .board-card-badge {
-            font-size: 0.65rem;
+        .lb-card-badge {
+            font-size: 0.6rem;
             font-weight: 600;
-            color: var(--gray, #888);
-            background: rgba(255,255,255,0.06);
+            color: #6b6b8a;
+            background: rgba(255,255,255,0.05);
             padding: 3px 10px;
             border-radius: 4px;
-            letter-spacing: 0.03em;
             text-transform: uppercase;
+            letter-spacing: 0.03em;
         }
 
-        .board-list {
+        .lb-list {
             list-style: none;
-            padding: 4px 0;
+            padding: 2px 0;
         }
-        .board-item {
+        .lb-row {
             display: flex;
             align-items: center;
-            padding: 8px 18px;
-            gap: 12px;
+            padding: 7px 16px;
+            gap: 10px;
             transition: background 0.15s;
         }
-        .board-item:hover {
-            background: rgba(255,255,255,0.03);
+        .lb-row:hover {
+            background: rgba(255,255,255,0.025);
         }
 
-        .rank {
-            width: 28px;
+        .lb-rank {
+            width: 24px;
             text-align: center;
             flex-shrink: 0;
         }
-        .rank-num {
+        .lb-rank-num {
             font-weight: 700;
-            font-size: 0.9rem;
-            color: var(--gray, #888);
+            font-size: 0.85rem;
+            color: #555570;
         }
-        .rank-num.g { color: #ffd700; }
-        .rank-num.s { color: #c0c0c0; }
-        .rank-num.b { color: #cd7f32; }
+        .lb-rank-num.gold { color: #ffd700; }
+        .lb-rank-num.silver { color: #b8b8c8; }
+        .lb-rank-num.bronze { color: #cd7f32; }
 
-        .head {
-            width: 30px;
-            height: 30px;
+        .lb-head {
+            width: 28px;
+            height: 28px;
             border-radius: 4px;
             image-rendering: pixelated;
             flex-shrink: 0;
-            border: 1px solid rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.08);
         }
 
-        .pname {
+        .lb-name {
             flex: 1;
             font-weight: 600;
-            font-size: 0.88rem;
-            color: #fff;
+            font-size: 0.85rem;
+            color: #e0e0f0;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
         }
 
-        .pval {
+        .lb-val {
             font-weight: 700;
-            font-size: 0.88rem;
+            font-size: 0.85rem;
             color: #fff;
             flex-shrink: 0;
             font-variant-numeric: tabular-nums;
         }
 
-        .leaderboard-update-btn {
+        .lb-empty {
+            text-align: center;
+            padding: 16px;
+            color: #555570;
+            font-size: 0.85rem;
+        }
+
+        /* Botao */
+        .lb-update-btn {
             display: block;
             margin: 0 auto;
             padding: 10px 28px;
@@ -203,36 +213,26 @@
             color: #170b2b;
             border: none;
             border-radius: 8px;
-            font-family: var(--font-heading), sans-serif;
             font-weight: 700;
-            font-size: 0.8rem;
+            font-size: 0.78rem;
             letter-spacing: 0.06em;
             text-transform: uppercase;
             cursor: pointer;
             transition: all 0.25s;
-            animation: fadeSlideDown 0.6s ease-out 0.5s both;
+            font-family: inherit;
         }
-        .leaderboard-update-btn:hover {
+        .lb-update-btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 4px 20px rgba(180,139,250,0.4);
         }
-        .leaderboard-update-btn:active {
-            transform: translateY(0);
-        }
-
-        .empty-msg {
-            text-align: center;
-            padding: 24px;
-            color: var(--gray, #888);
-        }
 
         @media (max-width: 900px) {
-            .boards-grid { grid-template-columns: repeat(2, 1fr); }
+            .lb-grid { grid-template-columns: repeat(2, 1fr); }
         }
         @media (max-width: 600px) {
-            .boards-grid { grid-template-columns: 1fr; }
-            .leaderboard-logo { font-size: 2rem; }
-            .leaderboard { margin-top: 100px; }
+            .lb-grid { grid-template-columns: 1fr; }
+            .lb-logo { font-size: 2.2rem; }
+            .lb-page { padding-top: 80px; }
         }
     </style>
 </head>
@@ -252,205 +252,144 @@
         </div>
     </nav>
 
-    <div class="leaderboard">
-        <div class="leaderboard-header">
-            <div class="leaderboard-logo">MoonMC</div>
-            <div class="leaderboard-sub">Tops do Servidor</div>
-            <div class="leaderboard-line"></div>
+    <div class="lb-page">
+        <div class="lb-header">
+            <div class="lb-logo">MoonMC</div>
+            <div class="lb-subtitle">Tops do Servidor</div>
+            <div class="lb-divider"></div>
         </div>
 
-        <div class="period-selector">
-            <button class="period-btn active" data-period="alltime">All time</button>
+        <div class="lb-tabs">
+            <button class="lb-tab active" onclick="selectPeriod(this)">All time</button>
         </div>
 
-        <div id="boards-grid" class="boards-grid">
-            <div class="empty-msg">Carregando dados...</div>
-        </div>
+        <div id="lb-grid" class="lb-grid"></div>
 
-        <button class="leaderboard-update-btn" onclick="updateLeaderboard()">Atualizar Dados</button>
+        <button class="lb-update-btn" onclick="refreshData()">Atualizar Dados</button>
     </div>
 
     <script>
-        var API_BASE = 'https://www.moonmc.com.br';
+        var API = 'https://www.moonmc.com.br/api/tops/read';
+        var BOARDS = [
+            { key: 'statistic_player_kills', label: 'Player Kills', icon: '\u2694\uFE0F' },
+            { key: 'statistic_deaths', label: 'Deaths', icon: '\uD83D\uDC80' },
+            { key: 'vault_eco_balance', label: 'Dinheiro', icon: '\uD83D\uDCB0' },
+            { key: 'ypesca_fished', label: 'Peixes', icon: '\uD83C\uDFA3' }
+        ];
 
-        var BOARDS = {
-            'statistic_player_kills': { label: 'Player Kills', icon: '\u2694\uFE0F' },
-            'statistic_deaths': { label: 'Deaths', icon: '\uD83D\uDC80' },
-            'vault_eco_balance': { label: 'Dinheiro', icon: '\uD83D\uDCB0' },
-            'ypesca_fished': { label: 'Peixes', icon: '\uD83C\uDFA3' }
-        };
-
-        var BOARD_KEYS = Object.keys(BOARDS);
-        var lastUpdate = null;
-        var cachedData = null;
-
-        function parseValue(val) {
-            if (val === '---' || val === null || val === undefined) return 0;
-            var cleaned = String(val).replace(/,/g, '').replace(/\s/g, '');
-            var num = parseFloat(cleaned);
-            return isNaN(num) ? 0 : num;
+        function selectPeriod(el) {
+            document.querySelectorAll('.lb-tab').forEach(function(b) { b.classList.remove('active'); });
+            el.classList.add('active');
         }
 
-        function formatMoney(val) {
-            var n = parseValue(val);
-            if (n >= 1000000) return (n / 1000000).toFixed(1).replace(/\.0$/, '') + 'M';
-            if (n >= 1000) return (n / 1000).toFixed(1).replace(/\.0$/, '') + 'K';
+        function parseVal(v) {
+            if (!v || v === '---') return 0;
+            return parseFloat(String(v).replace(/,/g, '')) || 0;
+        }
+        function fmtMoney(v) {
+            var n = parseVal(v);
+            if (n >= 1e6) return (n/1e6).toFixed(1).replace(/\.0$/,'') + 'M';
+            if (n >= 1e3) return (n/1e3).toFixed(1).replace(/\.0$/,'') + 'K';
             return Math.round(n).toLocaleString('pt-BR');
         }
+        function fmtNum(v) { return Math.round(parseVal(v)).toLocaleString('pt-BR'); }
+        function fmtTime(v) { return (!v || v === '---') ? '0' : String(v); }
+        function headUrl(n) { return 'https://mc-heads.net/avatar/' + encodeURIComponent(n) + '/36'; }
 
-        function formatNumber(val) {
-            var n = parseValue(val);
-            return Math.round(n).toLocaleString('pt-BR');
-        }
-
-        function formatTime(val) {
-            if (!val || val === '---') return '0';
-            return String(val);
-        }
-
-        function getHeadUrl(name) {
-            return 'https://mc-heads.net/avatar/' + encodeURIComponent(name) + '/36';
-        }
-
-        function fetchLeaderboard() {
-            return fetch(API_BASE + '/api/tops/read')
-                .then(function(r) { if (!r.ok) throw new Error('Falha'); return r.json(); })
-                .catch(function(e) { console.error('Erro:', e); return null; });
-        }
-
-        function updateLeaderboard() {
-            var btn = document.querySelector('.leaderboard-update-btn');
-            btn.textContent = 'Atualizando...';
-            btn.disabled = true;
-            fetchLeaderboard().then(function(data) {
-                if (data && data.boards) { cachedData = data; renderLeaderboard(data); lastUpdate = Date.now(); showToast('Dados atualizados!'); }
-            }).catch(function() { showToast('Erro ao atualizar'); })
-            .then(function() { btn.textContent = 'Atualizar Dados'; btn.disabled = false; });
-        }
-
-        function renderBoard(boardData, boardKey) {
-            var info = BOARDS[boardKey];
-            if (!info || !boardData.entries || boardData.entries.length === 0) return null;
-
-            var isMoney = boardKey === 'vault_eco_balance';
-            var isTime = boardKey === 'statistic_time_played';
-
+        function buildCard(boardData, info) {
             var card = document.createElement('div');
-            card.className = 'board-card';
+            card.className = 'lb-card';
 
-            var header = document.createElement('div');
-            header.className = 'board-card-header';
-            var titleEl = document.createElement('span');
-            titleEl.className = 'board-card-title';
-            titleEl.textContent = info.icon + ' ' + info.label;
-            header.appendChild(titleEl);
-            var badge = document.createElement('span');
-            badge.className = 'board-card-badge';
-            badge.textContent = 'alltime';
-            header.appendChild(badge);
-            card.appendChild(header);
+            var hd = document.createElement('div');
+            hd.className = 'lb-card-head';
+            hd.innerHTML = '<span class="lb-card-name">' + info.icon + ' ' + info.label + '</span><span class="lb-card-badge">alltime</span>';
+            card.appendChild(hd);
 
-            var list = document.createElement('ul');
-            list.className = 'board-list';
-            var shown = 0;
+            var ul = document.createElement('ul');
+            ul.className = 'lb-list';
+            var n = 0;
 
-            for (var i = 0; i < boardData.entries.length && shown < 10; i++) {
-                var entry = boardData.entries[i];
-                if (!entry.name || entry.name === '---' || entry.value === '---') continue;
+            for (var i = 0; i < boardData.entries.length && n < 10; i++) {
+                var e = boardData.entries[i];
+                if (!e.name || e.name === '---' || e.value === '---') continue;
 
                 var li = document.createElement('li');
-                li.className = 'board-item';
+                li.className = 'lb-row';
 
-                var rankDiv = document.createElement('div');
-                rankDiv.className = 'rank';
-                var numSpan = document.createElement('span');
-                numSpan.className = 'rank-num';
-                if (shown === 0) numSpan.classList.add('g');
-                else if (shown === 1) numSpan.classList.add('s');
-                else if (shown === 2) numSpan.classList.add('b');
-                numSpan.textContent = (shown + 1);
-                rankDiv.appendChild(numSpan);
-                li.appendChild(rankDiv);
+                var rk = document.createElement('div');
+                rk.className = 'lb-rank';
+                var rs = document.createElement('span');
+                rs.className = 'lb-rank-num';
+                if (n === 0) rs.className += ' gold';
+                else if (n === 1) rs.className += ' silver';
+                else if (n === 2) rs.className += ' bronze';
+                rs.textContent = n + 1;
+                rk.appendChild(rs);
+                li.appendChild(rk);
 
-                var headImg = document.createElement('img');
-                headImg.className = 'head';
-                headImg.src = getHeadUrl(entry.name);
-                headImg.alt = entry.name;
-                headImg.onerror = function() { this.src = 'https://mc-heads.net/avatar/steve/36'; };
-                li.appendChild(headImg);
+                var img = document.createElement('img');
+                img.className = 'lb-head';
+                img.src = headUrl(e.name);
+                img.alt = e.name;
+                img.onerror = function() { this.src = 'https://mc-heads.net/avatar/steve/36'; };
+                li.appendChild(img);
 
-                var nameEl = document.createElement('span');
-                nameEl.className = 'pname';
-                nameEl.textContent = entry.name;
-                li.appendChild(nameEl);
+                var nm = document.createElement('span');
+                nm.className = 'lb-name';
+                nm.textContent = e.name;
+                li.appendChild(nm);
 
-                var valEl = document.createElement('span');
-                valEl.className = 'pval';
-                if (isMoney) valEl.textContent = formatMoney(entry.value);
-                else if (isTime) valEl.textContent = formatTime(entry.value);
-                else valEl.textContent = formatNumber(entry.value);
-                li.appendChild(valEl);
+                var vl = document.createElement('span');
+                vl.className = 'lb-val';
+                if (info.key === 'vault_eco_balance') vl.textContent = fmtMoney(e.value);
+                else if (info.key === 'statistic_time_played') vl.textContent = fmtTime(e.value);
+                else vl.textContent = fmtNum(e.value);
+                li.appendChild(vl);
 
-                list.appendChild(li);
-                shown++;
+                ul.appendChild(li);
+                n++;
             }
 
-            if (shown === 0) {
-                var empty = document.createElement('li');
-                empty.className = 'board-item';
-                empty.innerHTML = '<span style="color:var(--gray,#888);width:100%;text-align:center;padding:16px 0">Sem dados</span>';
-                list.appendChild(empty);
+            if (n === 0) {
+                var em = document.createElement('li');
+                em.className = 'lb-row';
+                em.innerHTML = '<span class="lb-empty" style="width:100%">Sem dados</span>';
+                ul.appendChild(em);
             }
 
-            card.appendChild(list);
+            card.appendChild(ul);
             return card;
         }
 
-        function renderLeaderboard(data) {
-            var grid = document.getElementById('boards-grid');
+        function render(data) {
+            var grid = document.getElementById('lb-grid');
             grid.innerHTML = '';
-
-            if (!data || !data.boards) {
-                grid.innerHTML = '<div class="empty-msg" style="grid-column:1/-1">Sem dados disponiveis</div>';
+            if (!data || !data.boards || data.boards.length === 0) {
+                grid.innerHTML = '<div class="lb-empty" style="grid-column:1/-1">Sem dados disponiveis</div>';
                 return;
             }
-
-            var hasContent = false;
-
-            for (var k = 0; k < BOARD_KEYS.length; k++) {
-                var boardKey = BOARD_KEYS[k];
-                var boardData = null;
-                for (var j = 0; j < data.boards.length; j++) {
-                    if (data.boards[j].board === boardKey) { boardData = data.boards[j]; break; }
-                }
-                if (boardData) {
-                    var card = renderBoard(boardData, boardKey);
-                    if (card) { grid.appendChild(card); hasContent = true; }
-                }
-            }
-
-            if (!hasContent) {
-                grid.innerHTML = '<div class="empty-msg" style="grid-column:1/-1">Sem dados disponiveis</div>';
-            }
+            BOARDS.forEach(function(info) {
+                var bd = data.boards.find(function(b) { return b.board === info.key; });
+                if (bd) grid.appendChild(buildCard(bd, info));
+            });
         }
 
-        function showToast(msg) {
-            var toast = document.createElement('div');
-            toast.textContent = msg;
-            toast.style.cssText = 'position:fixed;bottom:30px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#b48bfa,#6ee7b7);color:#170b2b;padding:12px 24px;border-radius:8px;font-weight:700;z-index:9999;transition:opacity 0.5s;font-family:sans-serif;animation:fadeSlideDown 0.3s ease-out';
-            document.body.appendChild(toast);
-            setTimeout(function() { toast.style.opacity = '0'; setTimeout(function() { toast.remove(); }, 500); }, 2000);
+        function refreshData() {
+            var btn = document.querySelector('.lb-update-btn');
+            btn.textContent = 'Atualizando...';
+            btn.disabled = true;
+            fetch(API).then(function(r) { return r.json(); }).then(function(d) {
+                render(d);
+                btn.textContent = 'Atualizar Dados';
+                btn.disabled = false;
+            }).catch(function() {
+                btn.textContent = 'Atualizar Dados';
+                btn.disabled = false;
+            });
         }
 
-        fetchLeaderboard().then(function(data) {
-            if (data && data.boards) { cachedData = data; renderLeaderboard(data); lastUpdate = Date.now(); }
-            else { document.getElementById('boards-grid').innerHTML = '<div class="empty-msg" style="grid-column:1/-1">Sem dados disponiveis</div>'; }
-            setInterval(function() {
-                fetchLeaderboard().then(function(d) {
-                    if (d && d.boards) { cachedData = d; renderLeaderboard(d); lastUpdate = Date.now(); }
-                });
-            }, 30000);
-        });
+        refreshData();
+        setInterval(refreshData, 30000);
     </script>
 </body>
 </html>
