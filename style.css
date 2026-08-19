@@ -1055,19 +1055,18 @@ section { position: relative; z-index: 1; }
   transition: var(--transition);
   display: flex;
   flex-direction: column;
-  overflow: hidden;
+  overflow: visible;
 }
 
 .plan-art {
   position: absolute;
   top: 0;
   left: 0;
-  width: 100%;
+  width: calc(100% + 2px);
   height: 230px;
   overflow: hidden;
   border-radius: var(--radius) var(--radius) 0 0;
   margin: -1px -1px 0 -1px;
-  width: calc(100% + 2px);
 }
 
 .plan-art img {
