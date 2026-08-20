@@ -256,20 +256,92 @@
         font-size: 14px;
         color: var(--texto);
     }
+
+    /* ===== GROUP TAGS - Cores do LuckPerms ===== */
     .group-tag {
+        display: inline-block;
         font-size: 10px;
-        font-weight: 600;
-        padding: 2px 8px;
+        font-weight: 700;
+        padding: 3px 10px;
         border-radius: 4px;
-        margin-left: 6px;
+        margin-left: 8px;
         text-transform: uppercase;
-        letter-spacing: 0.3px;
+        letter-spacing: 0.5px;
         vertical-align: middle;
+        line-height: 1;
     }
-    .group-tag.vip { background: rgba(255,215,0,0.15); color: #ffd700; border: 1px solid rgba(255,215,0,0.2); }
-    .group-tag.membro { background: rgba(110,231,183,0.1); color: #6ee7b7; border: 1px solid rgba(110,231,183,0.15); }
-    .group-tag.admin { background: rgba(239,68,68,0.1); color: #ef4444; border: 1px solid rgba(239,68,68,0.15); }
-    .group-tag.default { background: rgba(168,85,247,0.1); color: #c084fc; border: 1px solid rgba(168,85,247,0.15); }
+    /* YT / Gerente - Vermelho (&c) */
+    .group-tag.yt,
+    .group-tag.gerente,
+    .group-tag.admin,
+    .group-tag.mod {
+        background: linear-gradient(135deg, #7f1d1d, #991b1b);
+        color: #f87171;
+        border: 1px solid rgba(248,113,113,0.3);
+        text-shadow: 0 0 8px rgba(248,113,113,0.3);
+    }
+    /* PARTNER - Rosa/Magenta (&d) */
+    .group-tag.partner {
+        background: linear-gradient(135deg, #831843, #9d174d);
+        color: #f472b6;
+        border: 1px solid rgba(244,114,182,0.3);
+        text-shadow: 0 0 8px rgba(244,114,182,0.3);
+    }
+    /* TWITCH - Rosa escuro (&u) */
+    .group-tag.twitch {
+        background: linear-gradient(135deg, #701a75, #86198f);
+        color: #e879f9;
+        border: 1px solid rgba(232,121,249,0.3);
+        text-shadow: 0 0 8px rgba(232,121,249,0.3);
+    }
+    /* CREATOR - Roxo escuro (&5) */
+    .group-tag.creator {
+        background: linear-gradient(135deg, #3b0764, #581c87);
+        color: #a78bfa;
+        border: 1px solid rgba(167,139,250,0.3);
+        text-shadow: 0 0 8px rgba(167,139,250,0.3);
+    }
+    /* PRIME - Azul escuro/Aqua (&3) */
+    .group-tag.prime {
+        background: linear-gradient(135deg, #164e63, #155e75);
+        color: #22d3ee;
+        border: 1px solid rgba(34,211,238,0.3);
+        text-shadow: 0 0 8px rgba(34,211,238,0.3);
+    }
+    /* VIP - Verde claro (&a) */
+    .group-tag.vip {
+        background: linear-gradient(135deg, #14532d, #166534);
+        color: #4ade80;
+        border: 1px solid rgba(74,222,128,0.3);
+        text-shadow: 0 0 8px rgba(74,222,128,0.3);
+    }
+    /* Membro - Azul */
+    .group-tag.membro {
+        background: linear-gradient(135deg, #1e3a5f, #1e40af);
+        color: #60a5fa;
+        border: 1px solid rgba(96,165,250,0.3);
+        text-shadow: 0 0 8px rgba(96,165,250,0.3);
+    }
+    /* Helper - Ciano */
+    .group-tag.helper {
+        background: linear-gradient(135deg, #164e63, #0e7490);
+        color: #67e8f9;
+        border: 1px solid rgba(103,232,249,0.3);
+        text-shadow: 0 0 8px rgba(103,232,249,0.3);
+    }
+    /* Default - Roxo */
+    .group-tag.default {
+        background: linear-gradient(135deg, #1e1b4b, #312e81);
+        color: #818cf8;
+        border: 1px solid rgba(129,140,248,0.2);
+        text-shadow: 0 0 8px rgba(129,140,248,0.2);
+    }
+    /* Qualquer outro grupo */
+    .group-tag.outro {
+        background: linear-gradient(135deg, #1e1b4b, #312e81);
+        color: #a5b4fc;
+        border: 1px solid rgba(165,180,252,0.2);
+    }
 
     .valor {
         text-align: right;
@@ -389,23 +461,33 @@
         'ypesca_fished': { label: 'Peixes', emoji: '\uD83C\uDFA3' }
     };
 
+    // Mapeamento de grupos do LuckPerms para classes CSS
     var GROUP_CLASSES = {
+        'yt': 'yt',
+        'partner': 'partner',
+        'twitch': 'twitch',
+        'creator': 'creator',
+        'prime': 'prime',
         'vip': 'vip',
-        'membro': 'membro',
+        'gerente': 'gerente',
         'admin': 'admin',
-        'mod': 'admin',
-        'helper': 'admin',
+        'mod': 'mod',
+        'helper': 'helper',
+        'membro': 'membro',
         'default': 'default',
         'memorial': 'default'
     };
 
     function getGroupClass(group) {
-        if (!group || group === '---') return '';
-        var g = group.toLowerCase();
+        if (!group || group === '---' || group === '') return '';
+        var g = group.toLowerCase().trim();
+        // Match exato primeiro
+        if (GROUP_CLASSES[g]) return GROUP_CLASSES[g];
+        // Match parcial
         for (var key in GROUP_CLASSES) {
             if (g.indexOf(key) !== -1) return GROUP_CLASSES[key];
         }
-        return 'default';
+        return 'outro';
     }
 
     function selectPeriod(el, period) {
@@ -490,9 +572,9 @@
                 var medalhaClasse = e.pos <= 3 ? 'pos-medalha' : '';
                 var head = '<img class="head" src="https://mc-heads.net/avatar/' + encodeURIComponent(e.name) + '/64" alt="" loading="lazy" onerror="this.src=\'https://mc-heads.net/avatar/steve/64\'">';
                 var groupHtml = '';
-                if (e.group && e.group !== '---' && e.group !== 'default') {
+                if (e.group && e.group !== '---' && e.group !== 'default' && e.group !== '') {
                     var gc = getGroupClass(e.group);
-                    groupHtml = '<span class="group-tag ' + gc + '">' + esc(e.group) + '</span>';
+                    groupHtml = '<span class="group-tag ' + gc + '">' + esc(e.group.toUpperCase()) + '</span>';
                 }
                 linhas += '<tr><td class="' + classe + ' ' + medalhaClasse + '">' + medalha + '</td><td class="jogador">' + head + '<span class="nome">' + esc(e.name) + groupHtml + '</span></td><td class="valor">' + formatValue(e.value) + '</td></tr>';
             }
