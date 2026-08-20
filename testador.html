@@ -33,7 +33,6 @@
         overflow-x: hidden;
     }
 
-    /* ===== FUNDO GRADIENT ===== */
     body::before {
         content: '';
         position: fixed;
@@ -45,6 +44,33 @@
             radial-gradient(ellipse at 50% 80%, rgba(139,92,246,0.06) 0%, transparent 50%);
         z-index: -1;
     }
+
+    /* ===== CUBOS 3D ===== */
+    .cube-wrapper {
+        position: fixed;
+        pointer-events: none;
+        z-index: 0;
+        perspective: 800px;
+    }
+    .cube {
+        width: 100%;
+        height: 100%;
+        position: relative;
+        transform-style: preserve-3d;
+    }
+    .cube-face {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        backface-visibility: visible;
+        border: 1px solid rgba(168,85,247,0.3);
+    }
+    .cube-face-front  { transform: translateZ(calc(var(--size) / 2)); background: rgba(168,85,247,0.08); }
+    .cube-face-back   { transform: rotateY(180deg) translateZ(calc(var(--size) / 2)); background: rgba(139,92,246,0.06); }
+    .cube-face-right  { transform: rotateY(90deg) translateZ(calc(var(--size) / 2)); background: rgba(124,58,237,0.07); }
+    .cube-face-left   { transform: rotateY(-90deg) translateZ(calc(var(--size) / 2)); background: rgba(147,51,234,0.07); }
+    .cube-face-top    { transform: rotateX(90deg) translateZ(calc(var(--size) / 2)); background: rgba(168,85,247,0.1); }
+    .cube-face-bottom { transform: rotateX(-90deg) translateZ(calc(var(--size) / 2)); background: rgba(109,40,217,0.06); }
 
     .navbar-spacer { height: 60px; }
 
@@ -242,7 +268,7 @@
         font-weight: 400;
     }
 
-    /* ===== GROUP TAGS - Cores do LuckPerms ===== */
+    /* ===== GROUP TAGS ===== */
     .group-tag {
         display: inline-block;
         font-size: 10px;
@@ -327,14 +353,6 @@
         font-variant-numeric: tabular-nums;
     }
 
-    #estado {
-        text-align: center;
-        color: var(--cinza);
-        font-size: 13px;
-        padding: 10px 20px 50px;
-        letter-spacing: 0.5px;
-    }
-
     .vazio {
         text-align: center;
         color: var(--cinza);
@@ -362,6 +380,9 @@
     </style>
 </head>
 <body>
+    <!-- Container para cubos 3D -->
+    <div id="cubos-container"></div>
+
     <nav class="navbar" id="navbar">
         <div class="navbar-inner">
             <div class="navbar-left">
@@ -407,77 +428,112 @@
     </div>
 
     <script>
-    // ===== ESTRELAS CADENTES =====
+    // ===== CUBOS 3D A GIRAR =====
     (function() {
-        var container = document.body;
-        var numStars = 40;
+        var container = document.getElementById('cubos-container');
+        var cubos = [];
+        var maxCubos = 20;
 
-        for (var i = 0; i < numStars; i++) {
-            criarEstrela(container);
+        // Cores roxas para as faces
+        var coresFaces = [
+            'rgba(168,85,247,0.08)',
+            'rgba(139,92,246,0.06)',
+            'rgba(124,58,237,0.07)',
+            'rgba(147,51,234,0.07)',
+            'rgba(109,40,217,0.06)',
+            'rgba(168,85,247,0.1)'
+        ];
+        var corBorda = 'rgba(168,85,247,0.25)';
+
+        function criarCubo() {
+            var size = 15 + Math.random() * 35; // 15-50px
+            var startX = Math.random() * 100;
+            var startY = Math.random() * 100;
+
+            // Wrapper
+            var wrapper = document.createElement('div');
+            wrapper.className = 'cube-wrapper';
+            wrapper.style.cssText = 'left:' + startX + '%;top:' + startY + '%;width:' + size + 'px;height:' + size + 'px;--size:' + size + 'px;';
+
+            // Cube
+            var cube = document.createElement('div');
+            cube.className = 'cube';
+
+            // 6 faces
+            var faces = ['front','back','right','left','top','bottom'];
+            for (var i = 0; i < faces.length; i++) {
+                var face = document.createElement('div');
+                face.className = 'cube-face cube-face-' + faces[i];
+                face.style.background = coresFaces[i];
+                face.style.borderColor = corBorda;
+                cube.appendChild(face);
+            }
+
+            wrapper.appendChild(cube);
+            container.appendChild(wrapper);
+
+            // Animacao
+            var rotX = Math.random() * 360;
+            var rotY = Math.random() * 360;
+            var rotZ = Math.random() * 360;
+            var speedX = 0.2 + Math.random() * 0.8; // graus/frame
+            var speedY = 0.3 + Math.random() * 0.7;
+            var speedZ = 0.1 + Math.random() * 0.5;
+
+            // Drift (movimento lento)
+            var driftX = (Math.random() - 0.5) * 0.02;
+            var driftY = (Math.random() - 0.5) * 0.02;
+
+            // Opacidade
+            var opacidade = 0.3 + Math.random() * 0.5;
+            wrapper.style.opacity = opacidade;
+
+            cubos.push({
+                el: wrapper,
+                cube: cube,
+                rotX: rotX,
+                rotY: rotY,
+                rotZ: rotZ,
+                speedX: speedX,
+                speedY: speedY,
+                speedZ: speedZ,
+                driftX: driftX,
+                driftY: driftY,
+                x: startX,
+                y: startY
+            });
         }
 
-        setInterval(function() {
-            if (document.querySelectorAll('.star').length < 50) {
-                criarEstrela(container);
+        // Criar cubos iniciais
+        for (var i = 0; i < maxCubos; i++) {
+            criarCubo();
+        }
+
+        // Animacao
+        function animar() {
+            for (var i = 0; i < cubos.length; i++) {
+                var c = cubos[i];
+                c.rotX += c.speedX;
+                c.rotY += c.speedY;
+                c.rotZ += c.speedZ;
+
+                c.x += c.driftX;
+                c.y += c.driftY;
+
+                // Wrapping
+                if (c.x > 105) c.x = -5;
+                if (c.x < -5) c.x = 105;
+                if (c.y > 105) c.y = -5;
+                if (c.y < -5) c.y = 105;
+
+                c.el.style.left = c.x + '%';
+                c.el.style.top = c.y + '%';
+                c.cube.style.transform = 'rotateX(' + c.rotX + 'deg) rotateY(' + c.rotY + 'deg) rotateZ(' + c.rotZ + 'deg)';
             }
-        }, 1000);
-
-        function criarEstrela(parent) {
-            var star = document.createElement('div');
-            star.className = 'star';
-            star.style.cssText = 'position:fixed;pointer-events:none;z-index:0;';
-
-            var startX = Math.random() * 100;
-            var startY = -5 - Math.random() * 10;
-            var tamanho = 1 + Math.random() * 2;
-            var velocidade = 4 + Math.random() * 8;
-            var delay = Math.random() * 3;
-
-            var cores = ['#ffffff', '#d8b4fe', '#93c5fd', '#a5b4fc', '#c4b5fd'];
-            var cor = cores[Math.floor(Math.random() * cores.length)];
-            var brilho = 0.2 + Math.random() * 0.5;
-            var angulo = -75 + Math.random() * 10;
-
-            star.style.left = startX + '%';
-            star.style.top = startY + '%';
-
-            var dot = document.createElement('div');
-            dot.style.cssText = 'position:absolute;width:' + tamanho + 'px;height:' + tamanho + 'px;background:' + cor + ';border-radius:50%;box-shadow:0 0 ' + (tamanho * 3) + 'px ' + cor + ';opacity:' + brilho + ';left:0;top:0;';
-
-            var trailLen = 15 + Math.random() * 30;
-            var trail = document.createElement('div');
-            trail.style.cssText = 'position:absolute;width:1px;height:' + trailLen + 'px;background:linear-gradient(to bottom,' + cor + ',transparent);transform:rotate(' + angulo + 'deg);opacity:' + (brilho * 0.4) + ';left:0;top:0;transform-origin:top center;';
-
-            star.appendChild(trail);
-            star.appendChild(dot);
-            parent.appendChild(star);
-
-            var startTime = Date.now() + delay * 1000;
-            var driftX = (Math.random() - 0.5) * 80;
-
-            function animar() {
-                var agora = Date.now();
-                if (agora < startTime) { requestAnimationFrame(animar); return; }
-
-                var elapsed = (agora - startTime) / 1000;
-                var progress = elapsed / velocidade;
-
-                if (progress >= 1) { star.remove(); return; }
-
-                var y = startY + (120) * progress;
-                var x = driftX * progress;
-
-                star.style.transform = 'translate(' + x + 'px,' + (y) + 'vh)';
-
-                if (progress > 0.7) {
-                    star.style.opacity = 1 - ((progress - 0.7) / 0.3);
-                }
-
-                requestAnimationFrame(animar);
-            }
-
             requestAnimationFrame(animar);
         }
+
+        requestAnimationFrame(animar);
     })();
     </script>
 
