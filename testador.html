@@ -50,7 +50,7 @@
         position: fixed;
         pointer-events: none;
         z-index: 0;
-        perspective: 800px;
+        perspective: 600px;
     }
     .cube {
         width: 100%;
@@ -63,14 +63,14 @@
         width: 100%;
         height: 100%;
         backface-visibility: visible;
-        border: 1px solid rgba(168,85,247,0.3);
+        border: 1px solid rgba(168,85,247,0.2);
     }
-    .cube-face-front  { transform: translateZ(calc(var(--size) / 2)); background: rgba(168,85,247,0.08); }
-    .cube-face-back   { transform: rotateY(180deg) translateZ(calc(var(--size) / 2)); background: rgba(139,92,246,0.06); }
-    .cube-face-right  { transform: rotateY(90deg) translateZ(calc(var(--size) / 2)); background: rgba(124,58,237,0.07); }
-    .cube-face-left   { transform: rotateY(-90deg) translateZ(calc(var(--size) / 2)); background: rgba(147,51,234,0.07); }
-    .cube-face-top    { transform: rotateX(90deg) translateZ(calc(var(--size) / 2)); background: rgba(168,85,247,0.1); }
-    .cube-face-bottom { transform: rotateX(-90deg) translateZ(calc(var(--size) / 2)); background: rgba(109,40,217,0.06); }
+    .cube-face-front  { transform: translateZ(calc(var(--size) / 2)); background: rgba(168,85,247,0.06); }
+    .cube-face-back   { transform: rotateY(180deg) translateZ(calc(var(--size) / 2)); background: rgba(139,92,246,0.04); }
+    .cube-face-right  { transform: rotateY(90deg) translateZ(calc(var(--size) / 2)); background: rgba(124,58,237,0.05); }
+    .cube-face-left   { transform: rotateY(-90deg) translateZ(calc(var(--size) / 2)); background: rgba(147,51,234,0.05); }
+    .cube-face-top    { transform: rotateX(90deg) translateZ(calc(var(--size) / 2)); background: rgba(168,85,247,0.08); }
+    .cube-face-bottom { transform: rotateX(-90deg) translateZ(calc(var(--size) / 2)); background: rgba(109,40,217,0.04); }
 
     .navbar-spacer { height: 60px; }
 
@@ -380,7 +380,6 @@
     </style>
 </head>
 <body>
-    <!-- Container para cubos 3D -->
     <div id="cubos-container"></div>
 
     <nav class="navbar" id="navbar">
@@ -432,34 +431,30 @@
     (function() {
         var container = document.getElementById('cubos-container');
         var cubos = [];
-        var maxCubos = 20;
+        var maxCubos = 10; // menos cubos
 
-        // Cores roxas para as faces
         var coresFaces = [
-            'rgba(168,85,247,0.08)',
-            'rgba(139,92,246,0.06)',
-            'rgba(124,58,237,0.07)',
-            'rgba(147,51,234,0.07)',
-            'rgba(109,40,217,0.06)',
-            'rgba(168,85,247,0.1)'
+            'rgba(168,85,247,0.06)',
+            'rgba(139,92,246,0.04)',
+            'rgba(124,58,237,0.05)',
+            'rgba(147,51,234,0.05)',
+            'rgba(109,40,217,0.04)',
+            'rgba(168,85,247,0.07)'
         ];
-        var corBorda = 'rgba(168,85,247,0.25)';
+        var corBorda = 'rgba(168,85,247,0.18)';
 
         function criarCubo() {
-            var size = 15 + Math.random() * 35; // 15-50px
+            var size = 12 + Math.random() * 18; // 12-30px (mais pequeno)
             var startX = Math.random() * 100;
             var startY = Math.random() * 100;
 
-            // Wrapper
             var wrapper = document.createElement('div');
             wrapper.className = 'cube-wrapper';
             wrapper.style.cssText = 'left:' + startX + '%;top:' + startY + '%;width:' + size + 'px;height:' + size + 'px;--size:' + size + 'px;';
 
-            // Cube
             var cube = document.createElement('div');
             cube.className = 'cube';
 
-            // 6 faces
             var faces = ['front','back','right','left','top','bottom'];
             for (var i = 0; i < faces.length; i++) {
                 var face = document.createElement('div');
@@ -472,20 +467,19 @@
             wrapper.appendChild(cube);
             container.appendChild(wrapper);
 
-            // Animacao
+            // Animacao - muito mais lento
             var rotX = Math.random() * 360;
             var rotY = Math.random() * 360;
             var rotZ = Math.random() * 360;
-            var speedX = 0.2 + Math.random() * 0.8; // graus/frame
-            var speedY = 0.3 + Math.random() * 0.7;
-            var speedZ = 0.1 + Math.random() * 0.5;
+            var speedX = 0.05 + Math.random() * 0.1; // ~0.05-0.15 graus/frame
+            var speedY = 0.06 + Math.random() * 0.09;
+            var speedZ = 0.03 + Math.random() * 0.07;
 
-            // Drift (movimento lento)
-            var driftX = (Math.random() - 0.5) * 0.02;
-            var driftY = (Math.random() - 0.5) * 0.02;
+            // Drift mais lento
+            var driftX = (Math.random() - 0.5) * 0.008;
+            var driftY = (Math.random() - 0.5) * 0.008;
 
-            // Opacidade
-            var opacidade = 0.3 + Math.random() * 0.5;
+            var opacidade = 0.25 + Math.random() * 0.4;
             wrapper.style.opacity = opacidade;
 
             cubos.push({
@@ -504,12 +498,10 @@
             });
         }
 
-        // Criar cubos iniciais
         for (var i = 0; i < maxCubos; i++) {
             criarCubo();
         }
 
-        // Animacao
         function animar() {
             for (var i = 0; i < cubos.length; i++) {
                 var c = cubos[i];
@@ -520,7 +512,6 @@
                 c.x += c.driftX;
                 c.y += c.driftY;
 
-                // Wrapping
                 if (c.x > 105) c.x = -5;
                 if (c.x < -5) c.x = 105;
                 if (c.y > 105) c.y = -5;
