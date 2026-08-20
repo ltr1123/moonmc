@@ -315,12 +315,12 @@
         border: 1px solid rgba(74,222,128,0.3);
         text-shadow: 0 0 8px rgba(74,222,128,0.3);
     }
-    /* Membro - Azul royal escuro com texto azul claro */
+    /* Membro - Verde escuro com texto verde claro */
     .group-tag.membro {
-        background: #1a3a6e;
-        color: #7dd3fc;
-        border: 1px solid rgba(125,211,252,0.2);
-        text-shadow: 0 0 6px rgba(125,211,252,0.2);
+        background: #1a3a2a;
+        color: #6ee7b7;
+        border: 1px solid rgba(110,231,183,0.2);
+        text-shadow: 0 0 6px rgba(110,231,183,0.2);
     }
     /* Helper - Ciano */
     .group-tag.helper {
@@ -431,8 +431,6 @@
         </div>
     </div>
 
-    <div id="estado"></div>
-
     <script>
     for (var i = 0; i < 15; i++) {
         var p = document.createElement('div');
@@ -523,7 +521,6 @@
 
     function carregar() {
         var el = document.getElementById('boards');
-        var estado = document.getElementById('estado');
 
         fetch(API_URL + '?t=' + Date.now())
             .then(function(r) {
@@ -534,12 +531,9 @@
                 cachedData = dados;
                 if (!dados.boards || dados.boards.length === 0) {
                     el.innerHTML = '<div class="vazio">Nenhum top encontrado ainda.<br><small>O plugin ainda nao enviou dados.</small></div>';
-                    estado.textContent = '';
                     return;
                 }
                 renderizar(dados);
-                var q = new Date(dados.atualizado).toLocaleString('pt-PT');
-                estado.textContent = 'Ultima atualizacao: ' + q + ' \u00B7 Atualiza a cada 30s';
             })
             .catch(function(e) {
                 el.innerHTML = '<div class="vazio">Erro ao carregar tops.<br><small>' + esc(e.message) + '</small></div>';
