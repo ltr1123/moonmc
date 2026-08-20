@@ -33,105 +33,17 @@
         overflow-x: hidden;
     }
 
-    /* ===== AURORA BOREAL ===== */
-    .aurora {
-        position: fixed;
-        top: 0; left: 0;
-        width: 100%; height: 100%;
-        pointer-events: none;
-        z-index: -2;
-        overflow: hidden;
-    }
-    .aurora-band {
-        position: absolute;
-        width: 200%;
-        height: 300px;
-        filter: blur(80px);
-        opacity: 0.15;
-        animation: auroraMove 25s ease-in-out infinite alternate;
-    }
-    .aurora-band-1 {
-        top: -50px;
-        left: -50%;
-        background: linear-gradient(90deg, 
-            transparent 0%, 
-            #7c3aed 15%, 
-            #3b82f6 30%, 
-            #ec4899 50%, 
-            #8b5cf6 70%, 
-            #06b6d4 85%, 
-            transparent 100%);
-        animation-duration: 25s;
-    }
-    .aurora-band-2 {
-        top: 100px;
-        left: -30%;
-        background: linear-gradient(90deg, 
-            transparent 0%, 
-            #06b6d4 20%, 
-            #8b5cf6 40%, 
-            #ec4899 60%, 
-            #3b82f6 80%, 
-            transparent 100%);
-        animation-duration: 35s;
-        animation-delay: -10s;
-        opacity: 0.1;
-    }
-    .aurora-band-3 {
-        top: 50px;
-        left: -20%;
-        background: linear-gradient(90deg, 
-            transparent 0%, 
-            #a855f7 25%, 
-            #06b6d4 50%, 
-            #f472b6 75%, 
-            transparent 100%);
-        animation-duration: 30s;
-        animation-delay: -5s;
-        opacity: 0.08;
-        height: 200px;
-    }
-    @keyframes auroraMove {
-        0% { transform: translateX(-10%) skewX(-5deg); }
-        50% { transform: translateX(10%) skewX(5deg); }
-        100% { transform: translateX(-10%) skewX(-5deg); }
-    }
-
-    /* ===== ESTRELAS CADENTES ===== */
-    .star {
-        position: fixed;
-        pointer-events: none;
-        z-index: -1;
-    }
-    .star-dot {
-        width: 2px; height: 2px;
-        background: #fff;
-        border-radius: 50%;
-        position: absolute;
-    }
-    .star-trail {
-        position: absolute;
-        width: 1px;
-        background: linear-gradient(to bottom, rgba(255,255,255,0.6), transparent);
-        border-radius: 50%;
-        transform-origin: top center;
-    }
-
-    /* ===== FUNDO ANTIGO (mantido como fallback) ===== */
+    /* ===== FUNDO GRADIENT ===== */
     body::before {
         content: '';
         position: fixed;
-        top: -50%; left: -50%;
-        width: 200%; height: 200%;
+        top: 0; left: 0;
+        width: 100%; height: 100%;
         background:
-            radial-gradient(ellipse at 20% 50%, rgba(88,28,135,0.08) 0%, transparent 50%),
-            radial-gradient(ellipse at 80% 20%, rgba(168,85,247,0.05) 0%, transparent 50%);
-        animation: fundo 30s ease-in-out infinite alternate;
-        z-index: -3;
-    }
-    @keyframes fundo {
-        0% { transform: translate(0,0) rotate(0deg); }
-        100% { transform: translate(-3%,-3%) rotate(2deg); }
+            radial-gradient(ellipse at 20% 50%, rgba(88,28,135,0.12) 0%, transparent 50%),
+            radial-gradient(ellipse at 80% 20%, rgba(168,85,247,0.08) 0%, transparent 50%),
+            radial-gradient(ellipse at 50% 80%, rgba(139,92,246,0.06) 0%, transparent 50%);
+        z-index: -1;
     }
 
     .navbar-spacer { height: 60px; }
@@ -343,7 +255,6 @@
         vertical-align: middle;
         line-height: 1;
     }
-    /* YT / Gerente - Vermelho (&c) */
     .group-tag.yt,
     .group-tag.gerente,
     .group-tag.admin,
@@ -353,63 +264,54 @@
         border: 1px solid rgba(248,113,113,0.3);
         text-shadow: 0 0 8px rgba(248,113,113,0.3);
     }
-    /* PARTNER - Rosa/Magenta (&d) */
     .group-tag.partner {
         background: linear-gradient(135deg, #831843, #9d174d);
         color: #f472b6;
         border: 1px solid rgba(244,114,182,0.3);
         text-shadow: 0 0 8px rgba(244,114,182,0.3);
     }
-    /* TWITCH - Rosa escuro (&u) */
     .group-tag.twitch {
         background: linear-gradient(135deg, #701a75, #86198f);
         color: #e879f9;
         border: 1px solid rgba(232,121,249,0.3);
         text-shadow: 0 0 8px rgba(232,121,249,0.3);
     }
-    /* CREATOR - Roxo escuro (&5) */
     .group-tag.creator {
         background: linear-gradient(135deg, #3b0764, #581c87);
         color: #a78bfa;
         border: 1px solid rgba(167,139,250,0.3);
         text-shadow: 0 0 8px rgba(167,139,250,0.3);
     }
-    /* PRIME - Azul escuro/Aqua (&3) */
     .group-tag.prime {
         background: linear-gradient(135deg, #164e63, #155e75);
         color: #22d3ee;
         border: 1px solid rgba(34,211,238,0.3);
         text-shadow: 0 0 8px rgba(34,211,238,0.3);
     }
-    /* VIP - Verde claro (&a) */
     .group-tag.vip {
         background: linear-gradient(135deg, #14532d, #166534);
         color: #4ade80;
         border: 1px solid rgba(74,222,128,0.3);
         text-shadow: 0 0 8px rgba(74,222,128,0.3);
     }
-    /* Membro - Cinza/Prata (neutro) */
     .group-tag.membro {
         background: #2a2a3a;
         color: #b0b0c0;
         border: 1px solid rgba(176,176,192,0.2);
         text-shadow: 0 0 4px rgba(176,176,192,0.15);
     }
-    /* Helper - Ciano */
     .group-tag.helper {
         background: linear-gradient(135deg, #164e63, #0e7490);
         color: #67e8f9;
         border: 1px solid rgba(103,232,249,0.3);
         text-shadow: 0 0 8px rgba(103,232,249,0.3);
     }
-    /* Default - Roxo */
     .group-tag.default {
         background: linear-gradient(135deg, #1e1b4b, #312e81);
         color: #818cf8;
         border: 1px solid rgba(129,140,248,0.2);
         text-shadow: 0 0 8px rgba(129,140,248,0.2);
     }
-    /* Qualquer outro grupo */
     .group-tag.outro {
         background: linear-gradient(135deg, #1e1b4b, #312e81);
         color: #a5b4fc;
@@ -460,13 +362,6 @@
     </style>
 </head>
 <body>
-    <!-- AURORA BOREAL -->
-    <div class="aurora">
-        <div class="aurora-band aurora-band-1"></div>
-        <div class="aurora-band aurora-band-2"></div>
-        <div class="aurora-band aurora-band-3"></div>
-    </div>
-
     <nav class="navbar" id="navbar">
         <div class="navbar-inner">
             <div class="navbar-left">
@@ -515,87 +410,65 @@
     // ===== ESTRELAS CADENTES =====
     (function() {
         var container = document.body;
-        var numStars = 50;
+        var numStars = 40;
 
         for (var i = 0; i < numStars; i++) {
             criarEstrela(container);
         }
 
-        // Criar estrelas periodicamente
         setInterval(function() {
-            if (document.querySelectorAll('.star').length < 60) {
+            if (document.querySelectorAll('.star').length < 50) {
                 criarEstrela(container);
             }
-        }, 800);
+        }, 1000);
 
         function criarEstrela(parent) {
             var star = document.createElement('div');
             star.className = 'star';
+            star.style.cssText = 'position:fixed;pointer-events:none;z-index:0;';
 
-            // Posicao aleatoria
             var startX = Math.random() * 100;
             var startY = -5 - Math.random() * 10;
-
-            // Tamanho e velocidade variaveis
             var tamanho = 1 + Math.random() * 2;
-            var velocidade = 3 + Math.random() * 7;
-            var delay = Math.random() * 5;
-            var duracao = velocidade + 's';
+            var velocidade = 4 + Math.random() * 8;
+            var delay = Math.random() * 3;
 
-            // Cor variada (branco, roxo claro, azul claro)
             var cores = ['#ffffff', '#d8b4fe', '#93c5fd', '#a5b4fc', '#c4b5fd'];
             var cor = cores[Math.floor(Math.random() * cores.length)];
+            var brilho = 0.2 + Math.random() * 0.5;
+            var angulo = -75 + Math.random() * 10;
 
-            // Brilho
-            var brilho = 0.3 + Math.random() * 0.7;
+            star.style.left = startX + '%';
+            star.style.top = startY + '%';
 
-            // Angulo de queda (levemente inclinado)
-            var angulo = -70 - Math.random() * 20;
-
-            star.style.cssText = 'left:' + startX + '%;top:' + startY + '%;';
-
-            // Criar ponto luminoso
             var dot = document.createElement('div');
-            dot.className = 'star-dot';
-            dot.style.cssText = 'width:' + tamanho + 'px;height:' + tamanho + 'px;background:' + cor + ';box-shadow:0 0 ' + (tamanho * 2) + 'px ' + cor + ';opacity:' + brilho + ';';
+            dot.style.cssText = 'position:absolute;width:' + tamanho + 'px;height:' + tamanho + 'px;background:' + cor + ';border-radius:50%;box-shadow:0 0 ' + (tamanho * 3) + 'px ' + cor + ';opacity:' + brilho + ';left:0;top:0;';
 
-            // Criar rasto
+            var trailLen = 15 + Math.random() * 30;
             var trail = document.createElement('div');
-            trail.className = 'star-trail';
-            var trailLength = 20 + Math.random() * 40;
-            trail.style.cssText = 'height:' + trailLength + 'px;transform:rotate(' + angulo + 'deg);background:linear-gradient(to bottom,' + cor + ',transparent);opacity:' + (brilho * 0.5) + ';';
+            trail.style.cssText = 'position:absolute;width:1px;height:' + trailLen + 'px;background:linear-gradient(to bottom,' + cor + ',transparent);transform:rotate(' + angulo + 'deg);opacity:' + (brilho * 0.4) + ';left:0;top:0;transform-origin:top center;';
 
             star.appendChild(trail);
             star.appendChild(dot);
             parent.appendChild(star);
 
-            // Animacao de queda
             var startTime = Date.now() + delay * 1000;
-            var endY = window.innerHeight + 100;
-            var startXpx = (startX / 100) * window.innerWidth;
-            var driftX = (Math.random() - 0.5) * 100;
+            var driftX = (Math.random() - 0.5) * 80;
 
             function animar() {
                 var agora = Date.now();
-                if (agora < startTime) {
-                    requestAnimationFrame(animar);
-                    return;
-                }
+                if (agora < startTime) { requestAnimationFrame(animar); return; }
 
                 var elapsed = (agora - startTime) / 1000;
                 var progress = elapsed / velocidade;
 
-                if (progress >= 1) {
-                    star.remove();
-                    return;
-                }
+                if (progress >= 1) { star.remove(); return; }
 
-                var y = startY + (endY - startY) * progress;
-                var x = startXpx + driftX * progress;
+                var y = startY + (120) * progress;
+                var x = driftX * progress;
 
-                star.style.transform = 'translate(' + (x - startXpx) + 'px,' + ((y / 100) * window.innerHeight - startY) + 'px)';
+                star.style.transform = 'translate(' + x + 'px,' + (y) + 'vh)';
 
-                // Fade out no fim
                 if (progress > 0.7) {
                     star.style.opacity = 1 - ((progress - 0.7) / 0.3);
                 }
