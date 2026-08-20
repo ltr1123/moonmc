@@ -315,12 +315,12 @@
         border: 1px solid rgba(74,222,128,0.3);
         text-shadow: 0 0 8px rgba(74,222,128,0.3);
     }
-    /* Membro - Verde escuro com texto verde claro */
+    /* Membro - Cinza/Prata (neutro) */
     .group-tag.membro {
-        background: #1a3a2a;
-        color: #6ee7b7;
-        border: 1px solid rgba(110,231,183,0.2);
-        text-shadow: 0 0 6px rgba(110,231,183,0.2);
+        background: #2a2a3a;
+        color: #b0b0c0;
+        border: 1px solid rgba(176,176,192,0.2);
+        text-shadow: 0 0 4px rgba(176,176,192,0.15);
     }
     /* Helper - Ciano */
     .group-tag.helper {
@@ -578,7 +578,8 @@
     }
 
     carregar();
-    setInterval(carregar, 30000);
+    // Atualizar a cada 5 minutos
+    setInterval(carregar, 300000);
     </script>
 </body>
 </html>
