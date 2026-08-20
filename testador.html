@@ -256,6 +256,11 @@
         font-size: 14px;
         color: var(--texto);
     }
+    .vazio-slot {
+        color: rgba(154,143,181,0.3);
+        font-style: italic;
+        font-weight: 400;
+    }
 
     /* ===== GROUP TAGS - Cores do LuckPerms ===== */
     .group-tag {
@@ -558,19 +563,37 @@
             var b = boards[i];
             var info = BOARD_INFO[b.board] || { label: b.board, emoji: '\uD83C\uDFC6' };
             var linhas = '';
-            var entries = b.entries.slice(0, maxEntries);
-            for (var j = 0; j < entries.length; j++) {
-                var e = entries[j];
-                var medalha = MEDALHAS[e.pos] || e.pos;
-                var classe = e.pos <= 3 ? 'pos pos-' + e.pos : 'pos';
-                var medalhaClasse = e.pos <= 3 ? 'pos-medalha' : '';
-                var head = '<img class="head" src="https://mc-heads.net/avatar/' + encodeURIComponent(e.name) + '/64" alt="" loading="lazy" onerror="this.src=\'https://mc-heads.net/avatar/steve/64\'">';
-                var groupHtml = '';
-                if (e.group && e.group !== '---' && e.group !== 'default' && e.group !== '') {
-                    var gc = getGroupClass(e.group);
-                    groupHtml = '<span class="group-tag ' + gc + '">' + esc(e.group.toUpperCase()) + '</span>';
+
+            // Criar mapa das entries existentes
+            var entriesMap = {};
+            if (b.entries) {
+                for (var k = 0; k < b.entries.length; k++) {
+                    entriesMap[b.entries[k].pos] = b.entries[k];
                 }
-                linhas += '<tr><td class="' + classe + ' ' + medalhaClasse + '">' + medalha + '</td><td class="jogador">' + head + '<span class="nome">' + esc(e.name) + groupHtml + '</span></td><td class="valor">' + formatValue(e.value) + '</td></tr>';
+            }
+
+            // Mostrar todas as posicoes (1 ate maxEntries)
+            for (var j = 1; j <= maxEntries; j++) {
+                var e = entriesMap[j];
+                if (e) {
+                    // Entry real
+                    var medalha = MEDALHAS[e.pos] || e.pos;
+                    var classe = e.pos <= 3 ? 'pos pos-' + e.pos : 'pos';
+                    var medalhaClasse = e.pos <= 3 ? 'pos-medalha' : '';
+                    var head = '<img class="head" src="https://mc-heads.net/avatar/' + encodeURIComponent(e.name) + '/64" alt="" loading="lazy" onerror="this.src=\'https://mc-heads.net/avatar/steve/64\'">';
+                    var groupHtml = '';
+                    if (e.group && e.group !== '---' && e.group !== 'default' && e.group !== '') {
+                        var gc = getGroupClass(e.group);
+                        groupHtml = '<span class="group-tag ' + gc + '">' + esc(e.group.toUpperCase()) + '</span>';
+                    }
+                    linhas += '<tr><td class="' + classe + ' ' + medalhaClasse + '">' + medalha + '</td><td class="jogador">' + head + '<span class="nome">' + esc(e.name) + groupHtml + '</span></td><td class="valor">' + formatValue(e.value) + '</td></tr>';
+                } else {
+                    // Slot vazio
+                    var medalhaVazia = MEDALHAS[j] || j;
+                    var classeVazia = j <= 3 ? 'pos pos-' + j : 'pos';
+                    var medalhaClasseVazia = j <= 3 ? 'pos-medalha' : '';
+                    linhas += '<tr><td class="' + classeVazia + ' ' + medalhaClasseVazia + '">' + medalhaVazia + '</td><td class="jogador"><div class="head" style="opacity:0.2"></div><span class="nome vazio-slot">---</span></td><td class="valor vazio-slot">-</td></tr>';
+                }
             }
             html += '<div class="cartao"><div class="cartao-header"><span class="board-name"><span class="board-emoji">' + info.emoji + '</span> ' + esc(info.label) + '</span><span class="tipo">' + esc(activePeriod) + '</span></div><table>' + linhas + '</table></div>';
         }
