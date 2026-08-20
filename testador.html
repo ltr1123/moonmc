@@ -33,37 +33,105 @@
         overflow-x: hidden;
     }
 
+    /* ===== AURORA BOREAL ===== */
+    .aurora {
+        position: fixed;
+        top: 0; left: 0;
+        width: 100%; height: 100%;
+        pointer-events: none;
+        z-index: -2;
+        overflow: hidden;
+    }
+    .aurora-band {
+        position: absolute;
+        width: 200%;
+        height: 300px;
+        filter: blur(80px);
+        opacity: 0.15;
+        animation: auroraMove 25s ease-in-out infinite alternate;
+    }
+    .aurora-band-1 {
+        top: -50px;
+        left: -50%;
+        background: linear-gradient(90deg, 
+            transparent 0%, 
+            #7c3aed 15%, 
+            #3b82f6 30%, 
+            #ec4899 50%, 
+            #8b5cf6 70%, 
+            #06b6d4 85%, 
+            transparent 100%);
+        animation-duration: 25s;
+    }
+    .aurora-band-2 {
+        top: 100px;
+        left: -30%;
+        background: linear-gradient(90deg, 
+            transparent 0%, 
+            #06b6d4 20%, 
+            #8b5cf6 40%, 
+            #ec4899 60%, 
+            #3b82f6 80%, 
+            transparent 100%);
+        animation-duration: 35s;
+        animation-delay: -10s;
+        opacity: 0.1;
+    }
+    .aurora-band-3 {
+        top: 50px;
+        left: -20%;
+        background: linear-gradient(90deg, 
+            transparent 0%, 
+            #a855f7 25%, 
+            #06b6d4 50%, 
+            #f472b6 75%, 
+            transparent 100%);
+        animation-duration: 30s;
+        animation-delay: -5s;
+        opacity: 0.08;
+        height: 200px;
+    }
+    @keyframes auroraMove {
+        0% { transform: translateX(-10%) skewX(-5deg); }
+        50% { transform: translateX(10%) skewX(5deg); }
+        100% { transform: translateX(-10%) skewX(-5deg); }
+    }
+
+    /* ===== ESTRELAS CADENTES ===== */
+    .star {
+        position: fixed;
+        pointer-events: none;
+        z-index: -1;
+    }
+    .star-dot {
+        width: 2px; height: 2px;
+        background: #fff;
+        border-radius: 50%;
+        position: absolute;
+    }
+    .star-trail {
+        position: absolute;
+        width: 1px;
+        background: linear-gradient(to bottom, rgba(255,255,255,0.6), transparent);
+        border-radius: 50%;
+        transform-origin: top center;
+    }
+
+    /* ===== FUNDO ANTIGO (mantido como fallback) ===== */
     body::before {
         content: '';
         position: fixed;
         top: -50%; left: -50%;
         width: 200%; height: 200%;
         background:
-            radial-gradient(ellipse at 20% 50%, rgba(88,28,135,0.15) 0%, transparent 50%),
-            radial-gradient(ellipse at 80% 20%, rgba(168,85,247,0.1) 0%, transparent 50%),
-            radial-gradient(ellipse at 50% 80%, rgba(139,92,246,0.08) 0%, transparent 50%);
-        animation: fundo 20s ease-in-out infinite alternate;
-        z-index: -1;
+            radial-gradient(ellipse at 20% 50%, rgba(88,28,135,0.08) 0%, transparent 50%),
+            radial-gradient(ellipse at 80% 20%, rgba(168,85,247,0.05) 0%, transparent 50%);
+        animation: fundo 30s ease-in-out infinite alternate;
+        z-index: -3;
     }
     @keyframes fundo {
         0% { transform: translate(0,0) rotate(0deg); }
-        100% { transform: translate(-5%,-5%) rotate(3deg); }
-    }
-
-    .particle {
-        position: fixed;
-        width: 3px; height: 3px;
-        background: var(--roxo);
-        border-radius: 50%;
-        opacity: 0.3;
-        animation: float linear infinite;
-        pointer-events: none;
-    }
-    @keyframes float {
-        0% { transform: translateY(100vh) scale(0); opacity: 0; }
-        10% { opacity: 0.3; }
-        90% { opacity: 0.3; }
-        100% { transform: translateY(-10vh) scale(1); opacity: 0; }
+        100% { transform: translate(-3%,-3%) rotate(2deg); }
     }
 
     .navbar-spacer { height: 60px; }
@@ -392,6 +460,13 @@
     </style>
 </head>
 <body>
+    <!-- AURORA BOREAL -->
+    <div class="aurora">
+        <div class="aurora-band aurora-band-1"></div>
+        <div class="aurora-band aurora-band-2"></div>
+        <div class="aurora-band aurora-band-3"></div>
+    </div>
+
     <nav class="navbar" id="navbar">
         <div class="navbar-inner">
             <div class="navbar-left">
@@ -437,15 +512,100 @@
     </div>
 
     <script>
-    for (var i = 0; i < 15; i++) {
-        var p = document.createElement('div');
-        p.className = 'particle';
-        p.style.left = Math.random() * 100 + '%';
-        p.style.animationDuration = (8 + Math.random() * 12) + 's';
-        p.style.animationDelay = Math.random() * 10 + 's';
-        p.style.width = p.style.height = (2 + Math.random() * 3) + 'px';
-        document.body.appendChild(p);
-    }
+    // ===== ESTRELAS CADENTES =====
+    (function() {
+        var container = document.body;
+        var numStars = 50;
+
+        for (var i = 0; i < numStars; i++) {
+            criarEstrela(container);
+        }
+
+        // Criar estrelas periodicamente
+        setInterval(function() {
+            if (document.querySelectorAll('.star').length < 60) {
+                criarEstrela(container);
+            }
+        }, 800);
+
+        function criarEstrela(parent) {
+            var star = document.createElement('div');
+            star.className = 'star';
+
+            // Posicao aleatoria
+            var startX = Math.random() * 100;
+            var startY = -5 - Math.random() * 10;
+
+            // Tamanho e velocidade variaveis
+            var tamanho = 1 + Math.random() * 2;
+            var velocidade = 3 + Math.random() * 7;
+            var delay = Math.random() * 5;
+            var duracao = velocidade + 's';
+
+            // Cor variada (branco, roxo claro, azul claro)
+            var cores = ['#ffffff', '#d8b4fe', '#93c5fd', '#a5b4fc', '#c4b5fd'];
+            var cor = cores[Math.floor(Math.random() * cores.length)];
+
+            // Brilho
+            var brilho = 0.3 + Math.random() * 0.7;
+
+            // Angulo de queda (levemente inclinado)
+            var angulo = -70 - Math.random() * 20;
+
+            star.style.cssText = 'left:' + startX + '%;top:' + startY + '%;';
+
+            // Criar ponto luminoso
+            var dot = document.createElement('div');
+            dot.className = 'star-dot';
+            dot.style.cssText = 'width:' + tamanho + 'px;height:' + tamanho + 'px;background:' + cor + ';box-shadow:0 0 ' + (tamanho * 2) + 'px ' + cor + ';opacity:' + brilho + ';';
+
+            // Criar rasto
+            var trail = document.createElement('div');
+            trail.className = 'star-trail';
+            var trailLength = 20 + Math.random() * 40;
+            trail.style.cssText = 'height:' + trailLength + 'px;transform:rotate(' + angulo + 'deg);background:linear-gradient(to bottom,' + cor + ',transparent);opacity:' + (brilho * 0.5) + ';';
+
+            star.appendChild(trail);
+            star.appendChild(dot);
+            parent.appendChild(star);
+
+            // Animacao de queda
+            var startTime = Date.now() + delay * 1000;
+            var endY = window.innerHeight + 100;
+            var startXpx = (startX / 100) * window.innerWidth;
+            var driftX = (Math.random() - 0.5) * 100;
+
+            function animar() {
+                var agora = Date.now();
+                if (agora < startTime) {
+                    requestAnimationFrame(animar);
+                    return;
+                }
+
+                var elapsed = (agora - startTime) / 1000;
+                var progress = elapsed / velocidade;
+
+                if (progress >= 1) {
+                    star.remove();
+                    return;
+                }
+
+                var y = startY + (endY - startY) * progress;
+                var x = startXpx + driftX * progress;
+
+                star.style.transform = 'translate(' + (x - startXpx) + 'px,' + ((y / 100) * window.innerHeight - startY) + 'px)';
+
+                // Fade out no fim
+                if (progress > 0.7) {
+                    star.style.opacity = 1 - ((progress - 0.7) / 0.3);
+                }
+
+                requestAnimationFrame(animar);
+            }
+
+            requestAnimationFrame(animar);
+        }
+    })();
     </script>
 
     <script>
@@ -464,7 +624,6 @@
         'ypesca_fished': { label: 'Peixes', emoji: '\uD83C\uDFA3' }
     };
 
-    // Mapeamento de grupos do LuckPerms para classes CSS
     var GROUP_CLASSES = {
         'yt': 'yt',
         'partner': 'partner',
@@ -484,9 +643,7 @@
     function getGroupClass(group) {
         if (!group || group === '---' || group === '') return '';
         var g = group.toLowerCase().trim();
-        // Match exato primeiro
         if (GROUP_CLASSES[g]) return GROUP_CLASSES[g];
-        // Match parcial
         for (var key in GROUP_CLASSES) {
             if (g.indexOf(key) !== -1) return GROUP_CLASSES[key];
         }
@@ -564,7 +721,6 @@
             var info = BOARD_INFO[b.board] || { label: b.board, emoji: '\uD83C\uDFC6' };
             var linhas = '';
 
-            // Criar mapa das entries existentes
             var entriesMap = {};
             if (b.entries) {
                 for (var k = 0; k < b.entries.length; k++) {
@@ -572,11 +728,9 @@
                 }
             }
 
-            // Mostrar todas as posicoes (1 ate maxEntries)
             for (var j = 1; j <= maxEntries; j++) {
                 var e = entriesMap[j];
                 if (e) {
-                    // Entry real
                     var medalha = MEDALHAS[e.pos] || e.pos;
                     var classe = e.pos <= 3 ? 'pos pos-' + e.pos : 'pos';
                     var medalhaClasse = e.pos <= 3 ? 'pos-medalha' : '';
@@ -588,7 +742,6 @@
                     }
                     linhas += '<tr><td class="' + classe + ' ' + medalhaClasse + '">' + medalha + '</td><td class="jogador">' + head + '<span class="nome">' + esc(e.name) + groupHtml + '</span></td><td class="valor">' + formatValue(e.value) + '</td></tr>';
                 } else {
-                    // Slot vazio
                     var medalhaVazia = MEDALHAS[j] || j;
                     var classeVazia = j <= 3 ? 'pos pos-' + j : 'pos';
                     var medalhaClasseVazia = j <= 3 ? 'pos-medalha' : '';
@@ -601,7 +754,6 @@
     }
 
     carregar();
-    // Atualizar a cada 15 minutos
     setInterval(carregar, 900000);
     </script>
 </body>
