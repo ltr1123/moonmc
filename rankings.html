@@ -69,7 +69,7 @@
 <a href="rankings.html" class="active">Rankings</a>
 </div>
 </div>
-<div class="navbar-actions"><div class="navbar-server-info"><div class="navbar-players"><strong>MOONMC</strong> <span>JOGANDO AGORA</span></div><div class="navbar-ip"><span>SERVER IP</span> <i class="fa-solid fa-chevron-right"></i> <strong>jogar.moonmc.com.br</strong></div></div></div>
+<div class="navbar-actions"><div class="navbar-server-info"><div class="navbar-players"><strong id="player-count-nav">—</strong> <span>JOGANDO AGORA</span></div><div class="navbar-ip"><span>SERVER IP</span> <i class="fa-solid fa-chevron-right"></i> <strong>jogar.moonmc.com.br</strong></div></div></div>
 <button class="hamburger" id="hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
 </div>
 </nav>
@@ -98,6 +98,52 @@ document.querySelectorAll('[data-period]').forEach(button => button.addEventList
 document.querySelectorAll('[data-category]').forEach(button => button.addEventListener('click', () => { document.querySelectorAll('[data-category]').forEach(item => item.classList.remove('active')); button.classList.add('active'); selectedCategory = button.dataset.category; render(); }));
 const hamburger = document.getElementById('hamburger'); const mobileMenu = document.getElementById('mobile-menu'); if (hamburger) hamburger.addEventListener('click', () => { hamburger.classList.toggle('active'); mobileMenu.classList.toggle('open'); });
 loadRankings(); setInterval(loadRankings, 900000);
+
+// ===== Contador de jogadores (igual ao resto do site) =====
+(function () {
+  var playerCountNav = document.getElementById('player-count-nav');
+  if (!playerCountNav) return;
+  var STATUS_SOURCES = [
+    'https://api.mcstatus.io/v2/status/java/jogar.moonmc.com.br',
+    'https://api.mcsrvstat.us/3/jogar.moonmc.com.br'
+  ];
+  function applyStatus(data) {
+    if (data && data.online) {
+      var count = data.players && data.players.online != null ? data.players.online : '?';
+      playerCountNav.textContent = count;
+    } else {
+      playerCountNav.textContent = '0';
+    }
+  }
+  function checkStatus() {
+    var settled = false;
+    function tryNext(i) {
+      if (i >= STATUS_SOURCES.length) {
+        playerCountNav.textContent = '—';
+        return;
+      }
+      var controller = typeof AbortController !== 'undefined' ? new AbortController() : null;
+      var timeout = controller ? setTimeout(function () { controller.abort(); }, 15000) : null;
+      fetch(STATUS_SOURCES[i], { signal: controller ? controller.signal : undefined })
+        .then(function (res) { return res.json(); })
+        .then(function (data) {
+          if (!settled) {
+            settled = true;
+            applyStatus(data);
+          }
+        })
+        .catch(function () {
+          tryNext(i + 1);
+        })
+        .then(function () {
+          if (timeout) clearTimeout(timeout);
+        });
+    }
+    tryNext(0);
+  }
+  checkStatus();
+  setInterval(checkStatus, 60000);
+})();
 </script>
 </body>
 </html>
