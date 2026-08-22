@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rankings | MoonMC</title>
+<meta name="description" content="Rankings oficiais do servidor MoonMC.">
+<meta name="theme-color" content="#170e2e">
+<link rel="icon" href="assets/logo-moon.webp" type="image/webp">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Rajdhani:wght@500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<link rel="stylesheet" href="style.css">
+<style>
+.rankings-page { min-height: 100vh; padding-top: 125px; background: radial-gradient(circle at 20% 20%, rgba(124,58,237,.14), transparent 35%), radial-gradient(circle at 80% 75%, rgba(168,85,247,.1), transparent 35%), #0a0414; }
+.rankings-hero { text-align: center; padding: 35px 20px 10px; }
+.rankings-logo { width: 112px; height: 112px; object-fit: contain; margin: 0 auto 10px; filter: drop-shadow(0 0 24px rgba(168,85,247,.45)); animation: rankingsLogoFloat 4s ease-in-out infinite; }
+@keyframes rankingsLogoFloat { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
+.rankings-title { font-family: var(--font-display); font-size: clamp(2.4rem, 6vw, 4.5rem); letter-spacing: .12em; color: #d8b4fe; text-transform: uppercase; }
+.rankings-subtitle { color: #9a8fb5; letter-spacing: .28em; text-transform: uppercase; font-size: .82rem; margin-top: 8px; }
+.rankings-divider { width: 190px; height: 2px; margin: 22px auto 0; background: linear-gradient(90deg, transparent, #a855f7, transparent); }
+.rankings-tabs { padding: 24px 16px 18px; }
+.rankings-tab-row { display: flex; justify-content: center; flex-wrap: wrap; gap: 10px; margin-bottom: 10px; }
+.rankings-tab { min-width: 112px; padding: 10px 18px; border: 1px solid #2d1b4d; border-radius: 8px; background: rgba(255,255,255,.035); color: #9a8fb5; font: 600 13px var(--font-body); cursor: pointer; transition: .25s ease; }
+.rankings-tab:hover { color: #fff; border-color: #a855f7; transform: translateY(-2px); }
+.rankings-tab.active { color: #fff; border-color: transparent; background: linear-gradient(135deg, #a855f7, #7c3aed); box-shadow: 0 0 20px rgba(168,85,247,.28); }
+#rankings-boards { width: min(1150px, calc(100% - 32px)); margin: 0 auto; padding: 10px 0 70px; }
+.ranking-card { overflow: hidden; background: rgba(26,13,46,.94); border: 1px solid #2d1b4d; border-radius: 16px; box-shadow: 0 12px 40px rgba(0,0,0,.28); animation: rankingCardIn .45s ease both; }
+@keyframes rankingCardIn { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
+.ranking-card-header { display: flex; align-items: center; justify-content: space-between; padding: 15px 20px; background: linear-gradient(135deg, rgba(88,28,135,.48), rgba(88,28,135,.12)); border-bottom: 1px solid #2d1b4d; color: #d8b4fe; font-size: 13px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
+.ranking-card-header small { padding: 4px 10px; border-radius: 20px; background: rgba(255,255,255,.06); color: #9a8fb5; font-size: 10px; letter-spacing: 0; text-transform: none; }
+.ranking-table { width: 100%; border-collapse: collapse; }
+.ranking-table tr { transition: background .2s ease; }
+.ranking-table tr:hover { background: rgba(168,85,247,.08); }
+.ranking-table td { padding: 12px 18px; border-top: 1px solid rgba(45,27,77,.5); }
+.ranking-position { width: 58px; text-align: center; color: #d8b4fe; font-weight: 800; font-size: 15px; }
+.ranking-position.first { color: #ffd700; font-size: 19px; }
+.ranking-position.second { color: #c0c0c0; font-size: 19px; }
+.ranking-position.third { color: #cd7f32; font-size: 19px; }
+.ranking-player { display: flex; align-items: center; gap: 12px; }
+.ranking-head { width: 34px; height: 34px; border: 2px solid rgba(168,85,247,.3); border-radius: 8px; image-rendering: pixelated; background: rgba(255,255,255,.05); transition: .2s ease; }
+.ranking-table tr:hover .ranking-head { border-color: #a855f7; transform: scale(1.08); }
+.ranking-name { color: #e9e2f5; font-size: 14px; font-weight: 700; }
+.ranking-value { text-align: right; color: #d8b4fe; font-size: 15px; font-weight: 800; white-space: nowrap; }
+.ranking-empty { color: rgba(154,143,181,.4); font-style: italic; font-weight: 400; }
+.group-tag { display: inline-block; margin-left: 8px; padding: 3px 9px; border-radius: 4px; font-size: 10px; font-weight: 800; letter-spacing: .04em; vertical-align: middle; }
+.group-tag.vip { color: #4ade80; background: #14532d; border: 1px solid rgba(74,222,128,.35); }
+.group-tag.prime { color: #22d3ee; background: #164e63; border: 1px solid rgba(34,211,238,.35); }
+.group-tag.membro { color: #d6d3e0; background: #383443; border: 1px solid rgba(214,211,224,.28); }
+.group-tag.yt, .group-tag.gerente, .group-tag.admin, .group-tag.mod { color: #f87171; background: #7f1d1d; border: 1px solid rgba(248,113,113,.35); }
+.group-tag.helper { color: #67e8f9; background: #164e63; border: 1px solid rgba(103,232,249,.35); }
+.group-tag.outro { color: #c4b5fd; background: #312e81; border: 1px solid rgba(196,181,253,.3); }
+.rankings-message { padding: 55px 20px; color: #9a8fb5; text-align: center; }
+@media (max-width: 1050px) { .navbar-left { gap: 18px; } .navbar-menu { gap: 10px; } .navbar-menu a { font-size: .9rem; } }
+@media (max-width: 760px) { .navbar-actions { display: none; } .navbar-menu { display: none; } .hamburger { display: flex; } }
+@media (max-width: 620px) { .rankings-page { padding-top: 105px; } .rankings-title { font-size: 2.3rem; } .rankings-subtitle { font-size: .68rem; letter-spacing: .18em; } .rankings-tab { min-width: 92px; padding: 9px 12px; font-size: 12px; } .ranking-table td { padding: 10px 9px; } .ranking-head { width: 29px; height: 29px; } .ranking-name { font-size: 12px; } .group-tag { margin-left: 4px; padding: 2px 5px; font-size: 8px; } }
+</style>
+</head>
+<body class="rankings-page">
+<nav class="navbar" id="navbar">
+<div class="navbar-inner">
+<div class="navbar-left">
+<a href="index.html" class="navbar-brand"><img src="assets/logo-moon.webp" alt="MoonMC" class="brand-logo"></a>
+<div class="navbar-menu">
+<a href="index.html">Início</a>
+<a href="sobre.html">Sobre</a>
+<a href="loja.html">Loja</a>
+<a href="rankings.html" class="active">Rankings</a>
+</div>
+</div>
+<div class="navbar-actions"><div class="navbar-server-info"><div class="navbar-players"><strong>MOONMC</strong> <span>JOGANDO AGORA</span></div><div class="navbar-ip"><span>SERVER IP</span> <i class="fa-solid fa-chevron-right"></i> <strong>jogar.moonmc.com.br</strong></div></div></div>
+<button class="hamburger" id="hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
+</div>
+</nav>
+<div class="mobile-menu" id="mobile-menu">
+<a href="index.html">Início</a><a href="sobre.html">Sobre</a><a href="loja.html">Loja</a><a href="rankings.html" class="active">Rankings</a>
+</div>
+<main>
+<header class="rankings-hero"><img class="rankings-logo" src="assets/logo-moon.webp" alt="MoonMC"><h1 class="rankings-title">Rankings</h1><p class="rankings-subtitle">Tops oficiais do servidor</p><div class="rankings-divider"></div></header>
+<section class="rankings-tabs"><div class="rankings-tab-row" id="period-tabs"><button class="rankings-tab active" data-period="alltime">All time</button><button class="rankings-tab" data-period="monthly">Mensal</button><button class="rankings-tab" data-period="weekly">Semanal</button></div><div class="rankings-tab-row" id="category-tabs"><button class="rankings-tab active" data-category="statistic_player_kills">Kills</button><button class="rankings-tab" data-category="statistic_deaths">Mortes</button><button class="rankings-tab" data-category="vault_eco_balance">Dinheiro</button><button class="rankings-tab" data-category="statistic_time_played">Tempo Online</button><button class="rankings-tab" data-category="ypesca_fished">Peixes</button></div></section>
+<section id="rankings-boards"><div class="rankings-message">A carregar rankings...</div></section>
+</main>
+<script>
+const API_URL = 'https://www.moonmc.com.br/api/tops/read';
+let dataCache = null;
+let selectedPeriod = 'alltime';
+let selectedCategory = 'statistic_player_kills';
+const boardInfo = { statistic_player_kills: ['Kills', '⚔'], statistic_deaths: ['Mortes', '☠'], vault_eco_balance: ['Dinheiro', '$'], statistic_time_played: ['Tempo Online', '◷'], ypesca_fished: ['Peixes', 'F'] };
+const groupClasses = { vip: 'vip', prime: 'prime', membro: 'membro', yt: 'yt', gerente: 'gerente', admin: 'admin', mod: 'mod', helper: 'helper' };
+function escapeHtml(value) { return String(value ?? '').replace(/[&<>"']/g, char => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[char])); }
+function groupClass(group) { const normalized = String(group || '').toLowerCase().trim(); if (!normalized || normalized === '---' || normalized === 'default') return ''; if (groupClasses[normalized]) return groupClasses[normalized]; for (const key of Object.keys(groupClasses)) if (normalized.includes(key)) return groupClasses[key]; return 'outro'; }
+function formatValue(value) { const raw = String(value ?? ''); if (selectedCategory === 'statistic_time_played' && !/[a-zA-Z]/.test(raw)) { const seconds = Number(raw); if (Number.isFinite(seconds)) return `${Math.floor(seconds / 3600)}h ${Math.floor((seconds % 3600) / 60)}m ${Math.floor(seconds % 60)}s`; } const number = Number(raw.replace(',', '.')); if (!Number.isFinite(number)) return escapeHtml(raw); if (number >= 1000000) return `${(number / 1000000).toFixed(1).replace('.0', '')}M`; if (number >= 1000) return `${(number / 1000).toFixed(1).replace('.0', '')}K`; return number.toLocaleString('pt-BR'); }
+function emptyRow(position) { return `<tr><td class="ranking-position">${position}</td><td class="ranking-player"><div class="ranking-head" style="opacity:.2"></div><span class="ranking-name ranking-empty">---</span></td><td class="ranking-value ranking-empty">-</td></tr>`; }
+function render() { const container = document.getElementById('rankings-boards'); if (!dataCache || !Array.isArray(dataCache.boards)) { container.innerHTML = '<div class="rankings-message">Sem dados disponíveis.</div>'; return; } const board = dataCache.boards.find(item => item.board === selectedCategory && item.type === selectedPeriod); if (!board) { container.innerHTML = '<div class="rankings-message">Nenhum ranking disponível neste período.</div>'; return; } const info = boardInfo[board.board] || [board.board, '']; const max = selectedPeriod === 'alltime' ? 100 : 10; const entries = new Map((board.entries || []).map(entry => [Number(entry.pos), entry])); let rows = ''; for (let position = 1; position <= max; position++) { const entry = entries.get(position); if (!entry || !entry.name || entry.name === '---') { rows += emptyRow(position); continue; } const rankClass = position === 1 ? 'first' : position === 2 ? 'second' : position === 3 ? 'third' : ''; const tagClass = groupClass(entry.group); const tag = tagClass ? `<span class="group-tag ${tagClass}">${escapeHtml(entry.group.toUpperCase())}</span>` : ''; const head = `https://mc-heads.net/avatar/${encodeURIComponent(entry.name)}/64`; rows += `<tr><td class="ranking-position ${rankClass}">${position}</td><td class="ranking-player"><img class="ranking-head" src="${head}" alt="" loading="lazy" onerror="this.src='https://mc-heads.net/avatar/steve/64'"><span class="ranking-name">${escapeHtml(entry.name)}${tag}</span></td><td class="ranking-value">${formatValue(entry.value)}</td></tr>`; } container.innerHTML = `<article class="ranking-card"><div class="ranking-card-header"><span>${info[1]} ${info[0]}</span><small>${selectedPeriod}</small></div><table class="ranking-table"><tbody>${rows}</tbody></table></article>`; }
+async function loadRankings() { try { const response = await fetch(`${API_URL}?t=${Date.now()}`); if (!response.ok) throw new Error(); dataCache = await response.json(); render(); } catch { document.getElementById('rankings-boards').innerHTML = '<div class="rankings-message">Não foi possível carregar os rankings.</div>'; } }
+document.querySelectorAll('[data-period]').forEach(button => button.addEventListener('click', () => { document.querySelectorAll('[data-period]').forEach(item => item.classList.remove('active')); button.classList.add('active'); selectedPeriod = button.dataset.period; render(); }));
+document.querySelectorAll('[data-category]').forEach(button => button.addEventListener('click', () => { document.querySelectorAll('[data-category]').forEach(item => item.classList.remove('active')); button.classList.add('active'); selectedCategory = button.dataset.category; render(); }));
+const hamburger = document.getElementById('hamburger'); const mobileMenu = document.getElementById('mobile-menu'); if (hamburger) hamburger.addEventListener('click', () => { hamburger.classList.toggle('active'); mobileMenu.classList.toggle('open'); });
+loadRankings(); setInterval(loadRankings, 900000);
+</script>
+</body>
+</html>
