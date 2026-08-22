@@ -1,4 +1,16 @@
 {
   "cleanUrls": true,
-  "trailingSlash": false
+  "trailingSlash": false,
+  "redirects": [
+    {
+      "source": "/testador",
+      "destination": "/rankings",
+      "permanent": true
+    },
+    {
+      "source": "/testador.html",
+      "destination": "/rankings",
+      "permanent": true
+    }
+  ]
 }
