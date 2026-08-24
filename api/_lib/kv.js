@@ -1,32 +1,32 @@
 // KV via Vercel Blob (como o sistema de tops) - sem Redis, sem dependencias extra
 // Todas as chaves ficam num unico blob keys.json (le/grava por cima).
-// Requer apenas o BLOB_READ_WRITE_TOKEN (fornecido automaticamente pelo Vercel
-// quando um Blob Store esta ligado ao projeto - mesmo que o dos tops).
+// Requer apenas o BLOB_READ_WRITE_TOKEN + BLOB_STORE_ID (fornecidos automaticamente
+// pelo Vercel quando um Blob Store esta ligado ao projeto - mesmo que o dos tops).
+//
+// IMPORTANTE: NAO usar list() aqui - o Vercel Blob guarda versoes antigas ao
+// sobrescrever e o list() pode devolver uma versao velha do ficheiro (blobs[0]),
+// fazendo as keys novas parecerem "invalidadas". Usamos a URL fixa e deterministica
+// (mesmo padrao do api/tops/read.js), que serve sempre a versao mais recente.
 
-import { put, list } from '@vercel/blob';
+import { put } from '@vercel/blob';
 
 const ARQUIVO = 'keys.json';
-let urlCache = null; // URL do blob (nao muda enquanto o ficheiro existir)
 
-async function getUrl() {
-  if (urlCache) return urlCache;
-  try {
-    const res = await list({ prefix: ARQUIVO });
-    if (res.blobs && res.blobs.length) {
-      urlCache = res.blobs[0].url;
-      return urlCache;
-    }
-  } catch (e) {}
-  return null;
+// storeId = "store_xxx" -> base = "https://xxx.public.blob.vercel-storage.com"
+function getBase() {
+  const storeId = process.env.BLOB_STORE_ID;
+  if (!storeId) return null;
+  const shortId = storeId.replace('store_', '').toLowerCase();
+  return `https://${shortId}.public.blob.vercel-storage.com`;
 }
 
 async function lerTudo() {
-  const url = await getUrl();
-  if (!url) return {};
+  const base = getBase();
+  if (!base) return {};
   try {
-    const res = await fetch(url);
-    if (!res.ok) return {};
-    const texto = await res.text();
+    const resp = await fetch(`${base}/${ARQUIVO}`, { cache: 'no-store' });
+    if (!resp.ok) return {};
+    const texto = await resp.text();
     return texto ? JSON.parse(texto) : {};
   } catch (e) {
     return {};
@@ -35,13 +35,12 @@ async function lerTudo() {
 
 async function gravarTudo(dados) {
   try {
-    const res = await put(ARQUIVO, JSON.stringify(dados), {
+    await put(ARQUIVO, JSON.stringify(dados), {
       access: 'public',
       contentType: 'application/json',
       addRandomSuffix: false,
       allowOverwrite: true
     });
-    urlCache = res.url;
     return true;
   } catch (e) {
     return false;
