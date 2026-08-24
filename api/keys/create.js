@@ -26,7 +26,8 @@ export async function POST(request) {
       created: Date.now(),
       expires: Date.now() + validadeHoras * 3600 * 1000
     };
-    await kvSet(`key:${key}`, rec, validadeHoras * 3600);
+    const salvo = await kvSet(`key:${key}`, rec, validadeHoras * 3600);
+    if (!salvo) return json({ error: 'erro ao salvar key no armazenamento' }, 500);
 
     return json({ ok: true, key, package: pkgId, player: nick, validadeHoras });
   } catch (e) {
