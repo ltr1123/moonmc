@@ -20,17 +20,26 @@ function getBase() {
   return `https://${shortId}.public.blob.vercel-storage.com`;
 }
 
+// Nota: o Blob tem propagacao eventual (CDN) - logo apos um put, um fetch
+// imediato pode devolver a versao anterior do ficheiro. As funcoes abaixo
+// tentam varias vezes antes de desistir para nao marcar keys como invalidas.
+
 async function lerTudo() {
   const base = getBase();
   if (!base) return {};
-  try {
-    const resp = await fetch(`${base}/${ARQUIVO}`, { cache: 'no-store' });
-    if (!resp.ok) return {};
-    const texto = await resp.text();
-    return texto ? JSON.parse(texto) : {};
-  } catch (e) {
-    return {};
+  for (let tentativa = 0; tentativa < 3; tentativa++) {
+    try {
+      const resp = await fetch(`${base}/${ARQUIVO}`, { cache: 'no-store' });
+      if (resp.ok) {
+        const texto = await resp.text();
+        return texto ? JSON.parse(texto) : {};
+      }
+      // 404 = ficheiro ainda nao existe (ou CDN ainda nao propagou) -> tenta de novo
+      if (resp.status !== 404) return {};
+    } catch (e) {}
+    await new Promise(r => setTimeout(r, 400 * (tentativa + 1)));
   }
+  return {};
 }
 
 async function gravarTudo(dados) {
@@ -64,11 +73,17 @@ export async function kvSet(key, value, ttlSeconds) {
 // Nota: Blob nao tem atomicidade real — a janela de corrida e minima e
 // irrelevante para o volume da loja (o player ainda tem de bater certo).
 export async function kvGetDel(key) {
-  const dados = await lerTudo();
-  const rec = dados[key] || null;
-  if (rec) {
-    delete dados[key];
-    await gravarTudo(dados);
+  // Propagacao eventual: se a key nao aparecer de primeira, o CDN pode estar
+  // a servir uma versao antiga do keys.json (criada ha segundos). Re-tenta.
+  for (let tentativa = 0; tentativa < 5; tentativa++) {
+    const dados = await lerTudo();
+    const rec = dados[key] || null;
+    if (rec) {
+      delete dados[key];
+      await gravarTudo(dados);
+      return rec;
+    }
+    await new Promise(r => setTimeout(r, 300 * (tentativa + 1)));
   }
-  return rec;
+  return null;
 }
