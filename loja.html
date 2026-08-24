@@ -12,6 +12,143 @@
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Rajdhani:wght@500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
   <link rel="stylesheet" href="style.css">
+  <style>
+    .buy-step { display: none; animation: buyFade .25s ease; }
+    .buy-step.active { display: block; }
+    @keyframes buyFade { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+    .buy-nick-input {
+      width: 100%; padding: 12px 16px; margin: 6px 0 12px;
+      background: rgba(255,255,255,.04); border: 1px solid var(--border); border-radius: var(--radius-sm);
+      color: var(--white); font-size: 1rem; font-family: inherit; outline: none;
+    }
+    .buy-nick-input:focus { border-color: var(--neon); }
+    .buy-price-line { color: var(--gray); margin-bottom: 14px; font-size: .95rem; }
+    .buy-price-line strong { color: var(--white); font-size: 1.05rem; }
+    .buy-error { color: #ff6b6b; margin-top: 10px; font-size: .9rem; }
+    .buy-step .buy-drawer-btn { width: 100%; margin-top: 10px; }
+    .buy-back { background: none; border: none; color: var(--gray-muted); cursor: pointer; font-size: .85rem; margin-top: 12px; padding: 0; }
+    .buy-back:hover { color: var(--white); }
+    .buy-pix-box {
+      font-family: monospace; font-size: 1.05rem; letter-spacing: .04em; text-align: center;
+      padding: 18px 12px; margin: 10px 0 4px; border-radius: var(--radius-sm);
+      background: rgba(194,139,255,.08); border: 1px dashed var(--neon); color: var(--neon);
+      word-break: break-all;
+    }
+    .buy-steps { margin: 14px 0 4px; padding: 0; list-style: none; }
+    .buy-steps li { display: flex; gap: 12px; align-items: flex-start; margin-bottom: 12px; }
+    .buy-steps strong { color: var(--white); }
+    .buy-steps p { margin: 2px 0 0; color: var(--gray); font-size: .85rem; line-height: 1.4; }
+    .buy-step-num {
+      flex-shrink: 0; width: 26px; height: 26px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      background: linear-gradient(135deg, var(--neon), var(--mint)); color: #170b2b;
+      font-weight: 700; font-size: .85rem;
+    }
+    /* ===== loja por categorias (sidebar) ===== */
+    .loja-layout { display: grid; grid-template-columns: 280px 1fr; gap: 28px; align-items: start; }
+    .loja-sidebar {
+      position: sticky; top: 96px; display: flex; flex-direction: column; gap: 8px;
+      background: var(--dark-card); border: 1px solid var(--border); border-radius: var(--radius);
+      padding: 16px;
+    }
+    .loja-sidebar-title {
+      font-family: var(--font-heading); font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
+      color: var(--neon); font-size: .95rem; padding: 4px 10px 12px; display: flex; align-items: center; gap: 10px;
+      border-bottom: 1px solid var(--border); margin-bottom: 6px;
+    }
+    .loja-cat {
+      display: flex; align-items: center; gap: 12px; width: 100%; text-align: left;
+      padding: 13px 14px; border-radius: var(--radius-sm); border: 1px solid transparent;
+      background: transparent; color: var(--gray); font-family: var(--font-heading);
+      font-weight: 700; letter-spacing: .04em; text-transform: uppercase; font-size: .9rem;
+      cursor: pointer; transition: var(--transition);
+    }
+    .loja-cat span { font-size: 1.15rem; width: 24px; text-align: center; }
+    .loja-cat:hover { color: var(--white); background: rgba(194,139,255,.08); }
+    .loja-cat.active {
+      background: linear-gradient(135deg, rgba(194,139,255,.22), rgba(118,218,199,.14));
+      border-color: rgba(194,139,255,.45); color: var(--white);
+      box-shadow: 0 0 18px rgba(194,139,255,.18);
+    }
+    .loja-cat.active::before {
+      content: ''; width: 3px; height: 18px; border-radius: 3px; margin-left: -14px;
+      background: linear-gradient(180deg, var(--neon), var(--mint));
+    }
+    .loja-sidebar-note {
+      margin-top: 10px; padding: 14px; border-radius: var(--radius-sm);
+      background: rgba(118,218,199,.06); border: 1px solid rgba(118,218,199,.18);
+      display: flex; gap: 10px; align-items: flex-start;
+    }
+    .loja-sidebar-note i { color: var(--mint); margin-top: 2px; }
+    .loja-sidebar-note p { color: var(--gray); font-size: .78rem; line-height: 1.5; margin: 0; }
+    .loja-cat-head { margin-bottom: 24px; }
+    .loja-cat-head h3 { font-family: var(--font-display); font-size: 1.9rem; letter-spacing: .03em; color: var(--white); margin: 0 0 6px; }
+    .loja-cat-head p { color: var(--gray); margin: 0; font-size: .98rem; }
+    .loja-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(255px, 1fr)); gap: 22px; }
+
+    /* ===== cards com imagens reais ===== */
+    .produto-card {
+      position: relative; background: var(--dark-card); border: 1px solid var(--border); border-radius: var(--radius);
+      overflow: hidden; display: flex; flex-direction: column; transition: var(--transition);
+    }
+    .produto-card::before {
+      content: ''; position: absolute; inset: 0 0 auto; height: 2px; opacity: .6;
+      background: linear-gradient(90deg, transparent, var(--neon), var(--mint), transparent);
+    }
+    .produto-card:hover { transform: translateY(-5px); border-color: rgba(194,139,255,.5); box-shadow: 0 16px 40px rgba(0,0,0,.45), 0 0 24px rgba(194,139,255,.12); }
+    .produto-banner {
+      position: relative; height: 150px; display: flex; align-items: center; justify-content: center;
+      background: radial-gradient(circle at 50% 65%, rgba(194,139,255,.26), transparent 68%),
+                  radial-gradient(circle at 20% 15%, rgba(118,218,199,.12), transparent 50%),
+                  linear-gradient(180deg, #2a1750, #150a29);
+      border-bottom: 1px solid var(--border);
+    }
+    .produto-img-wrap { position: relative; display: inline-flex; align-items: center; justify-content: center; line-height: 0; }
+    .produto-img {
+      max-height: 118px; max-width: 118px; image-rendering: pixelated;
+      filter: drop-shadow(0 12px 20px rgba(0,0,0,.55));
+      transition: transform .3s ease;
+    }
+    .produto-img.is-banner { max-width: 62px; max-height: 150px; }
+    .produto-img.is-art {
+      width: 100%; max-width: none; max-height: none; height: 150px; object-fit: cover;
+      image-rendering: auto; filter: none; display: block;
+    }
+    .produto-card:hover .produto-img { transform: scale(1.08) rotate(-2deg); }
+    .produto-card:hover .produto-img.is-art { transform: scale(1.05); }
+    .produto-img-wrap.glint .glint-layer {
+      position: absolute; inset: 0; pointer-events: none; opacity: .8; mix-blend-mode: screen;
+      background: linear-gradient(115deg, rgba(255,255,255,0) 32%, rgba(170,225,255,.75) 50%, rgba(255,255,255,0) 68%);
+      background-size: 300% 100%;
+      -webkit-mask-size: contain; mask-size: contain;
+      -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat;
+      -webkit-mask-position: center; mask-position: center;
+      animation: glintSweep 2.8s linear infinite;
+    }
+    @keyframes glintSweep { 0% { background-position: 220% 0; } 100% { background-position: -120% 0; } }
+    .produto-emoji { font-size: 3.1rem; filter: drop-shadow(0 6px 14px rgba(194,139,255,.45)); }
+    .produto-badge {
+      position: absolute; top: 12px; right: 12px; z-index: 2; font-size: .62rem; letter-spacing: .08em;
+      background: linear-gradient(135deg, var(--neon), var(--mint)); color: #170b2b;
+      padding: 4px 10px; border-radius: 999px; font-weight: 700; text-transform: uppercase;
+      box-shadow: 0 4px 12px rgba(0,0,0,.35);
+    }
+    .produto-body { padding: 20px 20px 22px; display: flex; flex-direction: column; flex: 1; }
+    .produto-nome { font-family: var(--font-heading); font-size: 1.25rem; color: var(--white); text-align: center; margin: 0 0 12px; }
+    .produto-desc { list-style: none; padding: 0; margin: 0 0 16px; flex: 1; }
+    .produto-desc li { color: var(--gray); font-size: .86rem; padding: 5px 0; display: flex; gap: 8px; align-items: flex-start; }
+    .produto-desc li i { color: var(--neon); font-size: .75rem; margin-top: 3px; }
+    .produto-preco { display: flex; align-items: baseline; justify-content: center; gap: 10px; margin-bottom: 16px; }
+    .produto-de { color: var(--gray-muted); text-decoration: line-through; font-size: 1rem; }
+    .produto-valor { font-family: var(--font-display); font-size: 1.9rem; color: var(--neon); text-shadow: 0 0 18px rgba(194,139,255,.35); }
+    .produto-btn { width: 100%; }
+    @media (max-width: 900px) {
+      .loja-layout { grid-template-columns: 1fr; }
+      .loja-sidebar { position: static; flex-direction: row; flex-wrap: wrap; }
+      .loja-sidebar-title { width: 100%; }
+      .loja-cat { width: auto; }
+    }
+  </style>
 </head>
 <body class="page-inner">
 
@@ -57,39 +194,24 @@
           <p>Escolha o item perfeito pra você e aproveite o melhor do MoonMC.</p>
         </div>
 
-        <div class="plans-grid">
-          <div class="plan-card" data-reveal>
-            <div class="plan-art"><img src="banner-vip.webp" alt="VIP MoonMC"></div>
-            <div class="plan-badge">VIP</div>
-            <div class="plan-icon"><i class="fa-solid fa-star"></i></div>
-            <h3 class="plan-name">VIP</h3>
-            <div class="plan-price"><span class="currency">R$</span> <span class="amount">14,90</span></div>
-            <p class="plan-desc">O essencial pra começar com vantagem e estilo.</p>
-            <ul class="plan-features">
-              <li><i class="fa-solid fa-check"></i> $5.000 Money Inicial</li>
-              <li><i class="fa-solid fa-check"></i> Kit Exclusivo in-game</li>
-              <li><i class="fa-solid fa-check"></i> Cargo Exclusivo no Discord</li>
-              <li><i class="fa-solid fa-check"></i> Chat e Sorteios Exclusivos</li>
-              <li><i class="fa-solid fa-check"></i> TAG Exclusiva in-game</li>
-            </ul>
-            <button class="btn btn-primary plan-btn" data-buy="VIP"><i class="fa-solid fa-bag-shopping"></i> Adquirir</button>
-          </div>
-
-          <div class="plan-card" data-reveal>
-            <div class="plan-art"><img src="banner-prime.webp" alt="PRIME MoonMC"></div>
-            <div class="plan-badge featured">MAIS VENDIDO</div>
-            <div class="plan-icon"><i class="fa-solid fa-crown"></i></div>
-            <h3 class="plan-name">PRIME</h3>
-            <div class="plan-price"><span class="currency">R$</span> <span class="amount">24,90</span></div>
-            <p class="plan-desc">A experiência completa do MoonMC pra quem quer o melhor.</p>
-            <ul class="plan-features">
-              <li><i class="fa-solid fa-check"></i> $15.000 Money Inicial</li>
-              <li><i class="fa-solid fa-check"></i> Kit Exclusivo in-game</li>
-              <li><i class="fa-solid fa-check"></i> Cargo Exclusivo no Discord</li>
-              <li><i class="fa-solid fa-check"></i> TAG Exclusiva in-game</li>
-              <li><i class="fa-solid fa-check"></i> Preferência em Atendimentos</li>
-            </ul>
-            <button class="btn btn-primary plan-btn" data-buy="PRIME"><i class="fa-solid fa-bag-shopping"></i> Adquirir</button>
+        <div class="loja-layout" data-reveal>
+          <aside class="loja-sidebar">
+            <div class="loja-sidebar-title"><i class="fa-solid fa-layer-group"></i> Categorias</div>
+            <button class="loja-cat active" data-cat="vips">VIPS</button>
+            <button class="loja-cat" data-cat="ferramentas">Ferramentas &amp; Armas</button>
+            <button class="loja-cat" data-cat="consumiveis">Consumíveis</button>
+            <button class="loja-cat" data-cat="armaduras">Armaduras</button>
+            <div class="loja-sidebar-note">
+              <i class="fa-solid fa-shield-halved"></i>
+              <p>Pagamento 100% seguro via Pix. A key chega na hora após a confirmação do pagamento.</p>
+            </div>
+          </aside>
+          <div class="loja-content">
+            <div class="loja-cat-head">
+              <h3 id="loja-cat-nome">🏆 VIPS</h3>
+              <p id="loja-cat-desc">Vantagens exclusivas para dominar o MoonMC.</p>
+            </div>
+            <div class="loja-grid" id="loja-produtos"></div>
           </div>
         </div>
 
@@ -186,21 +308,147 @@
     <div class="buy-drawer-panel">
       <button class="buy-drawer-close" data-close-drawer aria-label="Fechar"><i class="fa-solid fa-xmark"></i></button>
       <div class="buy-drawer-content">
-        <div class="buy-drawer-icon"><i class="fa-solid fa-bag-shopping"></i></div>
+        <div class="buy-drawer-icon"><i class="fa-solid fa-qrcode"></i></div>
         <p class="section-label"><i class="fa-solid fa-store"></i> Compra segura</p>
-        <h3>Como adquirir o <span class="text-gradient" id="buy-plan-name">VIP</span></h3>
-        <p class="buy-drawer-sub">Siga os passos abaixo para garantir seu plano:</p>
-        <ol class="buy-steps">
-          <li><span class="buy-step-num">1</span><div><strong>Entre no nosso Discord</strong><p>Use o botão abaixo para entrar na nossa comunidade.</p></div></li>
-          <li><span class="buy-step-num">2</span><div><strong>Vá para o canal #chamar-suporte</strong><p>Encontre o canal no servidor do Discord.</p></div></li>
-          <li><span class="buy-step-num">3</span><div><strong>Selecione a categoria "Financeiro"</strong><p>Escolha a opção certa para a sua solicitação.</p></div></li>
-          <li><span class="buy-step-num">4</span><div><strong>Informe o plano desejado</strong><p>No ticket, diga qual plano você quer e nossos atendentes continuarão o atendimento.</p></div></li>
-        </ol>
-        <a href="https://discord.gg/moonmc" target="_blank" rel="noopener" class="btn btn-discord buy-drawer-btn"><i class="fa-brands fa-discord"></i> Entrar no Discord</a>
+        <h3>Adquirir <span class="text-gradient" id="buy-plan-name">VIP</span></h3>
+
+        <!-- compra via Discord -->
+        <div class="buy-step active" id="buy-step-form">
+          <p class="buy-drawer-sub">Este produto é comprado pelo nosso <strong>Discord</strong>:</p>
+          <div class="buy-price-line" style="text-align:center;">Valor: <strong id="buy-price">R$ 14,90</strong></div>
+          <ol class="buy-steps">
+            <li><span class="buy-step-num">1</span><div><strong>Entra no canal #loja</strong><p>No nosso Discord: <strong>discord.gg/moonmc</strong>.</p></div></li>
+            <li><span class="buy-step-num">2</span><div><strong>Escolha o produto</strong><p>Clique no <strong id="buy-plan-name-2">VIP</strong> e digite o seu nick.</p></div></li>
+            <li><span class="buy-step-num">3</span><div><strong>Siga as instruções</strong><p>O bot manda a chave Pix na DM, você paga, envia o comprovante e recebe a key na hora.</p></div></li>
+          </ol>
+          <a href="https://discord.gg/moonmc" target="_blank" rel="noopener" class="btn btn-discord buy-drawer-btn"><i class="fa-brands fa-discord"></i> Ir para o canal #loja</a>
+        </div>
       </div>
     </div>
   </div>
 
   <script src="script.js"></script>
+  <script>
+    (function () {
+      var currentPrice = 'R$ 14,90';
+
+      var CATEGORIAS = {
+        vips:        { nome: '🏆 VIPS', desc: 'Vantagens exclusivas para dominar o MoonMC.' },
+        ferramentas: { nome: '⚔️ Ferramentas & Armas', desc: 'Itens encantados prontos para o combate e a mineração.' },
+        consumiveis: { nome: '🧪 Consumíveis', desc: 'Comida, poções e o essencial para o combate e a sobrevivência.' },
+        armaduras:   { nome: '🛡️ Armaduras', desc: 'Armaduras completas encantadas para PvP e sobrevivência.' }
+      };
+
+      var IMG = 'assets/items/';
+      var PRODUTOS = {
+        vips: [
+          {
+            pkg: 'vip', nome: 'VIP', preco: 'R$ 14,90', emoji: '⭐', img: IMG + 'banner-vip.webp',
+            desc: ['$5.000 Money Inicial', 'Kit Exclusivo in-game', 'Cargo Exclusivo no Discord', 'Chat e Sorteios Exclusivos', 'TAG Exclusiva in-game']
+          },
+          {
+            pkg: 'prime', nome: 'PRIME', preco: 'R$ 24,90', emoji: '👑', badge: 'MAIS VENDIDO', img: IMG + 'banner-prime.webp',
+            desc: ['$15.000 Money Inicial', 'Kit Exclusivo in-game', 'Cargo Exclusivo no Discord', 'TAG Exclusiva in-game', 'Preferência em Atendimentos']
+          }
+        ],
+        ferramentas: [
+          { pkg: 'clava_anti_armor', nome: 'Clava Anti-Armor', preco: 'R$ 9,90', img: IMG + 'mace.png', glint: true, desc: ['Rajada de Vento III', 'Ruptura IV', 'Inquebrável III', 'Remendo'] },
+          { pkg: 'clava_pesada', nome: 'Clava Pesada', preco: 'R$ 9,90', img: IMG + 'mace.png', glint: true, desc: ['Rajada de Vento III', 'Densidade V', 'Inquebrável III', 'Remendo'] },
+          { pkg: 'clava_suprema', nome: 'Clava Suprema', preco: 'R$ 24,90', img: IMG + 'mace.png', glint: true, badge: 'MAIS VENDIDO', desc: ['Rajada de Vento III', 'Densidade V', 'Ruptura IV', 'Inquebrável III', 'Remendo'] },
+          { pkg: 'espada_op', nome: 'Espada OP', preco: 'R$ 9,90', img: IMG + 'netherite_sword.png', glint: true, desc: ['Afiação V', 'Alcance III', 'Aspecto Flamejante II', 'Repulsão II', 'Saque III', 'Inquebrável III', 'Remendo'] },
+          { pkg: 'machado_op', nome: 'Machado OP', preco: 'R$ 9,90', img: IMG + 'netherite_axe.png', glint: true, desc: ['Afiação V', 'Eficiência V', 'Inquebrável III', 'Remendo'] },
+          { pkg: 'picareta_toque_suave', nome: 'Picareta Toque Suave', preco: 'R$ 7,90', img: IMG + 'netherite_pickaxe.png', glint: true, desc: ['Toque Suave', 'Eficiência V', 'Inquebrável III', 'Remendo'] },
+          { pkg: 'picareta_fortuna', nome: 'Picareta Fortuna', preco: 'R$ 7,90', img: IMG + 'netherite_pickaxe.png', glint: true, desc: ['Fortuna III', 'Eficiência V', 'Inquebrável III', 'Remendo'] }
+        ],
+        consumiveis: [
+          { pkg: 'shulker_macas_douradas', nome: 'Shulker de Maçãs Douradas', preco: 'R$ 14,90', img: IMG + 'purple_shulker_box.png', desc: ['1.728 maçãs douradas (27 slots × 64)', 'O essencial para PvP e aventuras'] },
+          { pkg: 'shulker_foguetes', nome: 'Shulker de Foguetes', preco: 'R$ 9,90', img: IMG + 'firework_rocket.png', desc: ['1.728 foguetes de fogo de artifício', '27 slots × 64', 'Impulso infinito para a elytra'] },
+          { pkg: 'shulker_totem', nome: 'Shulker de Totem', preco: 'R$ 19,90', img: IMG + 'totem_of_undying.png', desc: ['27 totens da imortalidade', 'Te salva de qualquer morte', 'O essencial para quem faz PvP'] },
+          { pkg: 'pack_maca_dourada', nome: 'Pack Maçã Dourada', preco: 'R$ 9,90', img: IMG + 'golden_apple.png', desc: ['64 maçãs douradas', 'O clássico para qualquer batalha'] },
+          { pkg: 'shulker_cpvp', nome: 'Shulker cPvP', preco: 'R$ 24,90', img: IMG + 'black_shulker_box.png', badge: 'MAIS VENDIDO', desc: ['576 obsidian + 1.152 end crystals', '1 linha de obsidian + 2 de crystals'] },
+          { pkg: 'shulker_pocao_invisibilidade', nome: 'Shulker Poção Invisibilidade', preco: 'R$ 14,90', img: IMG + 'potion_invisibility.png', desc: ['27 poções de invisibilidade (3:00)', 'Foge ou surpreende no PvP'] }
+        ],
+        armaduras: [
+          { pkg: 'full_diamond_p4', nome: 'Full Dima P4', preco: 'R$ 19,90', img: IMG + 'diamond_chestplate.png', glint: true, desc: ['Proteção IV (todas as peças)', 'Inquebrável III', 'Remendo', 'Sem Espinhos'] }
+        ]
+      };
+
+      function renderCategoria(catId) {
+        var container = document.getElementById('loja-produtos');
+        if (!container) return;
+        container.innerHTML = '';
+        var prods = PRODUTOS[catId] || [];
+        prods.forEach(function (p) {
+          var card = document.createElement('div');
+          card.className = 'produto-card';
+          var badge = p.badge ? '<span class="produto-badge">' + p.badge + '</span>' : '';
+          var desc = p.desc.map(function (d) { return '<li><i class="fa-solid fa-check"></i> ' + d + '</li>'; }).join('');
+          var de = p.de ? '<span class="produto-de">' + p.de + '</span>' : '';
+          var imgTag;
+          if (p.img) {
+            var isArt = p.img.indexOf('banner-vip') > -1 || p.img.indexOf('banner-prime') > -1;
+            if (isArt) {
+              imgTag = '<img class="produto-img is-art" src="' + p.img + '" alt="' + p.nome + '" loading="lazy">';
+            } else {
+              var isBanner = p.img.indexOf('banner') > -1;
+              imgTag = '<span class="produto-img-wrap' + (p.glint ? ' glint' : '') + '">' +
+                '<img class="produto-img' + (isBanner ? ' is-banner' : '') + '" src="' + p.img + '" alt="' + p.nome + '" loading="lazy">' +
+                (p.glint ? '<span class="glint-layer" style="-webkit-mask-image:url(' + p.img + ');mask-image:url(' + p.img + ')"></span>' : '') +
+                '</span>';
+            }
+          } else {
+            imgTag = '<span class="produto-emoji">' + p.emoji + '</span>';
+          }
+          card.innerHTML =
+            '<div class="produto-banner">' + badge + imgTag + '</div>' +
+            '<div class="produto-body">' +
+              '<h4 class="produto-nome">' + p.nome + '</h4>' +
+              '<ul class="produto-desc">' + desc + '</ul>' +
+              '<div class="produto-preco">' + de + '<span class="produto-valor">' + p.preco + '</span></div>' +
+              '<button class="btn btn-primary produto-btn" data-buy="' + p.nome + '" data-pkg="' + p.pkg + '" data-preco="' + p.preco + '"><i class="fa-solid fa-bag-shopping"></i> Adquirir</button>' +
+            '</div>';
+          container.appendChild(card);
+        });
+      }
+
+      function setCategoria(catId) {
+        document.querySelectorAll('.loja-cat').forEach(function (t) { t.classList.remove('active'); });
+        var btn = document.querySelector('.loja-cat[data-cat="' + catId + '"]');
+        if (btn) btn.classList.add('active');
+        var cat = CATEGORIAS[catId];
+        if (cat) {
+          var h = document.getElementById('loja-cat-nome');
+          var d = document.getElementById('loja-cat-desc');
+          if (h) h.textContent = cat.nome;
+          if (d) d.textContent = cat.desc;
+        }
+        renderCategoria(catId);
+      }
+      document.querySelectorAll('.loja-cat').forEach(function (btn) {
+        btn.addEventListener('click', function () { setCategoria(btn.getAttribute('data-cat')); });
+      });
+      setCategoria('vips');
+
+      var priceEl = document.getElementById('buy-price');
+
+      // cliques nos produtos (delegação, porque os botões são criados dinamicamente)
+      document.addEventListener('click', function (e) {
+        var btn = e.target && e.target.closest ? e.target.closest('[data-buy]') : null;
+        if (!btn) return;
+        var preco = btn.getAttribute('data-preco');
+        if (preco && priceEl) priceEl.textContent = preco;
+        var nome = btn.getAttribute('data-buy');
+        ['buy-plan-name', 'buy-plan-name-2'].forEach(function (id) {
+          var el = document.getElementById(id);
+          if (el) el.textContent = nome;
+        });
+        var drawer = document.getElementById('buy-drawer');
+        if (drawer) {
+          drawer.classList.add('open');
+          document.body.style.overflow = 'hidden';
+        }
+      });
+    })();
+  </script>
 </body>
 </html>
